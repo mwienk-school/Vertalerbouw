@@ -1,6 +1,6 @@
-###Practicum Vertalerbouw 2011/2012
+Practicum Vertalerbouw 2011/2012
+================================
+
+* Kasper Vaessen
+* Mark Wienk
 ![preview thumb](http://www.utwente.nl/repository/utwente/dottwente/img/nl/utlogo.229x19.gif)
-
-Kasper Vaessen
-
-Mark Wienk
