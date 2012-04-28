@@ -11,10 +11,9 @@ public class ParseDecluse {
 		reader = r;
 	}
 
-	public boolean parse() throws Exception {
+	public void parse() throws Exception {
 		char ch;
 		int readch;
-		boolean success = true;
 		char expectedch = '(';
 		while((readch = reader.read()) != -1) {
 			ch = (char) readch;
@@ -41,7 +40,7 @@ public class ParseDecluse {
 						expectedch = ':';
 						break;
 					default:
-						throw new Exception("Unexpected character '" + ch + "'");
+						throw new Exception("Unexpected character '" + ch + "'.");
 					}
 					break;
 				case 'a':
@@ -54,7 +53,7 @@ public class ParseDecluse {
 					if(ch == expectedch)
 						expectedch = 'a';
 					else
-						throw new Exception("Unexpected character '" + ch + "', expected a ':'");
+						throw new Exception("Unexpected character '" + ch + "', expected a ':'.");
 					break;
 				case '(':
 					if(ch == expectedch) {
@@ -62,12 +61,13 @@ public class ParseDecluse {
 						expectedch = ' ';
 					}
 					else
-						throw new Exception("Unexpected character '" + ch + "', expected a '('");
+						throw new Exception("Unexpected character '" + ch + "', expected a '('.");
 					break;
 				}
 			}
 		}
-		return success;
+		if(level != 0)
+			throw new Exception(level + " more closing brackets expected.");
 	}
 	
 	public static void parseArgs(String[] args, ParseDecluse pd) {
