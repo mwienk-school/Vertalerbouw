@@ -81,10 +81,8 @@ public class ParseDecluse {
 						System.out.println("Succes.");
 					}
 				} catch (Exception e) {
-					System.out
-							.println("Parsing error! Incorrect nesting or incorrect prefix.");
+					System.out.println("Parsing error! Incorrect nesting or incorrect prefix.");
 				}
-				System.out.println(pd + " " + fname);
 			} catch (FileNotFoundException e) {
 				System.err.println("error opening: " + e.getMessage());
 			} catch (IOException e) {
