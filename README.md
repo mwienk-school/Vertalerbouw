@@ -1,7 +1,8 @@
 Practicum Vertalerbouw 2011/2012
 ================================
 
-Door:
+Groep 10(?)
+-----------
 * Kasper Vaessen
 * Mark Wienk
 
