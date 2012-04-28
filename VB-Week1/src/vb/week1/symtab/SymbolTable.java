@@ -1,21 +1,25 @@
 package vb.week1.symtab;
 
-public class SymbolTable<Entry extends IdEntry> {
+import java.util.*;
 
+public class SymbolTable<Entry extends IdEntry> {
+	
+	protected ArrayList<HashMap<String, Entry>> symbolMapList;
+	
     /** 
      * Constructor. 
      * @ensures  this.currentLevel() == -1 
      */
-    public SymbolTable() { 
-        // body nog toe te voegen
+    public SymbolTable() {
+    	symbolMapList = new ArrayList<HashMap<String, Entry>>();
     }
 
     /** 
      * Opens a new scope. 
      * @ensures this.currentLevel() == old.currentLevel()+1;
      */
-    public void openScope()  {
-        // body nog toe te voegen
+    public void openScope() {
+    	symbolMapList.add(new HashMap<String, Entry>());
     }
 
     /** 
@@ -25,12 +29,12 @@ public class SymbolTable<Entry extends IdEntry> {
      * @ensures  this.currentLevel() == old.currentLevel()-1;
      */
     public void closeScope() {
-        // body nog toe te voegen
+        symbolMapList.remove(this.currentLevel());
     }
 
     /** Returns the current scope level. */
     public int currentLevel() {
-        return 0; // body nog toe te voegen
+        return symbolMapList.size()-1;
     }    
 
     /** 
@@ -44,8 +48,17 @@ public class SymbolTable<Entry extends IdEntry> {
      *    on the current level. 
      */
     public void enter(String id, Entry entry)
-                                    throws SymbolTableException { 
-        // body nog toe te voegen
+                                    throws SymbolTableException {
+    	if(this.currentLevel() > -1 &&
+    			!symbolMapList.get(this.currentLevel()).containsKey(id))
+    	{
+        	entry.setLevel(this.currentLevel());
+        	symbolMapList.get(this.currentLevel()).put(id, entry);
+    	}
+    	else
+    	{
+    		throw new SymbolTableException("");
+    	}
     }
 
     /** 
@@ -55,7 +68,13 @@ public class SymbolTable<Entry extends IdEntry> {
      *          null if this SymbolTable does not contain id 
      */
     public Entry retrieve(String id) {
-        return null; // body nog toe te voegen
+    	for(int i = this.currentLevel(); i > -1; i--)
+    	{
+    		HashMap<String, Entry> tempHM = symbolMapList.get(i);
+    		if(tempHM.containsKey(id))
+    			return tempHM.get(id);
+    	}
+        return null;
     }    
 }
     

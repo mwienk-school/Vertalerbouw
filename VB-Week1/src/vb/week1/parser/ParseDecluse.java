@@ -3,6 +3,7 @@ package vb.week1.parser;
 import java.io.*;
 
 public class ParseDecluse {
+	protected static final String LOWERCASE_ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 	protected int level = 0;
 	protected Reader reader = null;
 
@@ -15,24 +16,24 @@ public class ParseDecluse {
 		int readch;
 		boolean success = true;
 		char expectedch = '(';
-		while ((readch = reader.read()) != -1) {
+		while((readch = reader.read()) != -1) {
 			ch = (char) readch;
 			if (!Character.isWhitespace(ch)) {
-				switch (expectedch) {
+				switch(expectedch) {
 				case 'b':
-					if (Character.isLowerCase(ch)) {
+					if(LOWERCASE_ALPHABET.contains(""+ch)){
 						break;
 					}
 				case ' ':
-					switch (ch) {
+					switch(ch) {
 					case '(':
 						level++;
 						expectedch = ' ';
 						break;
 					case ')':
 						level--;
-						if (level < 0)
-							throw new Exception();
+						if(level < 0)
+							throw new Exception("Unexpected closing bracket.");
 						expectedch = ' ';
 						break;
 					case 'U':
@@ -40,36 +41,35 @@ public class ParseDecluse {
 						expectedch = ':';
 						break;
 					default:
-						throw new Exception();
+						throw new Exception("Unexpected character '" + ch + "'");
 					}
 					break;
 				case 'a':
-					if (Character.isLowerCase(ch))
+					if(LOWERCASE_ALPHABET.contains(""+ch))
 						expectedch = 'b';
-					else
-						throw new Exception();
+					else 
+						throw new Exception("Unexpected character '" + ch + "', expected a lowercase letter.");
 					break;
 				case ':':
-					if (ch != expectedch)
-						throw new Exception();
-					else
+					if(ch == expectedch)
 						expectedch = 'a';
+					else
+						throw new Exception("Unexpected character '" + ch + "', expected a ':'");
 					break;
 				case '(':
-					if (ch != expectedch)
-						throw new Exception();
-					else {
+					if(ch == expectedch) {
 						level++;
 						expectedch = ' ';
 					}
+					else
+						throw new Exception("Unexpected character '" + ch + "', expected a '('");
 					break;
 				}
 			}
 		}
-		if(level != 0) throw new Exception();
 		return success;
 	}
-
+	
 	public static void parseArgs(String[] args, ParseDecluse pd) {
 		for (int i = 0; i < args.length; i++) {
 			String fname = args[i];
@@ -77,12 +77,11 @@ public class ParseDecluse {
 			try {
 				pd.setReader(new BufferedReader(new FileReader(f)));
 				try {
-					if(pd.parse()) {
-						System.out.println("Succes.");
-					}
+					pd.parse();
 				} catch (Exception e) {
-					System.out.println("Parsing error! Incorrect nesting or incorrect prefix.");
+					System.out.println("Parsing error! " + e.getMessage());
 				}
+				System.out.println(pd + " " + fname);
 			} catch (FileNotFoundException e) {
 				System.err.println("error opening: " + e.getMessage());
 			} catch (IOException e) {
