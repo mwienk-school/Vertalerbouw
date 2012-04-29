@@ -2,10 +2,15 @@ package vb.week1.parser;
 
 import java.io.*;
 
+import vb.week1.symtab.*;
+
 public class ParseDecluse {
 	protected static final String LOWERCASE_ALPHABET = "abcdefghijklmnopqrstuvwxyz";
-	protected int level = 0;
+	protected int level = -1;
 	protected Reader reader = null;
+	protected SymbolTable<IdEntry> symtab = new SymbolTable<IdEntry>();
+	protected String currentOp = "";
+	protected StringBuffer currentNode = new StringBuffer();
 
 	public void setReader(Reader r) {
 		reader = r;
@@ -21,32 +26,67 @@ public class ParseDecluse {
 				switch(expectedch) {
 				case 'b':
 					if(LOWERCASE_ALPHABET.contains(""+ch)){
+						currentNode.append(ch);
 						break;
+					} else {
+						//Identity boundary found
+						//Create IdEntry
+						IdEntry entry = new IdEntry();
+						entry.setLevel(level);
+						if(currentOp.equals("decl")) {
+							//Store IdEntry in SymbolTable on declare
+							try {
+								symtab.enter(currentNode.toString(), entry);
+								System.out.println("D:" + currentNode + 
+										" on level " + 
+										symtab.retrieve(currentNode.toString()).getLevel());
+							} catch (Exception e) {
+								System.out.println(currentNode + "' already declared on the current level");
+							}
+						} else if(currentOp.equals("use")) {
+							//Retrieve IdEntry from SymbolTable on use
+							IdEntry use = symtab.retrieve(currentNode.toString());
+							System.out.print("U:" + currentNode + " on level " + level + ", ");
+							if(use != null) {
+								System.out.println("declared on level " + use.getLevel());
+							} else {
+								System.out.println("*undeclared*");
+							}
+						}
+						//Reset the CurrentNode buffer
+						currentNode.delete(0, currentNode.length());
 					}
 				case ' ':
 					switch(ch) {
 					case '(':
 						level++;
 						expectedch = ' ';
+						symtab.openScope();
 						break;
 					case ')':
 						level--;
-						if(level < 0)
+						if(level < -1)
 							throw new Exception("Unexpected closing bracket.");
 						expectedch = ' ';
+						symtab.closeScope();
 						break;
 					case 'U':
+						expectedch = ':';
+						currentOp = "use";
+						break;
 					case 'D':
 						expectedch = ':';
+						currentOp = "decl";
 						break;
 					default:
 						throw new Exception("Unexpected character '" + ch + "'.");
 					}
 					break;
 				case 'a':
-					if(LOWERCASE_ALPHABET.contains(""+ch))
+					if(LOWERCASE_ALPHABET.contains(""+ch)) {
 						expectedch = 'b';
-					else 
+						currentNode.append(ch);
+					} else 
 						throw new Exception("Unexpected character '" + ch + "', expected a lowercase letter.");
 					break;
 				case ':':
@@ -59,6 +99,7 @@ public class ParseDecluse {
 					if(ch == expectedch) {
 						level++;
 						expectedch = ' ';
+						symtab.openScope();
 					}
 					else
 						throw new Exception("Unexpected character '" + ch + "', expected a '('.");
@@ -66,8 +107,9 @@ public class ParseDecluse {
 				}
 			}
 		}
-		if(level != 0)
+		if(level != -1)
 			throw new Exception(level + " more closing brackets expected.");
+		System.out.println(currentNode);
 	}
 	
 	public static void parseArgs(String[] args, ParseDecluse pd) {
@@ -81,7 +123,6 @@ public class ParseDecluse {
 				} catch (Exception e) {
 					System.out.println("Parsing error! " + e.getMessage());
 				}
-				System.out.println(pd + " " + fname);
 			} catch (FileNotFoundException e) {
 				System.err.println("error opening: " + e.getMessage());
 			} catch (IOException e) {
