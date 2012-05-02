@@ -1,5 +1,7 @@
 package vb.week2.tabular;
 
+import java.io.FileInputStream;
+
 public class Parser {
 	protected Token currentToken;
 	protected Scanner scanner;
@@ -7,6 +9,7 @@ public class Parser {
 	protected void accept(Token.Kind expected) throws SyntaxError {
 		if(currentToken.getKind().equals(expected)) {
 			currentToken = scanner.scan();
+			System.out.println("Accepted" + currentToken.getKind());
 		} else {
 			throw new SyntaxError("Error: expected " + expected + " but received " + currentToken.getKind());
 		}
@@ -17,6 +20,7 @@ public class Parser {
 	}
 	
 	protected void parseLatexTabular() throws SyntaxError {
+		System.out.println("A");
 		parseBeginTabular();
 		parseColsSpec();
 		parseRows();
@@ -24,6 +28,7 @@ public class Parser {
 	}
 	
 	protected void parseColsSpec() throws SyntaxError {
+		System.out.println("A");
 		accept(Token.Kind.LCURLY);
 		parseIdentifier();
 		accept(Token.Kind.RCURLY);
@@ -31,10 +36,8 @@ public class Parser {
 	
 	protected void parseRows() {
 		try {
-			parseRow(); 
-		} catch (Exception e) {
-			
-		}
+			while(true)	parseRow(); 
+		} catch (Exception e) {}
 	}
 	
 	protected void parseRow() throws SyntaxError {
@@ -56,4 +59,23 @@ public class Parser {
 	protected void parseEndTabular() {}
 	protected void parseNum() {}
 	protected void parseIdentifier() {}
+	
+	public Parser(Scanner scanner) {
+		this.scanner = scanner;
+	}
+    
+    public static void main(String[] args) {
+    	for (int i = 0; i < args.length; i++) {
+			String fname = args[i];
+			try {
+				Scanner scanner = new Scanner(new FileInputStream(fname));
+				Parser parser = new Parser(scanner);
+				System.out.println(fname);
+				parser.parseLatexTabular();
+			}
+			catch(Exception e) {
+				System.out.println(e.getMessage());
+			}
+    	}
+    }
 }
