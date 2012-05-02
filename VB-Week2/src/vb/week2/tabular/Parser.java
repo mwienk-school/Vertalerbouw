@@ -4,7 +4,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class Parser {
-	protected int n = 0;
 	protected Token currentToken;
 	protected Scanner scanner;
 
