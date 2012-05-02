@@ -28,6 +28,7 @@ public class Scanner {
     */
     public Scanner(InputStream in) {
         this.in = in;
+    	current = this.getNextChar();
     }                              
     
     /* Returns the next character. 
@@ -56,7 +57,6 @@ public class Scanner {
     */
     public Token scan() throws SyntaxError {
     	Token result = null;
-    	current = this.getNextChar();
     	while(result == null && current != cEOT) {
     		switch (current) {
     		case cSPACE: case cEOLn: case cTAB: case cEOLr:
@@ -92,6 +92,10 @@ public class Scanner {
     	    case 'h': case 'i': case 'j': case 'k': case 'l': case 'm': case 'n':
     	    case 'o': case 'p': case 'q': case 'r': case 's': case 't': case 'u':
     	    case 'v': case 'w': case 'x': case 'y': case 'z':
+    	    case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G':
+    	    case 'H': case 'I': case 'J': case 'K': case 'L': case 'M': case 'N':
+    	    case 'O': case 'P': case 'Q': case 'R': case 'S': case 'T': case 'U':
+    	    case 'V': case 'W': case 'X': case 'Y': case 'Z':
     	    	takeIt(); // letter
     	    	while(isLetter(current) || isDigit(current)) {
     	    		takeIt(); // (letter | digit) *
@@ -110,7 +114,6 @@ public class Scanner {
     	    		result = new Token(Token.Kind.IDENTIFIER, buffer.toString());
     	    	}
     	    	buffer.delete(0, buffer.length());
-    	    	current = this.getNextChar();
     	    	break;
     	    case '0': case '1': case '2': case '3': case '4': case '5': case '6':
     	    case '7': case '8': case '9':
@@ -143,7 +146,7 @@ public class Scanner {
      * @return
      */
     private static boolean isLetter(char ch) {
-    	return Character.isLowerCase(ch);
+    	return Character.isAlphabetic(ch);
     }
     
     /**
