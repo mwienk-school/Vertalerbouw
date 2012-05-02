@@ -1,6 +1,7 @@
 package vb.week2.tabular;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.FileInputStream;
 
 public class Scanner {
     private int             currentLineNr = 0;
@@ -153,5 +154,22 @@ public class Scanner {
     private static boolean isDigit(char ch) {
     	return Character.isDigit(ch);
     }
-    	
+    
+    
+    public static void main(String[] args) {
+    	for (int i = 0; i < args.length; i++) {
+			String fname = args[i];
+			try {
+				Scanner scanner = new Scanner(new FileInputStream(fname));
+				Token tempToken;
+				while((tempToken = scanner.scan()) != null) {
+					System.out.println("Kind: " + tempToken.getKind().getSpelling()
+							+ ", representation: " + tempToken.getRepr());
+				}
+			}
+			catch(Exception e) {
+				System.out.println(e.getMessage());
+			}
+    	}
+    }	
 }
