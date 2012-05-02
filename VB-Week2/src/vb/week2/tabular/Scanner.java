@@ -146,7 +146,7 @@ public class Scanner {
      * @return
      */
     private static boolean isLetter(char ch) {
-    	return Character.isAlphabetic(ch);
+    	return Character.isLetter(ch);
     }
     
     /**
