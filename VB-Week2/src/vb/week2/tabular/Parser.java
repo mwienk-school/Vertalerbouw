@@ -4,7 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class Parser {
-
+	protected int n = 0;
 	protected Token currentToken;
 	protected Scanner scanner;
 
@@ -44,7 +44,8 @@ public class Parser {
 
 	protected void parseRows() throws SyntaxError {
 		while (currentToken.getKind() == Token.Kind.IDENTIFIER
-		    || currentToken.getKind() == Token.Kind.NUM) {
+		    || currentToken.getKind() == Token.Kind.NUM
+		    || currentToken.getKind() == Token.Kind.AMPERSAND) {
 			parseRow();
 		}
 	}
@@ -69,6 +70,8 @@ public class Parser {
 			break;
 		case IDENTIFIER:
 			parseIdentifier();
+			break;
+		case AMPERSAND:
 			break;
 		}
 	}

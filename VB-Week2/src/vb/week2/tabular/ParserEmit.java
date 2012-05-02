@@ -12,8 +12,19 @@ public class ParserEmit extends Parser {
 	}
 	
 	protected void parseEntry() throws SyntaxError {
-		System.out.println("  <td>" + currentToken.getRepr() + "</td>");
-		super.parseEntry();
+		switch (currentToken.getKind()) {
+		case NUM:
+			System.out.println("  <td>" + currentToken.getRepr() + "</td>");
+			parseNum();
+			break;
+		case IDENTIFIER:
+			System.out.println("  <td>" + currentToken.getRepr() + "</td>");
+			parseIdentifier();
+			break;
+		case AMPERSAND:
+			System.out.println("  <td></td>");
+			break;
+		}
 	}
 	
 	protected void parseBeginTabular() throws SyntaxError {
