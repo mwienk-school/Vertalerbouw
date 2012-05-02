@@ -1,0 +1,21 @@
+latexTabular ::= beginTabular colsSpec rows endTabular
+colsSpec     ::= LCURLY identifier RCURLY
+rows         ::= row*
+row          ::= entries DOUBLE BSLASH
+entries      ::= entry (AMPERSAND entry) *
+entry        ::= num | identifier | e
+beginTabular ::= BSLASH BEGIN LCURLY TABULAR RCURLY
+endTabular   ::= BSLASH END LCURLY TABULAR RCURLY
+num          ::= digit*
+identifier   ::= letter (letter|digit) *
+digit        ::= “0” | “1” | . . . | “9”
+letter       ::= “a” | “b” | . . . | “z”
+               | “A” | “B” | . . . | “Z”
+BSLASH       ::= “ \”
+DOUBLE BLASH ::= “ \\”
+LCURLY       ::= “{”
+RCURLY       ::= “}”
+AMPERSAND    ::= “&”
+BEGIN        ::= “begin”
+END          ::= “end”
+TABULAR      ::= “tabular”
