@@ -44,7 +44,8 @@ public class Parser {
 	protected void parseRows() throws SyntaxError {
 		while (currentToken.getKind() == Token.Kind.IDENTIFIER
 		    || currentToken.getKind() == Token.Kind.NUM
-		    || currentToken.getKind() == Token.Kind.AMPERSAND) {
+		    || currentToken.getKind() == Token.Kind.AMPERSAND
+		    || currentToken.getKind() == Token.Kind.DOUBLE_BSLASH) {
 			parseRow();
 		}
 	}
@@ -69,8 +70,6 @@ public class Parser {
 			break;
 		case IDENTIFIER:
 			parseIdentifier();
-			break;
-		case AMPERSAND:
 			break;
 		}
 	}
