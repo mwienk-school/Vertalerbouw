@@ -125,8 +125,6 @@ public class ParseDecluse {
 				}
 			} catch (FileNotFoundException e) {
 				System.err.println("error opening: " + e.getMessage());
-			} catch (IOException e) {
-				System.err.println("error reading file: " + fname);
 			}
 		}
 	}
