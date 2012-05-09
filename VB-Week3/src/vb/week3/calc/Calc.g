@@ -42,16 +42,12 @@ package vb.week3.calc;
 // Parser rules
 
 program
-    :   declarations statements EOF
-            ->  ^(PROGRAM declarations statements)
+    : statements EOF
+       ->  ^(PROGRAM statements)
     ;
-    
-declarations
-    :   (declaration SEMICOLON!)*
-    ;
-    
+
 statements
-    :   (statement SEMICOLON!)+
+    :   ((declaration SEMICOLON!)* statement SEMICOLON!)+
     ;
 
 declaration
