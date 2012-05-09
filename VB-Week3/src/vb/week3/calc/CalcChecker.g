@@ -51,10 +51,6 @@ statement
 
 expr 
     :   operand
-    |   ^(BECOMES id=IDENTIFIER expr)
-        {   if (!isDeclared($id.text))
-                throw new CalcException($id, "is not declared");
-        }
     |   ^(IF expr expr expr )
     |   ^(PLUS expr expr)
     |   ^(MINUS expr expr)
@@ -71,6 +67,10 @@ expr
 operand
     :   id=IDENTIFIER 
         {   if (!isDeclared($id.text))
+                throw new CalcException($id, "is not declared");
+        }
+    |   ^(BECOMES id=IDENTIFIER id2=IDENTIFIER)
+        {   if (!isDeclared($id.text) || !isDeclared($id.text) )
                 throw new CalcException($id, "is not declared");
         }
     |   n=NUMBER 

@@ -1,7 +1,7 @@
 grammar Calc;
 
 options {
-    k=2;                                // LL(1) - do not use LL(*)
+    k=1;                                // LL(1) - do not use LL(*)
     language=Java;                      // target language is Java (= default)
     output=AST;                         // build an AST
 }
@@ -68,17 +68,17 @@ statement
     ;
 
 assignment
-    :   lvalue BECOMES^ rvalue
+    :   expr
     ;
 
-lvalue
-    :   IDENTIFIER
-    ;
-    
-rvalue
-    :   assignment
-    |   expr
-    ;
+//lvalue
+//    :   IDENTIFIER
+//    ;
+//    
+//rvalue
+//    :   expr
+//    |   assignment
+//    ;
 
 print_stat
     :   PRINT^ LPAREN! expr RPAREN!
@@ -93,6 +93,10 @@ expr
     |   exprifelse
     ;
     
+exprrelop
+    :   exprplus ((LESS^ | LESSEQ^ | MORE^ | MOREEQ^ | EQ^ | NEQ^) exprplus)*
+    ;
+    
 exprplus
     :   exprtimes ((PLUS^ | MINUS^) exprtimes )*
     ;
@@ -105,12 +109,8 @@ exprifelse
     :   IF^ expr THEN! expr ELSE! expr
     ;
     
-exprrelop
-    :   exprplus ((LESS^ | LESSEQ^ | MORE^ | MOREEQ^ | EQ^ | NEQ^) exprplus)*
-    ;
-    
 operand
-    :   IDENTIFIER
+    :   IDENTIFIER (BECOMES^ IDENTIFIER)* 
     |   NUMBER
     |   LPAREN! expr RPAREN!
     ;
