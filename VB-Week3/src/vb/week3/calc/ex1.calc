@@ -1,7 +1,8 @@
 // ex1.calc -- valid Calc program
 var n: integer;
 var x: integer;
+var z: integer;
 n := 2+4-1;
-if 1-1 then 2 else 4;
-x := n+3*7;
+z := n+3*7;
+x := if 1 then n else z;
 print(x);

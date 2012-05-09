@@ -60,7 +60,6 @@ declaration
     
 statement
     :   assignment
-    |   if_stat
     |   print_stat
     |   swap_stat
     ;
@@ -69,9 +68,6 @@ assignment
     :   lvalue BECOMES^ expr
     ;
 
-if_stat
-    :   IF^ expr THEN! expr ELSE! expr
-    ;
 
 print_stat
     :   PRINT^ LPAREN! expr RPAREN!
@@ -87,6 +83,7 @@ lvalue
     
 expr
     :   exprtimes ((PLUS^ | MINUS^) exprtimes )*
+    |   IF^ expr THEN! expr ELSE! expr
     ;
     
 exprtimes

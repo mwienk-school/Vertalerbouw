@@ -44,15 +44,7 @@ statement
     :   ^(BECOMES id=IDENTIFIER v=expr)
             { store.put($id.text, v);       }
     |   ^(PRINT v=expr)
-            { System.out.println("" + v);   }
-    |   ^(IF c=expr e1=expr e2=expr) 
-            { if(c == 0) {
-                System.out.println("" + e2);
-              } else {
-                System.out.println("" + e1);
-              }
-            }
-            
+            { System.out.println("" + v);   }            
     |   ^(SWAP id1=IDENTIFIER id2=IDENTIFIER)
             { int temp = store.get($id1.text); store.put($id1.text, store.get($id2.text)); store.put($id2.text, temp); }
     ;
@@ -65,6 +57,7 @@ expr returns [int val = 0;]
     |   ^(DIVIDE x=expr y=expr) { if(y == 0) throw new CalcException("ERROR: Division by zero!");
                                   val = x / y;
                                 }
+    |   ^(IF c=expr e1=expr e2=expr) { if(c != 0) { val = e1; } else { val = e2; }}
     ;
     
 operand returns [int val = 0]

@@ -46,12 +46,12 @@ statement
                 throw new CalcException($id, "is not declared");
         }
     |   ^(PRINT expr)
-    |   ^(IF expr expr expr )
     |   ^(SWAP IDENTIFIER IDENTIFIER)
     ;
     
 expr 
     :   operand
+    |   ^(IF expr expr expr )
     |   ^(PLUS expr expr)
     |   ^(MINUS expr expr)
     |   ^(TIMES expr expr)
