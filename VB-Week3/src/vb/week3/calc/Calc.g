@@ -19,6 +19,13 @@ tokens {
     MINUS       =   '-'     ;
     TIMES       =   '*'     ;
     DIVIDE      =   '/'     ;
+    
+    LESS        =   '<'     ;
+    LESSEQ      =   '<='    ;
+    MORE        =   '>'     ;
+    MOREEQ      =   '>='    ;
+    EQ          =   '=='    ;
+    NEQ         =   '!='    ;
 
     // keywords
     PROGRAM     =   'program'   ;
@@ -78,12 +85,24 @@ lvalue
     ;
     
 expr
+    :   exprrelop
+    |   exprifelse
+    ;
+    
+exprplus
     :   exprtimes ((PLUS^ | MINUS^) exprtimes )*
-    |   IF^ expr THEN! expr ELSE! expr
     ;
     
 exprtimes
     :   operand ((TIMES^ | DIVIDE^) operand )*
+    ;
+    
+exprifelse
+    :   IF^ expr THEN! expr ELSE! expr
+    ;
+    
+exprrelop
+    :   exprplus ((LESS^ | LESSEQ^ | MORE^ | MOREEQ^ | EQ^ | NEQ^) exprplus)*
     ;
     
 operand

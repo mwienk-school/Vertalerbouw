@@ -56,6 +56,12 @@ expr
     |   ^(MINUS expr expr)
     |   ^(TIMES expr expr)
     |   ^(DIVIDE expr expr)
+    |   ^(LESS expr expr)
+    |   ^(LESSEQ expr expr)
+    |   ^(MORE expr expr)
+    |   ^(MOREEQ expr expr)
+    |   ^(EQ expr expr)
+    |   ^(NEQ expr expr)
     ;
     
 operand

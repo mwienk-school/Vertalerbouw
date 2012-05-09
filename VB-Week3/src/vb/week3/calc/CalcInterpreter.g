@@ -58,6 +58,12 @@ expr returns [int val = 0;]
                                   val = x / y;
                                 }
     |   ^(IF c=expr e1=expr e2=expr) { if(c != 0) { val = e1; } else { val = e2; }}
+    |   ^(LESS e1=expr e2=expr) { if(e1 < e2) val = 1; else val = 0; }
+    |   ^(LESSEQ e1=expr e2=expr) { if(e1 <= e2) val = 1; else val = 0; }
+    |   ^(MORE e1=expr e2=expr) { if(e1 > e2) val = 1; else val = 0; }
+    |   ^(MOREEQ e1=expr e2=expr) { if(e1 >= e2) val = 1; else val = 0; }
+    |   ^(EQ e1=expr e2=expr) { if(e1 == e2) val = 1; else val = 0; }
+    |   ^(NEQ e1=expr e2=expr) { if(e1 != e2) val = 1; else val = 0; }
     ;
     
 operand returns [int val = 0]
