@@ -13,6 +13,14 @@ options {
     ASTLabelType=CommonTree;            // AST nodes are of type CommonTree
 }
 
+// Alter code generation so catch-clauses get replaced with this action. 
+// This disables ANTLR error handling: CalcExceptions are propagated upwards.
+@rulecatch { 
+    catch (RecognitionException e) { 
+        throw e; 
+    } 
+}
+
 @header {
 package vb.week3.calc;
 import java.util.Map;
@@ -44,7 +52,9 @@ expr returns [int val = 0;]
     |   ^(PLUS x=expr y=expr)   { val = x + y;  }
     |   ^(MINUS x=expr y=expr)  { val = x - y;  }
     |   ^(TIMES x=expr y=expr)  { val = x * y;  }
-    |   ^(DIVIDE x=expr y=expr) { val = x / y;  }
+    |   ^(DIVIDE x=expr y=expr) { if(y == 0) throw new CalcException("ERROR: Division by zero!");
+                                  val = x / y;
+                                }
     ;
     
 operand returns [int val = 0]
