@@ -4,4 +4,3 @@ var x: integer;
 n := 2+4-1;
 x := n+3+7;
 print(x);
-

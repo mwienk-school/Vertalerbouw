@@ -9,6 +9,8 @@
 //                         -  CalcChecker can now throw a CalcException.
 //      2008.04.22  ruys  Migrated to ANTLR 3.
 package vb.week3.calc;
+import java.io.FileInputStream;
+
 import org.antlr.runtime.*;             // ANTLR runtime library
 import org.antlr.runtime.tree.*;        // For ANTLR's Tree classes
 import org.antlr.stringtemplate.*;      // For the DOTTreeGenerator
@@ -23,6 +25,7 @@ public class Calc {
                             opt_dot             = false,
                             opt_no_checker      = false,
                             opt_no_interpreter  = false;
+    private static String file = null;
     
     public static void parseOptions(String[] args) {
         for (int i=0; i<args.length; i++) {
@@ -34,6 +37,10 @@ public class Calc {
                 opt_no_checker = true;
             else if (args[i].equals("-no_interpreter"))
                 opt_no_interpreter = true;
+            else if (args[i].equals("-file")) {
+            	file = args[i+1];
+            	i++;
+            }
             else {
                 System.err.println("error: unknown option '" + args[i] + "'");
                 System.err.println("valid options: -ast -dot " +
@@ -47,7 +54,7 @@ public class Calc {
         parseOptions(args);
         
         try {
-            CalcLexer lexer = new CalcLexer(new ANTLRInputStream(System.in));
+            CalcLexer lexer = new CalcLexer(new ANTLRInputStream(new FileInputStream(file)));
             TokenStream tokens = new CommonTokenStream(lexer);
             CalcParser parser = new CalcParser(tokens);
             
