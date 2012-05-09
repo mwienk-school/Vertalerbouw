@@ -46,6 +46,7 @@ statement
                 throw new CalcException($id, "is not declared");
         }
     |   ^(PRINT expr)
+    |   ^(SWAP IDENTIFIER IDENTIFIER)
     ;
     
 expr 

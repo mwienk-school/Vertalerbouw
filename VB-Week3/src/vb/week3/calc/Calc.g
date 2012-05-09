@@ -11,6 +11,7 @@ tokens {
     SEMICOLON   =   ';'     ;
     LPAREN      =   '('     ;
     RPAREN      =   ')'     ;
+    COMMA       =   ','     ;
 
     // operators
     BECOMES     =   ':='    ;
@@ -23,6 +24,7 @@ tokens {
     PROGRAM     =   'program'   ;
     VAR         =   'var'       ;
     PRINT       =   'print'     ;
+    SWAP        =   'swap'      ;
     INTEGER     =   'integer'   ;
 }
 
@@ -56,6 +58,7 @@ declaration
 statement
     :   assignment
     |   print_stat
+    |   swap_stat
     ;
 
 assignment
@@ -64,6 +67,10 @@ assignment
 
 print_stat
     :   PRINT^ LPAREN! expr RPAREN!
+    ;
+    
+swap_stat
+    :   SWAP^ LPAREN! IDENTIFIER COMMA! IDENTIFIER RPAREN!
     ;
 
 lvalue
