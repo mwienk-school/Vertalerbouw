@@ -47,8 +47,9 @@ statement
         }
     |   ^(PRINT expr)
     |   ^(SWAP IDENTIFIER IDENTIFIER)
+    |   ^(DO statement+ expr)
     ;
-
+        
 expr 
     :   operand
     |   ^(IF expr expr expr )

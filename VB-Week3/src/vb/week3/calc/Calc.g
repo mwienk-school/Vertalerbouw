@@ -36,6 +36,8 @@ tokens {
     IF          =   'if'        ;
     THEN        =   'then'      ;
     ELSE        =   'else'      ;
+    DO          =   'do'        ;
+    WHILE       =   'while'     ;
 }
 
 @lexer::header {
@@ -65,6 +67,7 @@ statement
     :   assignment
     |   print_stat
     |   swap_stat
+    |   dowhile_stat
     ;
 
 assignment
@@ -86,6 +89,14 @@ print_stat
     
 swap_stat
     :   SWAP^ LPAREN! IDENTIFIER COMMA! IDENTIFIER RPAREN!
+    ;
+    
+dowhile_stat
+    :   DO^ dostmts WHILE! expr
+    ;
+    
+dostmts
+    :   (statement SEMICOLON!)+
     ;
 
 expr

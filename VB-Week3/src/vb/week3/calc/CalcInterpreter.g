@@ -40,14 +40,21 @@ declaration
             { store.put($id.text, 0); } 
     ;
 
-statement 
+statement
+@init { int ix = input.index(); }
     :   ^(BECOMES id=IDENTIFIER v=expr)
             { store.put($id.text, v);       }
     |   ^(PRINT v=expr)
             { System.out.println("" + v);   }            
     |   ^(SWAP id1=IDENTIFIER id2=IDENTIFIER)
             { int temp = store.get($id1.text); store.put($id1.text, store.get($id2.text)); store.put($id2.text, temp); }
+    |   ^(DO statement+ ex=expr)
+            {  if(ex > 0) {
+                 input.rewind(ix);
+               }
+            }
     ;
+
     
 expr returns [int val = 0;] 
     :   z=operand               { val = z;      }

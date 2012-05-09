@@ -7,5 +7,9 @@ z := n+3*7;
 var y: integer;
 x := if 1 then z else n;
 y := 5;
+do 
+  print(y);
+  n:= n-1;
+  while n>0;
 print(y);
 print(x);
