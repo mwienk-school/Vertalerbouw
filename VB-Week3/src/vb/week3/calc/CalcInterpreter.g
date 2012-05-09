@@ -64,6 +64,7 @@ expr returns [int val = 0;]
     |   ^(MOREEQ e1=expr e2=expr) { if(e1 >= e2) val = 1; else val = 0; }
     |   ^(EQ e1=expr e2=expr) { if(e1 == e2) val = 1; else val = 0; }
     |   ^(NEQ e1=expr e2=expr) { if(e1 != e2) val = 1; else val = 0; }
+    |   ^(BECOMES id=IDENTIFIER v=expr) { store.put($id.text, v); val = v; }
     ;
     
 operand returns [int val = 0]

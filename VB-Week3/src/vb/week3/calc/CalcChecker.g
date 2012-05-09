@@ -48,9 +48,13 @@ statement
     |   ^(PRINT expr)
     |   ^(SWAP IDENTIFIER IDENTIFIER)
     ;
-    
+
 expr 
     :   operand
+    |   ^(BECOMES id=IDENTIFIER expr)
+        {   if (!isDeclared($id.text))
+                throw new CalcException($id, "is not declared");
+        }
     |   ^(IF expr expr expr )
     |   ^(PLUS expr expr)
     |   ^(MINUS expr expr)
