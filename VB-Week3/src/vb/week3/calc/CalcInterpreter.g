@@ -45,6 +45,14 @@ statement
             { store.put($id.text, v);       }
     |   ^(PRINT v=expr)
             { System.out.println("" + v);   }
+    |   ^(IF c=expr e1=expr e2=expr) 
+            { if(c == 0) {
+                System.out.println("" + e2);
+              } else {
+                System.out.println("" + e1);
+              }
+            }
+            
     ;
     
 expr returns [int val = 0;] 

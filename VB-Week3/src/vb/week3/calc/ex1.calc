@@ -2,5 +2,6 @@
 var n: integer;
 var x: integer;
 n := 2+4-1;
-x := n+3*7/0;
+if 1-1 then 2 else 4;
+x := n+3*7;
 print(x);

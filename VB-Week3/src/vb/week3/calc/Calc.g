@@ -24,6 +24,9 @@ tokens {
     VAR         =   'var'       ;
     PRINT       =   'print'     ;
     INTEGER     =   'integer'   ;
+    IF          =   'if'        ;
+    THEN        =   'then'      ;
+    ELSE        =   'else'      ;
 }
 
 @lexer::header {
@@ -55,11 +58,16 @@ declaration
     
 statement
     :   assignment
+    |   if_stat
     |   print_stat
     ;
 
 assignment
     :   lvalue BECOMES^ expr
+    ;
+
+if_stat
+    :   IF^ expr THEN! expr ELSE! expr
     ;
 
 print_stat
