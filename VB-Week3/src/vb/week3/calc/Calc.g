@@ -16,6 +16,8 @@ tokens {
     BECOMES     =   ':='    ;
     PLUS        =   '+'     ;
     MINUS       =   '-'     ;
+    TIMES       =   '*'     ;
+    DIVIDE      =   '/'     ;
 
     // keywords
     PROGRAM     =   'program'   ;
@@ -69,9 +71,13 @@ lvalue
     ;
     
 expr
-    :   operand ((PLUS^ | MINUS^) operand )*
+    :   exprtimes ((PLUS^ | MINUS^) exprtimes )*
     ;
-
+    
+exprtimes
+    :   operand ((TIMES^ | DIVIDE^) operand )*
+    ;
+    
 operand
     :   IDENTIFIER
     |   NUMBER

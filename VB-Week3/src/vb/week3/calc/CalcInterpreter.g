@@ -43,6 +43,8 @@ expr returns [int val = 0;]
     :   z=operand               { val = z;      }
     |   ^(PLUS x=expr y=expr)   { val = x + y;  }
     |   ^(MINUS x=expr y=expr)  { val = x - y;  }
+    |   ^(TIMES x=expr y=expr)  { val = x * y;  }
+    |   ^(DIVIDE x=expr y=expr) { val = x / y;  }
     ;
     
 operand returns [int val = 0]

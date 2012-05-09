@@ -52,6 +52,8 @@ expr
     :   operand
     |   ^(PLUS expr expr)
     |   ^(MINUS expr expr)
+    |   ^(TIMES expr expr)
+    |   ^(DIVIDE expr expr)
     ;
     
 operand
