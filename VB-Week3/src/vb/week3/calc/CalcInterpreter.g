@@ -53,6 +53,8 @@ statement
               }
             }
             
+    |   ^(SWAP id1=IDENTIFIER id2=IDENTIFIER)
+            { int temp = store.get($id1.text); store.put($id1.text, store.get($id2.text)); store.put($id2.text, temp); }
     ;
     
 expr returns [int val = 0;] 

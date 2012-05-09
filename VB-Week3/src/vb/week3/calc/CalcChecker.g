@@ -47,6 +47,7 @@ statement
         }
     |   ^(PRINT expr)
     |   ^(IF expr expr expr )
+    |   ^(SWAP IDENTIFIER IDENTIFIER)
     ;
     
 expr 
