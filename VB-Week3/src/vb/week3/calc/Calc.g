@@ -71,7 +71,7 @@ statement
     ;
 
 assignment
-    :   lvalue ^BECOMES rvalue 
+    :   lvalue BECOMES^ rvalue 
     ;
 
 lvalue
@@ -81,7 +81,6 @@ lvalue
 
 rvalue
     :   expr
-//    |   assignment
     ;
 
 print_stat
@@ -93,7 +92,8 @@ swap_stat
     ;
     
 dowhile_stat
-    :   DO^ dostms WHILE! expr
+    :   DO dostms WHILE expr
+        ->  ^(DO expr dostms)
     ;
 
 dostms
@@ -110,11 +110,11 @@ exprrelop
     ;
     
 exprplus
-    :   exprtimes ((PLUS^ | MINUS^) exprtimes )*
+    :   exprtimes ((PLUS^ | MINUS^) exprtimes)*
     ;
     
 exprtimes
-    :   operand ((TIMES^ | DIVIDE^) operand )*
+    :   operand ((TIMES^ | DIVIDE^) operand)*
     ;
     
 exprifelse
@@ -122,7 +122,7 @@ exprifelse
     ;
     
 operand
-    :   IDENTIFIER
+    :   IDENTIFIER (BECOMES^ operand)?
     |   NUMBER
     |   LPAREN! expr RPAREN!
     ;
