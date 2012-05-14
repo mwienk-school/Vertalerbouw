@@ -88,24 +88,39 @@ dostms
     ;
 
 assignment
-    :   IDENTIFIER (BECOMES^ expr)?
+    :   IDENTIFIER BECOMES^ expr
     ;
     
 expr
     :   exprrelop
+    |   IDENTIFIER (BECOMES^ expr | exprreloprighthand^)?
     |   exprif
     ;
     
 exprrelop
-    :   exprplus (options {greedy=true;} : (LESS^ | LESSEQ^ | MORE^ | MOREEQ^ | EQ^ | NEQ^) exprplus)*
+    :   exprplus ((LESS^ | LESSEQ^ | MORE^ | MOREEQ^ | EQ^ | NEQ^) (IDENTIFIER (exprplusrighthand^)? | exprplus))*
+    ;
+
+exprreloprighthand
+    :   ((LESS^ | LESSEQ^ | MORE^ | MOREEQ^ | EQ^ | NEQ^) (IDENTIFIER (exprplusrighthand^)? | exprplus))+
+    |   exprplusrighthand
     ;
     
 exprplus
-    :   exprtimes (options {greedy=true;} : (PLUS^ | MINUS^) exprtimes)*
+    :   exprtimes ((PLUS^ | MINUS^) (IDENTIFIER (exprtimesrighthand^)? | exprtimes))*
+    ;
+    
+exprplusrighthand
+    :   ((PLUS^ | MINUS^) (IDENTIFIER (exprtimesrighthand^)? | exprtimes))+
+    |   exprtimesrighthand
     ;
     
 exprtimes
-    :   operand (options {greedy=true;} : (TIMES^ | DIVIDE^) operand)*
+    :   operand ((TIMES^ | DIVIDE^) operandrighthand)*
+    ;
+    
+exprtimesrighthand
+    :   ((TIMES^ | DIVIDE^) operandrighthand)+
     ;
     
 exprif
@@ -114,8 +129,12 @@ exprif
     
 operand
     :   NUMBER
-    |   (options {greedy=true;} : assignment)
     |   LPAREN! expr RPAREN!
+    ;
+
+operandrighthand
+    :   operand
+    |   IDENTIFIER
     ;
 
 type
