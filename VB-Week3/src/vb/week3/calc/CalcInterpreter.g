@@ -48,7 +48,7 @@ statement
             { System.out.println("" + v);   }            
     |   ^(SWAP id1=IDENTIFIER id2=IDENTIFIER)
             { int temp = store.get($id1.text); store.put($id1.text, store.get($id2.text)); store.put($id2.text, temp); }
-    |   ^(DO statement+ ex=expr)
+    |   ^(DO ex=expr statement+)
             {  if(ex > 0) {
                  input.rewind(ix);
                }
@@ -73,8 +73,11 @@ expr returns [int val = 0;]
     ;
     
 operand returns [int val = 0]
-    :   id=IDENTIFIER   { val = store.get($id.text);       } 
-    |   n=NUMBER        { val = Integer.parseInt($n.text); }
+    :   id=IDENTIFIER                       { val = store.get($id.text);       } 
+//    |   ^(BECOMES id=IDENTIFIER op=operand) { store.put($id.text, op);
+//                                              val = store.get($id.text);       }
+    |   n=NUMBER                            { val = Integer.parseInt($n.text); }
+    |   statement                         
     ;
     
 type

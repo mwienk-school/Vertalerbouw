@@ -70,19 +70,6 @@ statement
     |   dowhile_stat
     ;
 
-assignment
-    :   lvalue BECOMES^ rvalue 
-    ;
-
-lvalue
-    :   IDENTIFIER
-    ;
-    
-
-rvalue
-    :   expr
-    ;
-
 print_stat
     :   PRINT^ LPAREN! expr RPAREN!
     ;
@@ -100,30 +87,34 @@ dostms
     :   (statement SEMICOLON!)+
     ;
 
+assignment
+    :   IDENTIFIER (BECOMES^ expr)?
+    ;
+    
 expr
     :   exprrelop
-    |   exprifelse
+    |   exprif
     ;
     
 exprrelop
-    :   exprplus ((LESS^ | LESSEQ^ | MORE^ | MOREEQ^ | EQ^ | NEQ^) exprplus)*
+    :   exprplus (options {greedy=true;} : (LESS^ | LESSEQ^ | MORE^ | MOREEQ^ | EQ^ | NEQ^) exprplus)*
     ;
     
 exprplus
-    :   exprtimes ((PLUS^ | MINUS^) exprtimes)*
+    :   exprtimes (options {greedy=true;} : (PLUS^ | MINUS^) exprtimes)*
     ;
     
 exprtimes
-    :   operand ((TIMES^ | DIVIDE^) operand)*
+    :   operand (options {greedy=true;} : (TIMES^ | DIVIDE^) operand)*
     ;
     
-exprifelse
+exprif
     :   IF^ expr THEN! expr ELSE! expr
     ;
     
 operand
-    :   IDENTIFIER (BECOMES^ operand)?
-    |   NUMBER
+    :   NUMBER
+    |   (options {greedy=true;} : assignment)
     |   LPAREN! expr RPAREN!
     ;
 

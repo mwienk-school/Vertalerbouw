@@ -85,7 +85,7 @@ public class Calc {
             System.err.print("ERROR: CalcException thrown by compiler: ");
             System.err.println(e.getMessage());
         } catch (RecognitionException e) {
-            System.err.print("ERROR: recognition exception thrown by compiler: ");
+            System.err.print("ERROR: Recognition exception thrown by compiler: ");
             System.err.println(e.getMessage());
             e.printStackTrace();
         } catch (Exception e) { 

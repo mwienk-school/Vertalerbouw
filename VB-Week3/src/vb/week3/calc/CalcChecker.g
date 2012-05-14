@@ -47,11 +47,12 @@ statement
         }
     |   ^(PRINT expr)
     |   ^(SWAP IDENTIFIER IDENTIFIER)
-    |   ^(DO statement+ expr)
+    |   ^(DO expr statement+)
     ;
         
 expr 
     :   operand
+    |   statement
     |   ^(IF expr expr expr )
     |   ^(PLUS expr expr)
     |   ^(MINUS expr expr)
@@ -68,10 +69,6 @@ expr
 operand
     :   id=IDENTIFIER 
         {   if (!isDeclared($id.text))
-                throw new CalcException($id, "is not declared");
-        }
-    |   ^(BECOMES id=IDENTIFIER id2=IDENTIFIER)
-        {   if (!isDeclared($id.text) || !isDeclared($id.text) )
                 throw new CalcException($id, "is not declared");
         }
     |   n=NUMBER 

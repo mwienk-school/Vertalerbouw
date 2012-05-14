@@ -1,0 +1,6 @@
+var i: integer;
+var n: integer;
+
+i:= n:= 1;
+print(i);
+print(n);

@@ -1,7 +1,6 @@
 // [file: easter.calc, version: 12-Apr-2004]
 //
 // Program to compute the day of Easter for 2004-2013.
-
 var sy: integer;
 var ey: integer;
 
