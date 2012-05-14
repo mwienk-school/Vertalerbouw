@@ -71,13 +71,13 @@ statement
     ;
 
 assignment
-    :   expr
+    :   lvalue BECOMES^ expr
     ;
 
-//lvalue
-//    :   IDENTIFIER
-//    ;
-//    
+lvalue
+    :   IDENTIFIER
+    ;
+    
 //rvalue
 //    :   expr
 //    |   assignment
@@ -92,10 +92,10 @@ swap_stat
     ;
     
 dowhile_stat
-    :   DO^ dostmts WHILE! expr
+    :   DO^ dostms WHILE! expr
     ;
-    
-dostmts
+
+dostms
     :   (statement SEMICOLON!)+
     ;
 
