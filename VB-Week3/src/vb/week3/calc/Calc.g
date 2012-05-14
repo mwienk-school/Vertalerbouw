@@ -1,7 +1,7 @@
 grammar Calc;
 
 options {
-    k=1;                                // LL(1) - do not use LL(*)
+    k=2;                                // LL(1) - do not use LL(*)
     language=Java;                      // target language is Java (= default)
     output=AST;                         // build an AST
 }
@@ -50,7 +50,7 @@ package vb.week3.calc;
 
 // Parser rules
 
-program
+program 
     : statements EOF
        ->  ^(PROGRAM statements)
     ;
@@ -71,17 +71,17 @@ statement
     ;
 
 assignment
-    :   expr
+    :   lvalue ^BECOMES rvalue 
     ;
 
-//lvalue
-//    :   IDENTIFIER
-//    ;
-//    
-//rvalue
-//    :   expr
-//    |   assignment
-//    ;
+lvalue
+    :   IDENTIFIER
+    ;
+    
+rvalue
+    :   expr
+    |   assignment
+    ;
 
 print_stat
     :   PRINT^ LPAREN! expr RPAREN!
@@ -121,7 +121,7 @@ exprifelse
     ;
     
 operand
-    :   IDENTIFIER (BECOMES^ IDENTIFIER)* 
+    :   IDENTIFIER
     |   NUMBER
     |   LPAREN! expr RPAREN!
     ;

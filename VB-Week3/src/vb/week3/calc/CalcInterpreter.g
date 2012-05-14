@@ -54,7 +54,6 @@ statement
                }
             }
     ;
-
     
 expr returns [int val = 0;] 
     :   z=operand               { val = z;      }
@@ -76,7 +75,6 @@ expr returns [int val = 0;]
 operand returns [int val = 0]
     :   id=IDENTIFIER   { val = store.get($id.text);       } 
     |   n=NUMBER        { val = Integer.parseInt($n.text); }
-    |   ^(BECOMES id=IDENTIFIER v=expr) { store.put($id.text, v); val = v; }
     ;
     
 type
