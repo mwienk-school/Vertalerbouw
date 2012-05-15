@@ -52,7 +52,6 @@ statement
         
 expr 
     :   operand
-    |   statement
     |   ^(IF expr expr expr )
     |   ^(PLUS expr expr)
     |   ^(MINUS expr expr)
@@ -64,6 +63,7 @@ expr
     |   ^(MOREEQ expr expr)
     |   ^(EQ expr expr)
     |   ^(NEQ expr expr)
+    |   ^(BECOMES IDENTIFIER expr)
     ;
     
 operand

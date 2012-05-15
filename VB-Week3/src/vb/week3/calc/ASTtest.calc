@@ -1,0 +1,18 @@
+var a: integer;
+var b: integer;
+var c: integer;
+var d: integer;
+var e: integer;
+var f: integer;
+var err: integer;
+
+a := 1;
+b := 2;
+c := 3;
+d := 4;
+e := 5;
+f := 6;
+err := a + b + c + d + e + f;
+//err := a * b + c;
+
+print(err);

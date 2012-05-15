@@ -70,14 +70,12 @@ expr returns [int val = 0;]
     |   ^(MOREEQ e1=expr e2=expr) { if(e1 >= e2) val = 1; else val = 0; }
     |   ^(EQ e1=expr e2=expr) { if(e1 == e2) val = 1; else val = 0; }
     |   ^(NEQ e1=expr e2=expr) { if(e1 != e2) val = 1; else val = 0; }
+    |   ^(BECOMES id=IDENTIFIER e1=expr) { store.put($id.text, e1); val = e1; }
     ;
     
 operand returns [int val = 0]
     :   id=IDENTIFIER                       { val = store.get($id.text);       } 
-//    |   ^(BECOMES id=IDENTIFIER op=operand) { store.put($id.text, op);
-//                                              val = store.get($id.text);       }
     |   n=NUMBER                            { val = Integer.parseInt($n.text); }
-    |   statement                           
     ;
     
 type
