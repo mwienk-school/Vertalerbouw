@@ -1,6 +1,7 @@
 // [file: easter.calc, version: 12-Apr-2004]
 //
 // Program to compute the day of Easter for 2004-2013.
+
 var sy: integer;
 var ey: integer;
 
@@ -31,6 +32,7 @@ do
     b := (5*y / 4) - x - 10;
     e := (11*g + 20 + z - x);
     e := e - (e / 30) * 30;             // e MOD 30
+    
     e := if e < 0 then e+30 else e;
     e := if (((e == 25)+(g>11) == 2) + (e==24)) > 0 then e+1 else e;
     d := 44-e;

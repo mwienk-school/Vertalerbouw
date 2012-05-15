@@ -77,7 +77,7 @@ operand returns [int val = 0]
 //    |   ^(BECOMES id=IDENTIFIER op=operand) { store.put($id.text, op);
 //                                              val = store.get($id.text);       }
     |   n=NUMBER                            { val = Integer.parseInt($n.text); }
-    |   statement                         
+    |   statement                           
     ;
     
 type
