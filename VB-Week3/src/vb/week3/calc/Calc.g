@@ -38,6 +38,7 @@ tokens {
     ELSE        =   'else'      ;
     DO          =   'do'        ;
     WHILE       =   'while'     ;
+    OPERAND     =   'operand'   ;
 }
 
 @lexer::header {
@@ -64,10 +65,10 @@ declaration
     ;
     
 statement
-    :   assignment
-    |   print_stat
+    :   print_stat
     |   swap_stat
     |   dowhile_stat
+    |   expr
     ;
 
 print_stat
@@ -86,55 +87,30 @@ dowhile_stat
 dostms
     :   (statement SEMICOLON!)+
     ;
-
-assignment
-    :   IDENTIFIER BECOMES^ expr
-    ;
     
 expr
-    :   exprrelop
-    |   IDENTIFIER (BECOMES^ expr | exprreloprighthand^)?
-    |   exprif
-    ;
-    
-exprrelop
-    :   exprplus ((LESS^ | LESSEQ^ | MORE^ | MOREEQ^ | EQ^ | NEQ^) (IDENTIFIER (exprplusrighthand^)? | exprplus))*
-    ;
-
-exprreloprighthand
-    :   ((LESS^ | LESSEQ^ | MORE^ | MOREEQ^ | EQ^ | NEQ^) (IDENTIFIER (exprplusrighthand^)? | exprplus))+
-    |   exprplusrighthand
-    ;
-    
-exprplus
-    :   exprtimes ((PLUS^ | MINUS^) (IDENTIFIER (exprtimesrighthand^)? | exprtimes))*
-    ;
-    
-exprplusrighthand
-    :   ((PLUS^ | MINUS^) (IDENTIFIER (exprtimesrighthand^)? | exprtimes))+
-    |   exprtimesrighthand
-    ;
-    
-exprtimes
-    :   operand ((TIMES^ | DIVIDE^) operandrighthand)*
-    ;
-    
-exprtimesrighthand
-    :   ((TIMES^ | DIVIDE^) operandrighthand)+
-    ;
-    
-exprif
     :   IF^ expr THEN! expr ELSE! expr
+    |   BECOMES^ expr
+    |   operand exprhigh?
+        -> ^(OPERAND operand exprhigh?)
+    ;
+    
+exprhigh
+    :   (LESS^ | LESSEQ^ | MORE^ | MOREEQ^ | EQ^ | NEQ^)? exprmid
+    ;
+    
+exprmid
+    :   (PLUS^ | MINUS^)? exprlow
+    ;
+    
+exprlow
+    :   (TIMES^ | DIVIDE^)? expr
     ;
     
 operand
-    :   NUMBER
+    :   IDENTIFIER
+    |   NUMBER
     |   LPAREN! expr RPAREN!
-    ;
-
-operandrighthand
-    :   operand
-    |   IDENTIFIER
     ;
 
 type
