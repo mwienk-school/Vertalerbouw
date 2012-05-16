@@ -1,4 +1,4 @@
-grammar decluseGrammar;
+grammar DecluseGrammar;
 
 options {
   language = Java;
@@ -11,6 +11,9 @@ tokens {
     RPAREN      =   ')'     ;
     DECL        =   'D:'    ;
     USE         =   'U:'    ;
+    
+    OPEN        =   'open'  ;
+    CLOSE       =   'close' ;
 }
 @lexer::header {
    package vb.decluse;
@@ -23,7 +26,17 @@ tokens {
 // Parser rules
 
 decluse
-   :  LPAREN! serie RPAREN!
+   :  open serie close
+   ;
+   
+open
+   :  LPAREN
+   -> ^(OPEN LPAREN)
+   ;
+   
+close
+   :  RPAREN
+   -> ^(CLOSE RPAREN)
    ;
    
 serie
@@ -33,7 +46,7 @@ serie
 unit
    :  DECL^ ID
    |  USE^ ID
-   |  LPAREN! serie RPAREN!
+   |  open serie close
    ;
 
 // Lexer rules
