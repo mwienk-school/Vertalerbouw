@@ -31,8 +31,8 @@ serie
    ;
    
 unit
-   :  DECL ID
-   |  USE ID
+   :  DECL^ ID
+   |  USE^ ID
    |  LPAREN! serie RPAREN!
    ;
 
