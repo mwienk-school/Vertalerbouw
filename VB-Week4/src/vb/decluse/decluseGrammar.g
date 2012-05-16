@@ -27,7 +27,7 @@ decluse
    ;
    
 serie
-   :  unit serie?
+   :  unit*
    ;
    
 unit
