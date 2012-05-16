@@ -1,4 +1,4 @@
-package vb.week3.calc;
+package vb.decluse;
 
 import java.io.FileInputStream;
 
@@ -13,9 +13,9 @@ public class ASTtest {
 		RuleReturnScope result = new RuleReturnScope();
 		
 		try {
-			tokens.setTokenSource(new CalcLexer(new ANTLRInputStream(new FileInputStream("src/vb/week3/calc/ASTtest.calc"))));
-			CalcParser jp = new CalcParser(tokens);
-			result = jp.program();
+			tokens.setTokenSource(new DecluseGrammarLexer(new ANTLRInputStream(new FileInputStream("src/vb/week1/symtab/Sample-1.txt"))));
+			DecluseGrammarParser jp = new DecluseGrammarParser(tokens);
+			result = jp.decluse();
 			
 			CommonTree t = (CommonTree) result.getTree();
 			
@@ -23,7 +23,7 @@ public class ASTtest {
 			
 			nodes.setTokenStream(tokens);
 			
-			CalcInterpreter walker = new CalcInterpreter(nodes);
+			DecluseTreeParser walker = new DecluseTreeParser(nodes);
 			
 			System.out.println("\nWalk tree:\n");
 			
@@ -32,10 +32,7 @@ public class ASTtest {
 			
 			System.out.println(tokens.toString());
 			
-		} catch (CalcException e) { 
-            System.err.print("ERROR: CalcException thrown by compiler: ");
-            System.err.println(e.getMessage());
-        } catch (RecognitionException e) {
+		} catch (RecognitionException e) {
             System.err.print("ERROR: Recognition exception thrown by compiler: ");
             System.err.println(e.getMessage());
             e.printStackTrace();
