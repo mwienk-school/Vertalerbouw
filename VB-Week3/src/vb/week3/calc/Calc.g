@@ -38,7 +38,6 @@ tokens {
     ELSE        =   'else'      ;
     DO          =   'do'        ;
     WHILE       =   'while'     ;
-    OPERAND     =   'operand'   ;
 }
 
 @lexer::header {
@@ -65,10 +64,10 @@ declaration
     ;
     
 statement
-    :   print_stat
+    :   assignment
+    |   print_stat
     |   swap_stat
     |   dowhile_stat
-    |   expr
     ;
 
 print_stat
@@ -87,28 +86,39 @@ dowhile_stat
 dostms
     :   (statement SEMICOLON!)+
     ;
+
+assignment
+    :   IDENTIFIER BECOMES^ expr
+    ;
     
 expr
+    :   exprbecomes
+    |   exprif
+    ;
+    
+exprbecomes
+    :   exprrelop (BECOMES^ exprrelop)*
+    ;
+    
+exprrelop
+    :   exprplus ((LESS^ | LESSEQ^ | MORE^ | MOREEQ^ | EQ^ | NEQ^) exprplus)*
+    ;
+    
+exprplus
+    :   exprtimes ((PLUS^ | MINUS^) exprtimes)*
+    ;
+    
+exprtimes
+    :   operand ((TIMES^ | DIVIDE^) operand)*
+    ;
+    
+exprif
     :   IF^ expr THEN! expr ELSE! expr
-    |   BECOMES^ expr
-    |   operand exprhigh?
-    ;
-    
-exprhigh
-    :   (LESS^ | LESSEQ^ | MORE^ | MOREEQ^ | EQ^ | NEQ^)? exprmid
-    ;
-    
-exprmid
-    :   (PLUS^ | MINUS^)? exprlow
-    ;
-    
-exprlow
-    :   (TIMES^ | DIVIDE^)? expr
     ;
     
 operand
-    :   IDENTIFIER
-    |   NUMBER
+    :   NUMBER
+    |   IDENTIFIER
     |   LPAREN! expr RPAREN!
     ;
 
@@ -144,4 +154,3 @@ fragment UPPER  :   ('A'..'Z') ;
 fragment LETTER :   LOWER | UPPER ;
 
 // EOF
-

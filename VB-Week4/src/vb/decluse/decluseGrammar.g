@@ -11,6 +11,8 @@ tokens {
     RPAREN      =   ')'     ;
     DECL        =   'D:'    ;
     USE         =   'U:'    ;
+    OPEN        =   '#Open' ;
+    CLOSE       =   '#Close' ;
 }
 @lexer::header {
    package vb.decluse;
@@ -23,24 +25,34 @@ tokens {
 // Parser rules
 
 decluse
-   :  LPAREN! serie RPAREN!
-   ;
+    :   open serie close
+    ;
    
+open
+    :   LPAREN
+        ->  ^(OPEN)
+    ;
+    
+close
+    :   RPAREN
+        ->  ^(CLOSE)
+    ;
+    
 serie
-   :  unit*
-   ;
+    :   unit*
+    ;
    
 unit
-   :  DECL^ ID
-   |  USE^ ID
-   |  LPAREN! serie RPAREN!
-   ;
+    :   DECL^ ID
+    |   USE^ ID
+    |   open serie close
+    ;
 
 // Lexer rules
 
 ID
-   :  LETTER+
-   ;
+    :   LETTER+
+    ;
 
 WS
     :   (' ' | '\t' | '\f' | '\r' | '\n')+

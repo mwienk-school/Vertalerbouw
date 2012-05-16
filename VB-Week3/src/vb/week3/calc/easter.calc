@@ -44,4 +44,4 @@ do
     print(d);
 
     y := y+1;
-while (y <= ey);
+while (y < ey);

@@ -28,40 +28,42 @@ import java.util.HashSet;
 }
 
 program
-    :   ^(PROGRAM (declaration* statement)+)
+    :   ^(PROGRAM (declaration | statement)+)
     ;
     
 declaration
     :   ^(VAR id=IDENTIFIER type)
-        { if (isDeclared($id.text)) 
-               throw new CalcException($id, "is already declared");
-          else
-               declare($id.getText());
+        {   if (isDeclared($id.text))
+                throw new CalcException($id, "is already declared");
+            else 
+                declare($id.getText()); 
         }
     ;
-    
-statement
-    :   ^(PRINT expr)
+ 
+statement 
+    :   ^(BECOMES id=IDENTIFIER expr)
+        {   if (!isDeclared($id.text))
+                throw new CalcException($id, "is not declared");
+        }
+    |   ^(PRINT expr)
     |   ^(SWAP IDENTIFIER IDENTIFIER)
     |   ^(DO expr statement+)
-    |   expr
     ;
-
         
-expr
-    :   ^(IF expr expr expr)
-    |   ^(BECOMES expr)
-    |   ^(OPERAND operand expr?)   
-    |   ^(PLUS expr)
-    |   ^(MINUS expr)
-    |   ^(TIMES expr)
-    |   ^(DIVIDE expr)
-    |   ^(LESS expr)
-    |   ^(LESSEQ expr)
-    |   ^(MORE expr)
-    |   ^(MOREEQ expr)
-    |   ^(EQ expr)
-    |   ^(NEQ expr)
+expr 
+    :   operand
+    |   ^(IF expr expr expr )
+    |   ^(PLUS expr expr)
+    |   ^(MINUS expr expr)
+    |   ^(TIMES expr expr)
+    |   ^(DIVIDE expr expr)
+    |   ^(LESS expr expr)
+    |   ^(LESSEQ expr expr)
+    |   ^(MORE expr expr)
+    |   ^(MOREEQ expr expr)
+    |   ^(EQ expr expr)
+    |   ^(NEQ expr expr)
+    |   ^(BECOMES id=IDENTIFIER expr)
     ;
     
 operand

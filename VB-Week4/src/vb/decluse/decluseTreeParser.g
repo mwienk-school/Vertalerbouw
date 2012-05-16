@@ -14,6 +14,8 @@ import vb.week1.symtab.*;
 protected SymbolTable<IdEntry> symtab = new SymbolTable<IdEntry>();
 }
 program
-    : ^(DECL ID) 
-    | ^(USE ID)
+    :   ^(DECL ID) 
+    |   ^(USE ID)
+    |   ^(OPEN)
+    |   ^(CLOSE)
     ;
