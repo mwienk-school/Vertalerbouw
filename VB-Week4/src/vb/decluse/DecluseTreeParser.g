@@ -31,24 +31,22 @@ close
     ;
     
 unit
-    :   ^(DECL id=LETTER+) {
+    :   ^(DECL id=ID) {
           try {
             symtab.enter($id.text, new IdEntry());
-            System.out.println("DECLARED");
           } catch (Exception e) {
             System.out.println($id.text + " already declared on the current level");
           }
         }
-    |   ^(USE id=LETTER+)         {
+    |   ^(USE id=ID)         {
               //Retrieve IdEntry from SymbolTable on use
               IdEntry use = symtab.retrieve($id.text);
               System.out.print("U:" + $id.text);
               if(use != null) {
-                System.out.println("declared on level " + use.getLevel());
+                System.out.println(" declared on level " + use.getLevel());
               } else {
                 System.out.println("*undeclared*");
               }
         }
     |   open serie close
-    ;
-    
+    ;    
