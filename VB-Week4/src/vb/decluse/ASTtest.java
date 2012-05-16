@@ -13,7 +13,7 @@ public class ASTtest {
 		RuleReturnScope result = new RuleReturnScope();
 		
 		try {
-			tokens.setTokenSource(new DecluseGrammarLexer(new ANTLRInputStream(new FileInputStream("src/vb/week1/symtab/Sample-1.txt"))));
+			tokens.setTokenSource(new DecluseGrammarLexer(new ANTLRInputStream(new FileInputStream("src/vb/week1/symtab/sample-1.txt"))));
 			DecluseGrammarParser jp = new DecluseGrammarParser(tokens);
 			result = jp.decluse();
 			

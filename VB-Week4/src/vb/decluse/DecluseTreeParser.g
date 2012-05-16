@@ -15,19 +15,11 @@ protected SymbolTable<IdEntry> symtab = new SymbolTable<IdEntry>();
 }
 
 decluse
-    :  open serie close
+    :   ^(SERIE {symtab.openScope(); } serie {symtab.closeScope(); })
     ;
 
 serie
-    :  unit*
-    ;
-    
-open
-    :   ^(OPEN LPAREN)    { symtab.openScope(); }
-    ;
-    
-close
-    :   ^(CLOSE RPAREN)   { symtab.closeScope(); }
+    :   unit*
     ;
     
 unit
@@ -35,7 +27,8 @@ unit
           try {
             symtab.enter($id.text, new IdEntry());
           } catch (Exception e) {
-            System.out.println($id.text + " already declared on the current level");
+            System.out.println($id.text + " already declared on the current level " + symtab.currentLevel());
+            e.printStackTrace();
           }
         }
     |   ^(USE id=ID)         {
@@ -48,5 +41,5 @@ unit
                 System.out.println("*undeclared*");
               }
         }
-    |   open serie close
+    |   ^(SERIE {symtab.openScope(); } serie {symtab.closeScope(); })
     ;    
