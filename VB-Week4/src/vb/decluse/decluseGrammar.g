@@ -1,7 +1,9 @@
-grammar decluseLexer;
+grammar decluseGrammar;
 
 options {
   language = Java;
+  output = AST;
+  k = 1;
 }
 
 tokens {
@@ -10,33 +12,43 @@ tokens {
     DECL        =   'D:'    ;
     USE         =   'U:'    ;
 }
+@lexer::header {
+   package vb.decluse;
+}
+
+@header {
+   package vb.decluse;
+}
+
+// Parser rules
 
 decluse
-   : LPAREN! serie RPAREN!
+   :  LPAREN! serie RPAREN!
    ;
    
 serie
-   : unit serie?
+   :  unit serie?
    ;
    
 unit
-   : decl
-   | use
-   | LPAREN! serie RPAREN!
-   ;
-   
-decl
-   : DECL id
-   ;
-   
-use
-   : USE id
+   :  DECL ID
+   |  USE ID
+   |  LPAREN! serie RPAREN!
    ;
 
-id
-   : LETTER id?
+// Lexer rules
+
+ID
+   :  LETTER+
    ;
-   
-fragment LETTER :   LOWER | UPPER ;
+
+WS
+    :   (' ' | '\t' | '\f' | '\r' | '\n')+
+            { $channel=HIDDEN; }
+    ;
+
 fragment LOWER  :   ('a'..'z') ;
-fragment UPPER  :   ('A'..'Z') ;
+fragment UPPER  :   ('A'..'Z') ;  
+fragment LETTER :   LOWER | UPPER ;
+
+// EOF
