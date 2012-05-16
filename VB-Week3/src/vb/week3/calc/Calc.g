@@ -92,7 +92,6 @@ expr
     :   IF^ expr THEN! expr ELSE! expr
     |   BECOMES^ expr
     |   operand exprhigh?
-        -> ^(OPERAND operand exprhigh?)
     ;
     
 exprhigh

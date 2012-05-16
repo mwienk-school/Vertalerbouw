@@ -29,7 +29,6 @@ import java.util.HashMap;
 
 @members { 
     private Map<String,Integer> store = new HashMap<String,Integer>(); 
-    private int temp;  
 }
 
 program
@@ -60,20 +59,16 @@ statement
     
 expr returns [int val = 0;]
     :   ^(IF c=expr e1=expr e2=expr) { if(c != 0) { val = e1; } else { val = e2; }}
-    |   ^(BECOMES e1=expr)           { val = e1;}
-    |   ^(OPERAND o=operand)         { val = o; }
-    |   ^(OPERAND id=IDENTIFIER e1=expr) { temp = 0;
-                                           store.put($id.text, e1); 
+    |   ^(BECOMES e1=expr)               { val = e1;}
+    |   ^(OPERAND o=operand)             { val = o; }
+    |   ^(OPERAND id=IDENTIFIER e1=expr) { store.put($id.text, e1); 
                                            val = e1; }
-    |   ^(OPERAND n=NUMBER e1=expr) {  System.out.println(temp);
-                                       val = e1;}
-    |   ^(PLUS e1=expr)      { val = temp + e1; 
-    System.out.println(temp);
-     }
-    |   ^(MINUS e1=expr)     { val = temp - e1;  }
-    |   ^(TIMES e1=expr)     { val = temp * e1;  }
+    |   ^(OPERAND n=NUMBER e1=expr)      {  val = e1;}
+    |   ^(PLUS e1=expr)                  { val = e1; }
+    |   ^(MINUS e1=expr)     { val = e1;  }
+    |   ^(TIMES e1=expr)     { val = e1;  }
     |   ^(DIVIDE e1=expr)    { if(e2 == 0) throw new CalcException("ERROR: Division by zero!");
-                                       val = e1 / e2;    }
+                               val = e1 / e2; }
     |   ^(LESS e1=expr)      { if(e1 < e2)  val = 1; else val = 0; }
     |   ^(LESSEQ e1=expr)    { if(e1 <= e2) val = 1; else val = 0; }
     |   ^(MORE e1=expr)      { if(e1 > e2)  val = 1; else val = 0; }

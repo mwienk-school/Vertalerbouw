@@ -13,7 +13,7 @@ public class ASTtest {
 		RuleReturnScope result = new RuleReturnScope();
 		
 		try {
-			tokens.setTokenSource(new CalcLexer(new ANTLRInputStream(new FileInputStream("src/vb/week3/calc/dowhile.calc"))));
+			tokens.setTokenSource(new CalcLexer(new ANTLRInputStream(new FileInputStream("src/vb/week3/calc/ASTtest.calc"))));
 			CalcParser jp = new CalcParser(tokens);
 			result = jp.program();
 			
