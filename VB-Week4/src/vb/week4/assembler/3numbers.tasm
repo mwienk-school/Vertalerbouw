@@ -2,21 +2,25 @@
 ; TAM Assembler program which reads two numbers and prints 'Y' if
 ; the two numbers are equal and prints 'N' if the numbers are not equal.
 
-        PUSH        2          ; reserve space for the 2 numbers
+        PUSH        2          ; reserve space for the 3 numbers
         LOADA       0[SB]      ; address of n0: 0[SB]
         CALL        getint     ; read number into n0
         LOADA       1[SB]      ; address of n1: 1[SB]
         CALL        getint     ; read number into n1
         LOAD(1)     0[SB]      ; load number n0
         LOAD(1)     1[SB]      ; load number n1
-        LOADL       1          ; size of the arguments is 1 
-        CALL        eq         ; n0 == n1 ?
-        JUMPIF(0)   L1[CB]     ; if !(n0 == n1) then goto L1
-        LOADL       89         ; load 'Y' on the stack
-        CALL        put        ; print 'Y'
-        JUMP        L2[CB]     ; jump over 'N' part.
-L1:     LOADL       78         ; load 'N' on the stack
-        CALL        put        ; print 'N'
-L2:     POP(0)      2          ; pops the 2 numbers
-        HALT
-
+        CALL		lt         ; n0 < n1 ?
+        JUMPIF(1)	L1[CB]     ; if (n0 < n1) goto L1
+        LOAD(1)     1[SB]      ; load n1
+        STORE(1)    0[SB]      ; move n1 into n0
+L1:     LOADA       1[SB]      ; address of n1: 1[SB]
+        CALL        getint     ; read number into n1
+        LOAD(1)     0[SB]      ; load number n0
+        LOAD(1)     1[SB]      ; load number n1
+        CALL		lt         ; n0 < n1 ?
+        JUMPIF(1)	L1[CB]     ; if (n0 < n1) goto L2
+        LOAD(1)     1[SB]      ; load n1
+        STORE(1)    0[SB]      ; move n1 into n0
+L2:     LOAD(1)     0[SB]      ; load n0
+        CALL        putint     ; print n0
+        
