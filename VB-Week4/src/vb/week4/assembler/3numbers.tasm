@@ -1,8 +1,8 @@
 ; [file: eqtest.tasm, started: 13-Apr-2003, version: 16-Apr-2004]
-; TAM Assembler program which reads two numbers and prints 'Y' if
-; the two numbers are equal and prints 'N' if the numbers are not equal.
+; TAM Assembler program which reads three numbers and prints the
+; lowest valued one.
 
-        PUSH        2          ; reserve space for the 3 numbers
+        PUSH        2          ; reserve space for 2 numbers
         LOADA       0[SB]      ; address of n0: 0[SB]
         CALL        getint     ; read number into n0
         LOADA       1[SB]      ; address of n1: 1[SB]
@@ -18,9 +18,10 @@ L1:     LOADA       1[SB]      ; address of n1: 1[SB]
         LOAD(1)     0[SB]      ; load number n0
         LOAD(1)     1[SB]      ; load number n1
         CALL		lt         ; n0 < n1 ?
-        JUMPIF(1)	L1[CB]     ; if (n0 < n1) goto L2
+        JUMPIF(1)	L2[CB]     ; if (n0 < n1) goto L2
         LOAD(1)     1[SB]      ; load n1
         STORE(1)    0[SB]      ; move n1 into n0
 L2:     LOAD(1)     0[SB]      ; load n0
         CALL        putint     ; print n0
-        
+        POP(0)      2          ; pops the 2 numbers
+        HALT
