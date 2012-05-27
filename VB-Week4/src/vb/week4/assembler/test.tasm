@@ -2,13 +2,21 @@
 	         LOAD(1)     0[SB] ;
 	         PUSH            1 ;
 	         LOAD(1)     1[SB] ;
-	         LOADL           2 ;
+	         LOADL           8 ;
 	         STORE(1)    1[SB] ;
 	         LOAD(1)     1[SB] ;
 	         LOADL           3 ;
 	         CALL          add ;
 	         STORE(1)    0[SB] ;
 	         LOAD(1)     0[SB] ;
+	         LOAD(1)     1[SB] ;
+	         CALL         mult ;
+	         LOADL           1 ;
+	         CALL          sub ;
+	         STORE(1)    1[SB] ;
+	         LOAD(1)     0[SB] ;
+	         CALL       putint ;
+	         LOAD(1)     1[SB] ;
 	         CALL       putint ;
 	         POP(0)          2 ;
 	         HALT              

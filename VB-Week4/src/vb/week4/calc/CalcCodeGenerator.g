@@ -51,6 +51,8 @@ statement
 expr
     :    z=operand               {  }
     |    ^(PLUS x=expr y=expr)   { printTAM("CALL", "add");  }
+    |    ^(MINUS x=expr y=expr)  { printTAM("CALL", "sub");  }
+    |    ^(TIMES x=expr y=expr)  { printTAM("CALL", "mult");  }
     ;
 
 operand returns [int val = 0]

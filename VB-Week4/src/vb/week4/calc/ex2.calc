@@ -1,6 +1,8 @@
 // ex2.calc -- error: n is not declared
 var x: integer;
 var y: integer;
-y := 2;
+y := 8;
 x := y+3;
+y := x*y-1;
 print(x);
+print(y);
