@@ -2,7 +2,7 @@
 var x: integer;
 var y: integer;
 y := 8;
-x := y+3;
-y := x*y-1;
+x := if y < 7 then y else 10;
+swap(x,y);
 print(x);
 print(y);
