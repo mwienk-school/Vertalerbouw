@@ -1,0 +1,5 @@
+var i : integer;
+var b : integer;
+i := 10+2;
+print(i);
+print(b);
