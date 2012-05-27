@@ -50,13 +50,13 @@ public class SymbolTable<Entry extends IdEntry> {
 	 *             when there is no valid current scope level, or when the id is
 	 *             already declared on the current level.
 	 */
-	public void enter(String id, Entry entry) throws SymbolTableException {
+	public void enter(String id, Entry entry) throws SymbolTableAltException {
 		if (this.currentLevel() > -1
 				&& !symbolMapList.get(this.currentLevel()).containsKey(id)) {
 			entry.setLevel(this.currentLevel());
 			symbolMapList.get(this.currentLevel()).put(id, entry);
 		} else {
-			throw new SymbolTableException("");
+			throw new SymbolTableAltException("");
 		}
 	}
 
@@ -78,11 +78,11 @@ public class SymbolTable<Entry extends IdEntry> {
 }
 
 /** Exception class to signal problems with the SymbolTable */
-class SymbolTableException extends Exception {
+class SymbolTableAltException extends Exception {
 	/** {@link serialVersionUID} is required for Serializable */
 	public static final long serialVersionUID = 24362462L;
 
-	public SymbolTableException(String msg) {
+	public SymbolTableAltException(String msg) {
 		super(msg);
 	}
 }
