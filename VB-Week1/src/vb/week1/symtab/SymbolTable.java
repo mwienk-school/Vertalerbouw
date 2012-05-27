@@ -4,7 +4,7 @@ import java.util.*;
 
 public class SymbolTable<Entry extends IdEntry> {
 
-	protected ArrayList<HashMap<String, Entry>> symbolMapList;
+	protected Stack<HashMap<String, Entry>> symbolMapStack;
 
 	/**
 	 * Constructor.
@@ -12,7 +12,7 @@ public class SymbolTable<Entry extends IdEntry> {
 	 * @ensures this.currentLevel() == -1
 	 */
 	public SymbolTable() {
-		symbolMapList = new ArrayList<HashMap<String, Entry>>();
+		symbolMapStack = new Stack<HashMap<String, Entry>>();
 	}
 
 	/**
@@ -21,7 +21,7 @@ public class SymbolTable<Entry extends IdEntry> {
 	 * @ensures this.currentLevel() == old.currentLevel()+1;
 	 */
 	public void openScope() {
-		symbolMapList.add(new HashMap<String, Entry>());
+		symbolMapStack.push(new HashMap<String, Entry>());
 	}
 
 	/**
@@ -32,12 +32,12 @@ public class SymbolTable<Entry extends IdEntry> {
 	 * @ensures this.currentLevel() == old.currentLevel()-1;
 	 */
 	public void closeScope() {
-		symbolMapList.remove(this.currentLevel());
+		symbolMapStack.pop();
 	}
 
 	/** Returns the current scope level. */
 	public int currentLevel() {
-		return symbolMapList.size() - 1;
+		return symbolMapStack.size() - 1;
 	}
 
 	/**
@@ -52,9 +52,9 @@ public class SymbolTable<Entry extends IdEntry> {
 	 */
 	public void enter(String id, Entry entry) throws SymbolTableException {
 		if (this.currentLevel() > -1
-				&& !symbolMapList.get(this.currentLevel()).containsKey(id)) {
+				&& !symbolMapStack.peek().containsKey(id)) {
 			entry.setLevel(this.currentLevel());
-			symbolMapList.get(this.currentLevel()).put(id, entry);
+			symbolMapStack.peek().put(id, entry);
 		} else {
 			throw new SymbolTableException("");
 		}
@@ -68,12 +68,23 @@ public class SymbolTable<Entry extends IdEntry> {
 	 *         does not contain id
 	 */
 	public Entry retrieve(String id) {
+		Stack<HashMap<String, Entry>> tempStack = new Stack<HashMap<String, Entry>>();
 		for (int i = this.currentLevel(); i > -1; i--) {
-			HashMap<String, Entry> tempHM = symbolMapList.get(i);
-			if (tempHM.containsKey(id))
+			HashMap<String, Entry> tempHM = symbolMapStack.pop();
+			tempStack.push(tempHM);
+			if (tempHM.containsKey(id)) {
+				stackBack(tempStack);
 				return tempHM.get(id);
+			}	
 		}
+		stackBack(tempStack);
 		return null;
+	}
+	
+	private void stackBack(Stack<HashMap<String, Entry>> s) {
+		while(!s.empty()) {
+			symbolMapStack.push(s.pop());
+		}
 	}
 }
 

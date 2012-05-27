@@ -12,9 +12,6 @@ tokens {
     DECL        =   'D:'    ;
     USE         =   'U:'    ;
     
-    OPEN        =   'open'  ;
-    CLOSE       =   'close' ;
-    
     SERIE       =   '#serie';
 }
 @lexer::header {
