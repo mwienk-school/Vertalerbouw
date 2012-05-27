@@ -13,6 +13,7 @@ import java.util.HashMap;
 @members {
   private int size = 0;
   private String nextLabel = "";
+  private int labelNumber = 0;
   private HashMap<String, String> vars = new HashMap<String, String>();
   private void printTAM(String lbl, String cmd, String arg) {
     if(!lbl.equals("") && lbl != null) lbl = lbl + ":";
@@ -46,7 +47,8 @@ statement
     :   ^(BECOMES id=IDENTIFIER v=expr)
             { printTAM("STORE(1)", vars.get($id.text)); }
     |   ^(PRINT v=expr)
-            { printTAM("CALL", "putint"); }            
+            { printTAM("CALL", "putint"); 
+              printTAM("CALL", "puteol"); }            
     |   ^(SWAP id1=IDENTIFIER id2=IDENTIFIER)
             { printTAM("PUSH", "1");
               printTAM("LOAD(1)", vars.get($id1.text));
@@ -57,8 +59,11 @@ statement
               printTAM("STORE(1)", vars.get($id2.text));
               printTAM("POP(1)", "1"); 
             }
-    |   ^(DO ex=expr statement+)
-            { }
+    |   ^(DO { int thisLabelNo = labelNumber++; 
+              if(nextLabel.equals("")) nextLabel = "Start" + thisLabelNo;
+               String startLabel = nextLabel; } 
+             ex=expr    { printTAM("JUMPIF(0)", "End" + thisLabelNo + "[CB]"); }
+             statement+ { printTAM("JUMP", startLabel + "[CB]"); nextLabel = "End" + thisLabelNo; } ) 
     ;
     
 expr
@@ -71,12 +76,15 @@ expr
     |    ^(LESSEQ e1=expr e2=expr){ printTAM("CALL", "le"); }
     |    ^(MORE e1=expr e2=expr)  { printTAM("CALL", "gt"); }
     |    ^(MOREEQ e1=expr e2=expr){ printTAM("CALL", "ge"); }
-    |    ^(EQ e1=expr e2=expr)    { printTAM("CALL", "eq"); }
-    |    ^(NEQ e1=expr e2=expr)   { printTAM("CALL", "ne"); }
+    |    ^(EQ e1=expr e2=expr)    { printTAM("LOADL", "1");
+                                    printTAM("CALL", "eq"); }
+    |    ^(NEQ e1=expr e2=expr)   { printTAM("LOADL", "1");
+                                    printTAM("CALL", "ne"); }
     |    ^(BECOMES id=IDENTIFIER e1=expr) { printTAM("STORE(1)", vars.get($id.text)); }
-    |    ^(IF c=expr  { printTAM("JUMPIF(0)", "Lelse[CB]"); } 
-              e1=expr { printTAM("JUMP", "Lend[CB]"); nextLabel ="Lelse"; }
-              e2=expr ) { nextLabel = "Lend"; }
+    |    ^(IF c=expr  { int thisLabelNo = labelNumber++;
+                        printTAM("JUMPIF(0)", "Else" + thisLabelNo + "[CB]"); } 
+              e1=expr { printTAM("JUMP", "End" + thisLabelNo + "[CB]"); nextLabel ="Else" + thisLabelNo; }
+              e2=expr ) { nextLabel = "End" + thisLabelNo; }
     ;
 
 operand returns [int val = 0]

@@ -1,7 +1,7 @@
 // Program to compute the day of Easter for 2012-2021.
 
-var sy: integer;
-var ey: integer;
+var sy: integer;  //0[SB]
+var ey: integer;  //1[SB]
 
 sy:=2012;                               // start year
 ey:=2021;                               // end year
@@ -9,18 +9,18 @@ ey:=2021;                               // end year
 swap(sy,ey);                            // test swap
 swap(ey,sy);
 
-var y: integer;                         // year
-var m: integer;                         // month
-var d: integer;                         // day
+var y: integer;   //2[SB]                      // year
+var m: integer;   //3[SB]                      // month
+var d: integer;   //4[SB]                      // day
 
 y:=sy;
 
-var g: integer;
-var c: integer;
-var x: integer;
-var z: integer;
-var b: integer;
-var e: integer;
+var g: integer;   //5[SB]
+var c: integer;   //6[SB]
+var x: integer;   //7[SB]
+var z: integer;   //8[SB]
+var b: integer;   //9[SB]
+var e: integer;   //10[SB]
 
 do
     g := (y - ((y / 19) * 19)) + 1;     // y MOD 19 + 1

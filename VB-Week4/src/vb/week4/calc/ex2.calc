@@ -3,6 +3,10 @@ var x: integer;
 var y: integer;
 y := 8;
 x := if y < 7 then y else 10;
+do 
+y := y - 1;
+x := x + 1;
+while (y > 0);
 swap(x,y);
 print(x);
 print(y);

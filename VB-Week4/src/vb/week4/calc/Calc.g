@@ -80,7 +80,7 @@ swap_stat
     
 dowhile_stat
     :   DO dostms WHILE expr
-        ->  ^(DO expr dostms)
+    ->  ^(DO expr dostms)
     ;
 
 dostms
