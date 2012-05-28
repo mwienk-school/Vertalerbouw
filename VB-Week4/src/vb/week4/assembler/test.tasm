@@ -1,211 +1,372 @@
-	          PUSH              1 ;
-	          LOAD(1)       0[SB] ;
-	          PUSH              1 ;
-	          LOAD(1)       1[SB] ;
-	          LOADL          2012 ;
-	          STORE(1)      0[SB] ;
-	          LOADL          2021 ;
-	          STORE(1)      1[SB] ;
-	          PUSH              1 ;
-	          LOAD(1)       0[SB] ;
-	          STORE(1)      2[SB] ;
-	          LOAD(1)       1[SB] ;
-	          STORE(1)      0[SB] ;
-	          LOAD(1)       2[SB] ;
-	          STORE(1)      1[SB] ;
-	          POP(1)            1 ;
-	          PUSH              1 ;
-	          LOAD(1)       1[SB] ;
-	          STORE(1)      2[SB] ;
-	          LOAD(1)       0[SB] ;
-	          STORE(1)      1[SB] ;
-	          LOAD(1)       2[SB] ;
-	          STORE(1)      0[SB] ;
-	          POP(1)            1 ;
-	          PUSH              1 ;
-	          LOAD(1)       2[SB] ;
-	          PUSH              1 ;
-	          LOAD(1)       3[SB] ;
-	          PUSH              1 ;
-	          LOAD(1)       4[SB] ;
-	          LOAD(1)       0[SB] ;
-	          STORE(1)      2[SB] ;
-	          PUSH              1 ;
-	          LOAD(1)       5[SB] ;
-	          PUSH              1 ;
-	          LOAD(1)       6[SB] ;
-	          PUSH              1 ;
-	          LOAD(1)       7[SB] ;
-	          PUSH              1 ;
-	          LOAD(1)       8[SB] ;
-	          PUSH              1 ;
-	          LOAD(1)       9[SB] ;
-	          PUSH              1 ;
-	          LOAD(1)      10[SB] ;
-	Start0:   LOAD(1)       2[SB] ;
-	          LOAD(1)       1[SB] ;
-	          CALL             lt ;
-	          JUMPIF(0)  End0[CB] ;
-	          LOAD(1)       2[SB] ;
-	          LOAD(1)       2[SB] ;
-	          LOADL            19 ;
-	          CALL            div ;
-	          LOADL            19 ;
-	          CALL           mult ;
-	          CALL            sub ;
-	          LOADL             1 ;
-	          CALL            add ;
-	          STORE(1)      5[SB] ;
-	          LOAD(1)       2[SB] ;
-	          LOADL           100 ;
-	          CALL            div ;
-	          LOADL             1 ;
-	          CALL            add ;
-	          STORE(1)      6[SB] ;
-	          STORE(1)      7[SB] ;
-	          LOADL             3 ;
-	          LOAD(1)       7[SB] ;
-	          CALL           mult ;
-	          LOADL             4 ;
-	          CALL            div ;
-	          LOADL            12 ;
-	          CALL            sub ;
-	          STORE(1)      7[SB] ;
-	          LOADL             8 ;
-	          LOAD(1)       6[SB] ;
-	          CALL           mult ;
-	          LOADL             5 ;
-	          CALL            add ;
-	          LOADL            25 ;
-	          CALL            div ;
-	          LOADL             5 ;
-	          CALL            sub ;
-	          STORE(1)      8[SB] ;
-	          LOADL             5 ;
-	          LOAD(1)       2[SB] ;
-	          CALL           mult ;
-	          LOADL             4 ;
-	          CALL            div ;
-	          LOAD(1)       7[SB] ;
-	          CALL            sub ;
-	          LOADL            10 ;
-	          CALL            sub ;
-	          STORE(1)      9[SB] ;
-	          LOADL            11 ;
-	          LOAD(1)       5[SB] ;
-	          CALL           mult ;
-	          LOADL            20 ;
-	          CALL            add ;
-	          LOAD(1)       8[SB] ;
-	          CALL            add ;
-	          LOAD(1)       7[SB] ;
-	          CALL            sub ;
-	          STORE(1)     10[SB] ;
-	          LOAD(1)      10[SB] ;
-	          LOAD(1)      10[SB] ;
-	          LOADL            30 ;
-	          CALL            div ;
-	          LOADL            30 ;
-	          CALL           mult ;
-	          CALL            sub ;
-	          STORE(1)     10[SB] ;
-	          LOAD(1)      10[SB] ;
-	          LOADL             0 ;
-	          CALL             lt ;
-	          JUMPIF(0) Else1[CB] ;
-	          LOAD(1)      10[SB] ;
-	          LOADL            30 ;
-	          CALL            add ;
-	          JUMP       End1[CB] ;
-	Else1:    LOAD(1)      10[SB] ;
-	End1:     STORE(1)     10[SB] ;
-	          LOAD(1)      10[SB] ;
-	          LOADL            25 ;
-	          LOADL             1 ;
-	          CALL             eq ;
-	          LOAD(1)       5[SB] ;
-	          LOADL            11 ;
-	          CALL             gt ;
-	          CALL            add ;
-	          LOADL             2 ;
-	          LOADL             1 ;
-	          CALL             eq ;
-	          LOAD(1)      10[SB] ;
-	          LOADL            24 ;
-	          LOADL             1 ;
-	          CALL             eq ;
-	          CALL            add ;
-	          LOADL             0 ;
-	          CALL             gt ;
-	          JUMPIF(0) Else2[CB] ;
-	          LOAD(1)      10[SB] ;
-	          LOADL             1 ;
-	          CALL            add ;
-	          JUMP       End2[CB] ;
-	Else2:    LOAD(1)      10[SB] ;
-	End2:     STORE(1)     10[SB] ;
-	          LOADL            44 ;
-	          LOAD(1)      10[SB] ;
-	          CALL            sub ;
-	          STORE(1)      4[SB] ;
-	          LOAD(1)       4[SB] ;
-	          LOADL            21 ;
-	          CALL             lt ;
-	          JUMPIF(0) Else3[CB] ;
-	          LOAD(1)       4[SB] ;
-	          LOADL            30 ;
-	          CALL            add ;
-	          JUMP       End3[CB] ;
-	Else3:    LOAD(1)       4[SB] ;
-	End3:     STORE(1)      4[SB] ;
-	          LOAD(1)       4[SB] ;
-	          LOADL             7 ;
-	          CALL            add ;
-	          LOAD(1)       9[SB] ;
-	          LOAD(1)       4[SB] ;
-	          CALL            add ;
-	          LOAD(1)       9[SB] ;
-	          LOAD(1)       4[SB] ;
-	          CALL            add ;
-	          LOADL             7 ;
-	          CALL            div ;
-	          LOADL             7 ;
-	          CALL           mult ;
-	          CALL            sub ;
-	          CALL            sub ;
-	          STORE(1)      4[SB] ;
-	          LOAD(1)       4[SB] ;
-	          LOADL            31 ;
-	          CALL             gt ;
-	          JUMPIF(0) Else4[CB] ;
-	          LOADL             4 ;
-	          JUMP       End4[CB] ;
-	Else4:    LOADL             3 ;
-	End4:     STORE(1)      3[SB] ;
-	          LOAD(1)       4[SB] ;
-	          LOADL            31 ;
-	          CALL             gt ;
-	          JUMPIF(0) Else5[CB] ;
-	          LOAD(1)       4[SB] ;
-	          LOADL            31 ;
-	          CALL            sub ;
-	          JUMP       End5[CB] ;
-	Else5:    LOAD(1)       4[SB] ;
-	End5:     STORE(1)      4[SB] ;
-	          LOAD(1)       2[SB] ;
-	          CALL         putint ;
-	          CALL         puteol ;
-	          LOAD(1)       3[SB] ;
-	          CALL         putint ;
-	          CALL         puteol ;
-	          LOAD(1)       4[SB] ;
-	          CALL         putint ;
-	          CALL         puteol ;
-	          LOAD(1)       2[SB] ;
-	          LOADL             1 ;
-	          CALL            add ;
-	          STORE(1)      2[SB] ;
-	          JUMP      Start0[CB] ;
-	End0:     POP(0)           11 ;
-	          HALT                
+          PUSH              1 ; Push variable sy
 
+          PUSH              1 ; Push variable ey
+
+          LOADL          2012 ; Load int literal 2012
+
+          STORE(1)      0[SB] ; Store in variable sy
+
+          LOADL          2021 ; Load int literal 2021
+
+          STORE(1)      1[SB] ; Store in variable ey
+
+          PUSH              1 ; Push temporary variable
+          LOAD(1)       0[SB] ; Load variable sy
+          STORE(1)      2[SB] ; Store in temporary variable
+          LOAD(1)       1[SB] ; Load variable ey
+          STORE(1)      0[SB] ; Store in variable sy
+          LOAD(1)       2[SB] ; Load temporary variable
+          STORE(1)      1[SB] ; Store in variable ey
+          POP(0)            1 ; Pop temporary variable
+
+          PUSH              1 ; Push temporary variable
+          LOAD(1)       1[SB] ; Load variable ey
+          STORE(1)      2[SB] ; Store in temporary variable
+          LOAD(1)       0[SB] ; Load variable sy
+          STORE(1)      1[SB] ; Store in variable ey
+          LOAD(1)       2[SB] ; Load temporary variable
+          STORE(1)      0[SB] ; Store in variable sy
+          POP(0)            1 ; Pop temporary variable
+
+          PUSH              1 ; Push variable y
+
+          PUSH              1 ; Push variable m
+
+          PUSH              1 ; Push variable d
+
+          LOAD(1)       0[SB] ; Load variable sy
+
+          STORE(1)      2[SB] ; Store in variable y
+
+          PUSH              1 ; Push variable g
+
+          PUSH              1 ; Push variable c
+
+          PUSH              1 ; Push variable x
+
+          PUSH              1 ; Push variable z
+
+          PUSH              1 ; Push variable b
+
+          PUSH              1 ; Push variable e
+
+          JUMP        Do0[CB] ; Jump to DO-body
+While0:   LOAD(1)       2[SB] ; Load variable y
+
+          LOAD(1)       1[SB] ; Load variable ey
+
+          CALL             lt ; Lesser than
+
+          JUMPIF(0)  End0[CB] ; Jump past DO-body
+Do0:      LOAD(1)       2[SB] ; Load variable y
+
+          LOAD(1)       2[SB] ; Load variable y
+
+          LOADL            19 ; Load int literal 19
+
+          CALL            div ; Division
+
+          LOADL            19 ; Load int literal 19
+
+          CALL           mult ; Multiplication
+
+          CALL            sub ; Subtraction
+
+          LOADL             1 ; Load int literal 1
+
+          CALL            add ; Addition
+
+          STORE(1)      5[SB] ; Store in variable g
+
+          LOAD(1)       2[SB] ; Load variable y
+
+          LOADL           100 ; Load int literal 100
+
+          CALL            div ; Division
+
+          LOADL             1 ; Load int literal 1
+
+          CALL            add ; Addition
+
+          STORE(1)      6[SB] ; Store in variable c
+          LOAD(1)       6[SB] ; Load variable c
+
+          STORE(1)      7[SB] ; Store in variable x
+
+          LOADL             3 ; Load int literal 3
+
+          LOAD(1)       7[SB] ; Load variable x
+
+          CALL           mult ; Multiplication
+
+          LOADL             4 ; Load int literal 4
+
+          CALL            div ; Division
+
+          LOADL            12 ; Load int literal 12
+
+          CALL            sub ; Subtraction
+
+          STORE(1)      7[SB] ; Store in variable x
+
+          LOADL             8 ; Load int literal 8
+
+          LOAD(1)       6[SB] ; Load variable c
+
+          CALL           mult ; Multiplication
+
+          LOADL             5 ; Load int literal 5
+
+          CALL            add ; Addition
+
+          LOADL            25 ; Load int literal 25
+
+          CALL            div ; Division
+
+          LOADL             5 ; Load int literal 5
+
+          CALL            sub ; Subtraction
+
+          STORE(1)      8[SB] ; Store in variable z
+
+          LOADL             5 ; Load int literal 5
+
+          LOAD(1)       2[SB] ; Load variable y
+
+          CALL           mult ; Multiplication
+
+          LOADL             4 ; Load int literal 4
+
+          CALL            div ; Division
+
+          LOAD(1)       7[SB] ; Load variable x
+
+          CALL            sub ; Subtraction
+
+          LOADL            10 ; Load int literal 10
+
+          CALL            sub ; Subtraction
+
+          STORE(1)      9[SB] ; Store in variable b
+
+          LOADL            11 ; Load int literal 11
+
+          LOAD(1)       5[SB] ; Load variable g
+
+          CALL           mult ; Multiplication
+
+          LOADL            20 ; Load int literal 20
+
+          CALL            add ; Addition
+
+          LOAD(1)       8[SB] ; Load variable z
+
+          CALL            add ; Addition
+
+          LOAD(1)       7[SB] ; Load variable x
+
+          CALL            sub ; Subtraction
+
+          STORE(1)     10[SB] ; Store in variable e
+
+          LOAD(1)      10[SB] ; Load variable e
+
+          LOAD(1)      10[SB] ; Load variable e
+
+          LOADL            30 ; Load int literal 30
+
+          CALL            div ; Division
+
+          LOADL            30 ; Load int literal 30
+
+          CALL           mult ; Multiplication
+
+          CALL            sub ; Subtraction
+
+          STORE(1)     10[SB] ; Store in variable e
+
+          LOAD(1)      10[SB] ; Load variable e
+
+          LOADL             0 ; Load int literal 0
+
+          CALL             lt ; Lesser than
+
+          JUMPIF(0) Else1[CB] ; Jump to ELSE
+          LOAD(1)      10[SB] ; Load variable e
+
+          LOADL            30 ; Load int literal 30
+
+          CALL            add ; Addition
+
+          JUMP       End1[CB] ; Jump over ELSE
+Else1:    LOAD(1)      10[SB] ; Load variable e
+
+
+End1:     STORE(1)     10[SB] ; Store in variable e
+
+          LOAD(1)      10[SB] ; Load variable e
+
+          LOADL            25 ; Load int literal 25
+
+          LOADL             1 ; Integers are 1 word
+          CALL             eq ; Equal to
+
+          LOAD(1)       5[SB] ; Load variable g
+
+          LOADL            11 ; Load int literal 11
+
+          CALL             gt ; Greater than
+
+          CALL            add ; Addition
+
+          LOADL             2 ; Load int literal 2
+
+          LOADL             1 ; Integers are 1 word
+          CALL             eq ; Equal to
+
+          LOAD(1)      10[SB] ; Load variable e
+
+          LOADL            24 ; Load int literal 24
+
+          LOADL             1 ; Integers are 1 word
+          CALL             eq ; Equal to
+
+          CALL            add ; Addition
+
+          LOADL             0 ; Load int literal 0
+
+          CALL             gt ; Greater than
+
+          JUMPIF(0) Else2[CB] ; Jump to ELSE
+          LOAD(1)      10[SB] ; Load variable e
+
+          LOADL             1 ; Load int literal 1
+
+          CALL            add ; Addition
+
+          JUMP       End2[CB] ; Jump over ELSE
+Else2:    LOAD(1)      10[SB] ; Load variable e
+
+
+End2:     STORE(1)     10[SB] ; Store in variable e
+
+          LOADL            44 ; Load int literal 44
+
+          LOAD(1)      10[SB] ; Load variable e
+
+          CALL            sub ; Subtraction
+
+          STORE(1)      4[SB] ; Store in variable d
+
+          LOAD(1)       4[SB] ; Load variable d
+
+          LOADL            21 ; Load int literal 21
+
+          CALL             lt ; Lesser than
+
+          JUMPIF(0) Else3[CB] ; Jump to ELSE
+          LOAD(1)       4[SB] ; Load variable d
+
+          LOADL            30 ; Load int literal 30
+
+          CALL            add ; Addition
+
+          JUMP       End3[CB] ; Jump over ELSE
+Else3:    LOAD(1)       4[SB] ; Load variable d
+
+
+End3:     STORE(1)      4[SB] ; Store in variable d
+
+          LOAD(1)       4[SB] ; Load variable d
+
+          LOADL             7 ; Load int literal 7
+
+          CALL            add ; Addition
+
+          LOAD(1)       9[SB] ; Load variable b
+
+          LOAD(1)       4[SB] ; Load variable d
+
+          CALL            add ; Addition
+
+          LOAD(1)       9[SB] ; Load variable b
+
+          LOAD(1)       4[SB] ; Load variable d
+
+          CALL            add ; Addition
+
+          LOADL             7 ; Load int literal 7
+
+          CALL            div ; Division
+
+          LOADL             7 ; Load int literal 7
+
+          CALL           mult ; Multiplication
+
+          CALL            sub ; Subtraction
+
+          CALL            sub ; Subtraction
+
+          STORE(1)      4[SB] ; Store in variable d
+
+          LOAD(1)       4[SB] ; Load variable d
+
+          LOADL            31 ; Load int literal 31
+
+          CALL             gt ; Greater than
+
+          JUMPIF(0) Else4[CB] ; Jump to ELSE
+          LOADL             4 ; Load int literal 4
+
+          JUMP       End4[CB] ; Jump over ELSE
+Else4:    LOADL             3 ; Load int literal 3
+
+
+End4:     STORE(1)      3[SB] ; Store in variable m
+
+          LOAD(1)       4[SB] ; Load variable d
+
+          LOADL            31 ; Load int literal 31
+
+          CALL             gt ; Greater than
+
+          JUMPIF(0) Else5[CB] ; Jump to ELSE
+          LOAD(1)       4[SB] ; Load variable d
+
+          LOADL            31 ; Load int literal 31
+
+          CALL            sub ; Subtraction
+
+          JUMP       End5[CB] ; Jump over ELSE
+Else5:    LOAD(1)       4[SB] ; Load variable d
+
+
+End5:     STORE(1)      4[SB] ; Store in variable d
+
+          LOAD(1)       2[SB] ; Load variable y
+
+          CALL         putint ; Print integer
+          CALL         puteol ; Print EOL
+
+          LOAD(1)       3[SB] ; Load variable m
+
+          CALL         putint ; Print integer
+          CALL         puteol ; Print EOL
+
+          LOAD(1)       4[SB] ; Load variable d
+
+          CALL         putint ; Print integer
+          CALL         puteol ; Print EOL
+
+          LOAD(1)       2[SB] ; Load variable y
+
+          LOADL             1 ; Load int literal 1
+
+          CALL            add ; Addition
+
+          STORE(1)      2[SB] ; Store in variable y
+
+          JUMP      While0[CB] ; Jump to WHILE-expression
+
+End0:     POP(0)           11 ; Pop 11 variables
+          HALT                ; End of program
