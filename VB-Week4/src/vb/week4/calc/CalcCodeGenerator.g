@@ -8,8 +8,8 @@ options {
 @header {
 package vb.week4.calc;
 import java.util.HashMap;
-
 }
+
 @members {
   private int size = 0;
   private int indent = 0;
