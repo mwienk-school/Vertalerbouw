@@ -4,10 +4,10 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class RepeatCommand extends Command {
 	
-	public RepeatCommand (Expression eAST, Command cAST, SourcePosition thePosition) {
+	public RepeatCommand (Command cAST, Expression eAST, SourcePosition thePosition) {
 	    super (thePosition);
-	    E = eAST;
 	    C = cAST;
+	    E = eAST;
 	  }
 
 	@Override

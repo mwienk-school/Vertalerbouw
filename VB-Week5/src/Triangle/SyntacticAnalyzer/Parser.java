@@ -282,6 +282,17 @@ public class Parser {
       finish(commandPos);
       commandAST = new EmptyCommand(commandPos);
       break;
+      
+    case Token.REPEAT:
+    {
+    	acceptIt();
+    	Command cAST = parseSingleCommand();
+    	accept(Token.UNTIL);
+    	Expression eAST = parseExpression();
+    	finish(commandPos);
+    	commandAST = new RepeatCommand(cAST, eAST, commandPos);
+    }
+    break;
 
     default:
       syntacticError("\"%\" cannot start a command",
