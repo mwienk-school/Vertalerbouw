@@ -1,20 +1,20 @@
 Case command
 1.Syntax
-Concreet:
-single-Command ::== ...
-                  | CASE Expression OF caseStatement+
-                        ELSE COLON singleCommand SEMICOLON
+ Concreet:
+ single-Command ::== ...
+                   | CASE Expression OF caseStatement+
+                         ELSE COLON singleCommand SEMICOLON
 
-caseStatement ::== ...
-                 | Integer-literal COLON singleCommand SEMICOLON
+ caseStatement ::== ...
+                  | Integer-literal COLON singleCommand SEMICOLON
 
+ Abstract:
+ Command ::== ...
+            | CASE expression OF (caseStatement)+ ELSE COLON Command SEMICOLON	CaseCommand
 
-Abstract
-Command ::== ...
-	       | CASE expression OF (caseStatement)+ ELSE COLON Command SEMICOLON	CaseCommand
+ caseStatement ::== ...
+                  | Integer-literal COLON Command SEMICOLON						CaseStatement
 
-caseStatement ::==
-	             | Integer-literal COLON Command SEMICOLON						CaseStatement
 2.Context
  Het type van Expression moet een Integer opleveren.
  De Integer-literals moeten verschillende waardes hebben.
@@ -28,19 +28,19 @@ caseStatement ::==
 
 Repeat until command
 1. Syntax
-Concreet:
-single-Command ::== ...
-                  | REPEAT singleCommand UNTIL Expression
+ Concreet:
+ single-Command ::== ...
+                   | REPEAT singleCommand UNTIL Expression
 
-Abstract:
-Command ::== ...
-           | REPEAT Command UNTIL Expression				RepeatCommand
+ Abstract:
+ Command ::== ...
+            | REPEAT Command UNTIL Expression				RepeatCommand
 				
 2. Context
-De Expression moet een boolean waarde opleveren.
+ De Expression moet een boolean waarde opleveren.
 
 3. Semantiek
-Het repeat-until-commando wordt als volgt uitgevoerd. Eerst wordt het commando Command
-uitgevoerd, waarna de expressie Expression wordt geëvalueerd. Als de waarde van de expressie Expression
-gelijk is aan true, wordt de iteratie beëindigd, anders wordt de lus weer uitgevoerd. De iteratie
-blijft net zolang doorgaan totdat Expression de waarde true oplevert.
+ Het repeat-until-commando wordt als volgt uitgevoerd. Eerst wordt het commando Command
+ uitgevoerd, waarna de expressie Expression wordt geëvalueerd. Als de waarde van de expressie Expression
+ gelijk is aan true, wordt de iteratie beëindigd, anders wordt de lus weer uitgevoerd. De iteratie
+ blijft net zolang doorgaan totdat Expression de waarde true oplevert.
