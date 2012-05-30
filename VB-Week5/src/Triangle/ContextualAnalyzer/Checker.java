@@ -88,6 +88,16 @@ public final class Checker implements Visitor {
     return null;
   }
 
+  public Object visitCaseCommand(CaseCommand ast, Object o) {
+	  // TODO
+	  return null;
+  }
+  
+  public Object visitRepeatCommand(RepeatCommand ast, Object o) {
+	  // TODO
+	  return null;
+  }
+
   // Expressions
 
   // Returns the TypeDenoter denoting the type of the expression. Does
