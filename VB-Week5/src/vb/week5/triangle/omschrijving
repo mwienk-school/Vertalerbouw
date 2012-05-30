@@ -1,14 +1,44 @@
 Case command
 1.Syntax
+Concreet:
+single-Command ::==
+  | CASE Expression OF
+	  caseStatement+
+    ELSE COLON
+	  Command SEMICOLON
 
-case E of
-IL1 : C1 ;
-IL2 : C2 ;
-...
-ILm : Cm ;
-else: C0 ;
+caseStatement ::==
+  | Integer-literal COLON Command SEMICOLON
+
+
+Abstract
+Command ::== 
+	CASE expression OF (Integer-literal COLON Command SEMICOLON)+ ELSE COLON Command SEMICOLON	CaseCommand
 
 2.Context
+ Het type van Expression moet een Integer opleveren.
+ De Integer-literals moeten verschillende waardes hebben.
+
 3. Semantiek
+ Het case-commando wordt als volgt uitgevoerd. Eerst wordt Expression geëvalueerd; als de waarde
+ van Expression overeenkomt met een ‘Integer-literal’, dan wordt het bijbehorende commando Command uitgevoerd.
+ Als de waarde van Expression niet overeenkomt met een van de Integer-literals, dan wordt het com-
+ mando in de ELSE clause uitgevoerd.
+ 
 
 Repeat until command
+1. Syntax
+single-Command ::==
+				| REPEAT Command UNTIL Expression
+
+Command ::==
+	| REPEAT Command UNTIL Expression				RepeatCommand
+				
+2. Context
+De Expression moet een boolean waarde opleveren.
+
+3. Semantiek
+Het repeat-until-commando wordt als volgt uitgevoerd. Eerst wordt het commando Command
+uitgevoerd, waarna de expressie Expression wordt geëvalueerd. Als de waarde van de expressie Expression
+gelijk is aan true, wordt de iteratie beëindigd, anders wordt de lus weer uitgevoerd. De iteratie
+blijft net zolang doorgaan totdat Expression de waarde true oplevert.
