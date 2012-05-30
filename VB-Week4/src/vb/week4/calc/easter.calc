@@ -1,51 +1,4 @@
 // Program to compute the day of Easter for 2012-2021.
-<<<<<<< HEAD
-
-var sy: integer;  //0[SB]
-var ey: integer;  //1[SB]
-
-sy:=2012;                               // start year
-ey:=2021;                               // end year
-
-swap(sy,ey);                            // test swap
-swap(ey,sy);
-
-var y: integer;   //2[SB]                      // year
-var m: integer;   //3[SB]                      // month
-var d: integer;   //4[SB]                      // day
-
-y:=sy;
-
-var g: integer;   //5[SB]
-var c: integer;   //6[SB]
-var x: integer;   //7[SB]
-var z: integer;   //8[SB]
-var b: integer;   //9[SB]
-var e: integer;   //10[SB]
-
-do
-    g := (y - ((y / 19) * 19)) + 1;     // y MOD 19 + 1					//18
-    x := c := (y / 100) + 1;            // test multiple assignment		//21
-    x := (3*x / 4) - 12;												//3
-    z := ((8*c + 5) / 25) - 5;											//1
-    b := (5*y / 4) - x - 10;											//2502
-    e := (11*g + 20 + z - x);											//216
-    e := e - (e / 30) * 30;             // e MOD 30						//6
-    
-    e := if e < 0 then e+30 else e;										//6
-    e := if (((e == 25)+(g>11) == 2) + (e==24)) > 0 then e+1 else e;	//6
-    d := 44-e;															//38
-    d := if d < 21 then d+30 else d;									//38
-    d := d+7-((b+d) - ((b+d)/7)*7);										//39	
-    m := if d>31 then 4 else 3;											//4
-    d := if d>31 then d-31 else d;										//8
-
-    print(y);
-    print(m);
-    print(d);									
-
-
-=======
 
 var sy: integer;  //0[SB]
 var ey: integer;  //1[SB]
@@ -90,6 +43,5 @@ do
     print(m);
     print(d);
 
->>>>>>> refs/remotes/github/master
     y := y+1;
 while (y < ey);
