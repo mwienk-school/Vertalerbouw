@@ -1,0 +1,15 @@
+! [file: case-digit.tri, started: 23-Apr-2004]
+! Testing new case-statement.
+! error: integer constants should be different 
+
+let
+    var n: Integer
+in begin
+    getint(var n);
+    case n of
+        0:      put('0'); 
+        1:      put('1'); 
+        0:      put('0'); 
+        else:   put('?'); 
+    puteol();
+end;

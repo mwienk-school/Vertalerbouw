@@ -1,0 +1,20 @@
+! [file: repeat-sum.tri, started: 22-Apr-2004]
+! Testing repeat/until-statement.
+! Compute the sum(1+...+n) for an integer n.
+
+let 
+    var n: Integer;
+    var i: Integer;
+    var sum: Integer
+in begin
+    getint(var n);
+    i   := 0;
+    sum := 0;
+    repeat 
+        begin
+            i   := i+1;
+            sum := sum+i;
+        end
+    until (i>=n);
+    putint(sum);
+end;

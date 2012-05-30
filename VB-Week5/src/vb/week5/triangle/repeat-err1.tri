@@ -1,0 +1,12 @@
+! [file: repeat-err1.tri, started: 23-Apr-2004]
+! Testing repeat/until-statement.
+! error: repeat's expression is not a boolean.
+
+let 
+    var i: Integer
+in begin
+    repeat 
+        i := i+1
+    until i;
+    putint(i);
+end;

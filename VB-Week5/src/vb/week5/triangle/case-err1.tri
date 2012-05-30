@@ -1,0 +1,14 @@
+! [file: case-digit.tri, started: 23-Apr-2004]
+! Testing new case-statement.
+! error: expression is not a boolean
+
+let
+    var n: Integer
+in begin
+    getint(var n);
+    case n>0 of
+        0:      put('0'); 
+        1:      put('1'); 
+        else:   put('?'); 
+    puteol();
+end;
