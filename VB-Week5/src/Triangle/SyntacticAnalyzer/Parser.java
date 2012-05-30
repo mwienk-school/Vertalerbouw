@@ -293,6 +293,20 @@ public class Parser {
     	commandAST = new RepeatCommand(cAST, eAST, commandPos);
     }
     break;
+    
+    case Token.CASE:
+    {
+    	acceptIt();
+    	Expression eAST = parseExpression();
+    	accept(Token.OF);
+    	CaseStatement csAST = parseCaseStatement();
+    	accept(Token.ELSE);
+    	accept(Token.COLON);
+    	Command cAST = parseSingleCommand();
+    	finish(commandPos);
+    	commandAST = new CaseCommand(eAST, csAST, cAST, commandPos);
+    }
+    break;
 
     default:
       syntacticError("\"%\" cannot start a command",
@@ -472,6 +486,29 @@ public class Parser {
       aggregateAST = new SingleRecordAggregate(iAST, eAST, aggregatePos);
     }
     return aggregateAST;
+  }
+  
+  CaseStatement parseCaseStatement() throws SyntaxError {
+	  CaseStatement csAST = null; // incase there's a syntactic error
+	  
+	  SourcePosition casePos = new SourcePosition();
+	  start(casePos);
+	  
+	  IntegerLiteral iAST = parseIntegerLiteral();
+	  accept(Token.COLON);
+	  Command cAST = parseSingleCommand();
+	  accept(Token.SEMICOLON);
+	  
+	  if (currentToken.kind == Token.INTLITERAL) {
+		  CaseStatement mAST = parseCaseStatement();
+		  finish(casePos);
+		  csAST = new MultipleCaseStatement(iAST, cAST, mAST, casePos);
+	  } else {
+		  finish(casePos);
+		  csAST = new SingleCaseStatement(iAST, cAST, casePos);
+	  }
+	  
+	  return csAST;
   }
 
   ArrayAggregate parseArrayAggregate() throws SyntaxError {

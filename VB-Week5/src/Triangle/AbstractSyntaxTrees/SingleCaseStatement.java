@@ -4,7 +4,7 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class SingleCaseStatement extends CaseStatement {
 
-	public SingleCaseStatement(SourcePosition thePosition, IntegerLiteral iAST, Command cAST) {
+	public SingleCaseStatement(IntegerLiteral iAST, Command cAST, SourcePosition thePosition) {
 		super(thePosition);
 		I = iAST;
 		C = cAST;

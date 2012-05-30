@@ -4,7 +4,7 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class MultipleCaseStatement extends CaseStatement {
 
-	public MultipleCaseStatement(SourcePosition thePosition, IntegerLiteral iAST, Command cAST, CaseStatement csAST) {
+	public MultipleCaseStatement(IntegerLiteral iAST, Command cAST, CaseStatement csAST, SourcePosition thePosition) {
 		super(thePosition);
 		I = iAST;
 		C = cAST;

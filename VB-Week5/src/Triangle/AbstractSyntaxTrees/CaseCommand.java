@@ -4,10 +4,11 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class CaseCommand extends Command {
 	
-	  public CaseCommand (Expression eAST, Command cAST,
-              SourcePosition thePosition) {
+	  public CaseCommand (Expression eAST, CaseStatement csAST,
+              			   Command cAST, SourcePosition thePosition) {
 		  super (thePosition);
 		  E = eAST;
+		  CS = csAST;
 		  C = cAST;
 	  }
 
@@ -18,5 +19,6 @@ public class CaseCommand extends Command {
 	  }
 	  
 	  public Expression E;
+	  public CaseStatement CS;
 	  public Command C;
 }
