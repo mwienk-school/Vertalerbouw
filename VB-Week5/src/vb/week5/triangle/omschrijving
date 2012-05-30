@@ -13,8 +13,10 @@ caseStatement ::==
 
 Abstract
 Command ::== 
-	CASE expression OF (Integer-literal COLON Command SEMICOLON)+ ELSE COLON Command SEMICOLON	CaseCommand
+	CASE expression OF (caseStatement)+ ELSE COLON Command SEMICOLON	CaseCommand
 
+caseStatement ::==
+	Integer-literal COLON Command SEMICOLON								CaseStatement
 2.Context
  Het type van Expression moet een Integer opleveren.
  De Integer-literals moeten verschillende waardes hebben.
