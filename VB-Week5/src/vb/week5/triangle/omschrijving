@@ -1,14 +1,23 @@
 Case command
 1.Syntax
+Concreet:
+single-Command ::==
+  | CASE Expression OF
+	  caseStatement+
+    ELSE COLON
+	  Command SEMICOLON
 
-case E of
-IL1 : C1 ;
-IL2 : C2 ;
-...
-ILm : Cm ;
-else: C0 ;
+caseStatement ::==
+  | Integer-literal COLON Command SEMICOLON
+
+
+Abstract
+Command ::== 
+	CASE expression OF (Integer-literal COLON Command SEMICOLON)+ ELSE COLON Command SEMICOLON	CaseCommand
 
 2.Context
+ Het type van Expression moet een Integer opleveren.
+
 3. Semantiek
 
 Repeat until command
