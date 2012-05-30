@@ -1,0 +1,14 @@
+Case command
+1.Syntax
+
+case E of
+IL1 : C1 ;
+IL2 : C2 ;
+...
+ILm : Cm ;
+else: C0 ;
+
+2.Context
+3. Semantiek
+
+Repeat until command
