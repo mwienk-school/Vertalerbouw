@@ -1,7 +1,16 @@
-(D:x D:y D:z
+(
+	D:x D:y D:z
     U:y U:z
-    (D:a D:z
-        U:x U:y U:z (D:p D:q U:p U:y) (U:z D:z U:z) U:a
+    (
+    	D:a D:z
+        U:x U:y U:z
+        (
+        	D:p D:q U:p U:y
+    	)
+    	(
+    		U:z D:z U:z
+    	)
+    	U:a
     )
     (D:x D:p D:x
         U:x U:q U:y U:z
