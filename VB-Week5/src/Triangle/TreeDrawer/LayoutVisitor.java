@@ -18,7 +18,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import Triangle.AbstractSyntaxTrees.Visitor;
 import Triangle.AbstractSyntaxTrees.*;
 
 public class LayoutVisitor implements Visitor {
@@ -61,6 +60,17 @@ public class LayoutVisitor implements Visitor {
     return layoutBinary("WhileCom.", ast.E, ast.C);
   }
 
+  @Override
+  public Object visitCaseCommand(CaseCommand ast, Object o) {
+  	// TODO Auto-generated method stub
+  	return null;
+  }
+
+  @Override
+  public Object visitRepeatCommand(RepeatCommand ast, Object o) {
+  	// TODO Auto-generated method stub
+  	return null;
+  }
 
   // Expressions
   public Object visitArrayExpression(ArrayExpression ast, Object obj) {

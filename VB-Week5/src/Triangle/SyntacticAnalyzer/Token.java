@@ -70,46 +70,44 @@ final class Token extends Object {
     // reserved words - must be in alphabetical order...
     ARRAY		= 4,
     BEGIN		= 5,
-    CONST		= 6,
-    DO			= 7,
-    ELSE		= 8,
-    END			= 9,
-    FUNC		= 10,
-    IF			= 11,
-    IN			= 12,
-    LET			= 13,
-    OF			= 14,
-    PROC		= 15,
-    RECORD		= 16,
-    THEN		= 17,
-    TYPE		= 18,
-    VAR			= 19,
-    WHILE		= 20,
+    CASE		= 6,
+    CONST		= 7,
+    DO			= 8,
+    ELSE		= 9,
+    END			= 10,
+    FUNC		= 11,
+    IF			= 12,
+    IN			= 13,
+    LET			= 14,
+    OF			= 15,
+    PROC		= 16,
+    RECORD		= 17,
+    REPEAT		= 18,
+    THEN		= 19,
+    TYPE		= 20,
+    UNTIL		= 21,
+    VAR			= 22,
+    WHILE		= 23,
 
     // punctuation...
-    DOT			= 21,
-    COLON		= 22,
-    SEMICOLON		= 23,
-    COMMA		= 24,
-    BECOMES		= 25,
-    IS			= 26,
+    DOT			= 24,
+    COLON		= 25,
+    SEMICOLON		= 26,
+    COMMA		= 27,
+    BECOMES		= 28,
+    IS			= 29,
 
     // brackets...
-    LPAREN		= 27,
-    RPAREN		= 28,
-    LBRACKET		= 29,
-    RBRACKET		= 30,
-    LCURLY		= 31,
-    RCURLY		= 32,
+    LPAREN		= 30,
+    RPAREN		= 31,
+    LBRACKET		= 32,
+    RBRACKET		= 33,
+    LCURLY		= 34,
+    RCURLY		= 35,
 
     // special tokens...
-    EOT			= 33,
-    ERROR		= 34,
-  
-  	//Extensions
-  	REPEAT		= 35,
-  	UNTIL		= 36,
-  	CASE		= 37;
+    EOT			= 36,
+    ERROR		= 37;
   	
 
   private static String[] tokenTable = new String[] {
@@ -119,6 +117,7 @@ final class Token extends Object {
     "<operator>",
     "array",
     "begin",
+    "case",
     "const",
     "do",
     "else",
@@ -130,8 +129,10 @@ final class Token extends Object {
     "of",
     "proc",
     "record",
+    "repeat",
     "then",
     "type",
+    "until",
     "var",
     "while",
     ".",
@@ -147,10 +148,7 @@ final class Token extends Object {
     "{",
     "}",
     "",
-    "<error>",
-    "repeat",
-    "until",
-    "case"
+    "<error>"
   };
 
   private final static int	firstReservedWord = Token.ARRAY,

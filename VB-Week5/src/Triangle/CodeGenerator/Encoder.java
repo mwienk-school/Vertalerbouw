@@ -15,7 +15,6 @@
 package Triangle.CodeGenerator;
 
 import Triangle.AbstractSyntaxTrees.*;
-import Triangle.AbstractSyntaxTrees.Visitor;
 import Triangle.Compiler;
 import Triangle.ErrorReporter;
 import Triangle.StdEnvironment;
@@ -92,6 +91,17 @@ public final class Encoder implements Visitor {
     return null;
   }
 
+  @Override
+  public Object visitCaseCommand(CaseCommand ast, Object o) {
+  	// TODO Auto-generated method stub
+  	return null;
+  }
+
+  @Override
+  public Object visitRepeatCommand(RepeatCommand ast, Object o) {
+  	// TODO Auto-generated method stub
+  	return null;
+  }
 
   // Expressions
   public Object visitArrayExpression(ArrayExpression ast, Object o) {
