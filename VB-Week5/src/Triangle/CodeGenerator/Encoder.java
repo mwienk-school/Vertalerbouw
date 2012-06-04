@@ -329,6 +329,18 @@ public final class Encoder implements Visitor {
 					   Object o) {
     return ast.E.visit(this, o);
   }
+  
+//Case statements
+  public Object visitSingleCaseStatement(SingleCaseStatement ast, Object o) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
+
+
+  public Object visitMultipleCaseStatement(MultipleCaseStatement ast, Object o) {
+	  // TODO Auto-generated method stub
+	  return null;
+  }
 
 
   // Formal Parameters

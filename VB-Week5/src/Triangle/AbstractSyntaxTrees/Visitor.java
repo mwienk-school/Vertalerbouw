@@ -58,6 +58,10 @@ public interface Visitor {
   // Record Aggregates
   public abstract Object visitMultipleRecordAggregate(MultipleRecordAggregate ast, Object o);
   public abstract Object visitSingleRecordAggregate(SingleRecordAggregate ast, Object o);
+  
+  // Case Statements
+  public abstract Object visitSingleCaseStatement(SingleCaseStatement ast, Object o);
+  public abstract Object visitMultipleCaseStatement(MultipleCaseStatement ast, Object o);
 
   // Formal Parameters
   public abstract Object visitConstFormalParameter(ConstFormalParameter ast, Object o);

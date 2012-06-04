@@ -493,4 +493,16 @@ public class LayoutVisitor implements Visitor {
     return r;
   }
 
+@Override
+public Object visitSingleCaseStatement(SingleCaseStatement ast, Object o) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public Object visitMultipleCaseStatement(MultipleCaseStatement ast, Object o) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
 }

@@ -12,8 +12,7 @@ public class RepeatCommand extends Command {
 
 	@Override
 	public Object visit(Visitor v, Object o) {
-		// TODO Auto-generated method stub
-		return null;
+		return v.visitRepeatCommand(this, o);
 	}
 	
 	public Expression E;

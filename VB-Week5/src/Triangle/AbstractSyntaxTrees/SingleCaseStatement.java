@@ -12,8 +12,7 @@ public class SingleCaseStatement extends CaseStatement {
 
 	@Override
 	public Object visit(Visitor v, Object o) {
-		// TODO Auto-generated method stub
-		return null;
+		return v.visitSingleCaseStatement(this, o);
 	}
 	
 	public IntegerLiteral I;

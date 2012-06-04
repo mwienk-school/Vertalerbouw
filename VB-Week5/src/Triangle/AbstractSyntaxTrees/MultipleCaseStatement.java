@@ -13,7 +13,7 @@ public class MultipleCaseStatement extends CaseStatement {
 
 	@Override
 	public Object visit(Visitor v, Object o) {
-		// TODO Auto-generated method stub
+		v.visitMultipleCaseStatement(this, o);
 		return null;
 	}
 	

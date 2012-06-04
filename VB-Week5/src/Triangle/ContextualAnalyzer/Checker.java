@@ -15,7 +15,6 @@
 package Triangle.ContextualAnalyzer;
 
 import Triangle.AbstractSyntaxTrees.*;
-import Triangle.AbstractSyntaxTrees.Visitor;
 import Triangle.SyntacticAnalyzer.SourcePosition;
 import Triangle.Compiler;
 import Triangle.ErrorReporter;
@@ -89,12 +88,19 @@ public final class Checker implements Visitor {
   }
 
   public Object visitCaseCommand(CaseCommand ast, Object o) {
-	  // TODO
+	  TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+	  if(! eType.equals(StdEnvironment.integerType))
+		  reporter.reportError("Integer expression expected here", "", ast.E.position);
+	  ast.CS.visit(this, null);
+	  ast.C.visit(this, null);
 	  return null;
   }
   
   public Object visitRepeatCommand(RepeatCommand ast, Object o) {
-	  // TODO
+	  TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+	  if(! eType.equals(StdEnvironment.booleanType)) 
+		  reporter.reportError("Boolean expression expected here", "", ast.E.position);
+	  ast.C.visit(this, null);
 	  return null;
   }
 
@@ -337,6 +343,23 @@ public final class Checker implements Visitor {
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     ast.type = new SingleFieldTypeDenoter(ast.I, eType, ast.position);
     return ast.type;
+  }
+  
+  public Object visitMultipleCaseStatement(MultipleCaseStatement ast, Object o) {
+	TypeDenoter eType = (TypeDenoter) ast.I.visit(this, null);
+	if(! eType.equals(StdEnvironment.integerType)) 
+		reporter.reportError("Identifier needs to be an integer type", ast.I.spelling, ast.position);
+	ast.C.visit(this, o);
+	ast.CS.visit(this, o);
+	return null;
+  }
+  
+  public Object visitSingleCaseStatement(SingleCaseStatement ast, Object o) {
+	TypeDenoter eType = (TypeDenoter) ast.I.visit(this, null);
+	if(! eType.equals(StdEnvironment.integerType)) 
+		reporter.reportError("Identifier needs to be an integer type", ast.I.spelling, ast.position);
+	ast.C.visit(this, null);
+	return null;
   }
 
   // Formal Parameters
