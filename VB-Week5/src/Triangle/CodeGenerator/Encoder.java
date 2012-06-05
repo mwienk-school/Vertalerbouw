@@ -94,6 +94,11 @@ public final class Encoder implements Visitor {
   @Override
   public Object visitCaseCommand(CaseCommand ast, Object o) {
   	Integer valSize = (Integer) ast.E.visit(this, o);
+  	int jumpAddr;
+  	
+  	jumpAddr = nextInstrAddr;
+  	
+  	
   	//TODO
   	return null;
   }
@@ -342,6 +347,7 @@ public final class Encoder implements Visitor {
   
 //Case statements
   public Object visitSingleCaseStatement(SingleCaseStatement ast, Object o) {
+	  emit(Machine.JUMPIFop, (Integer) ast.I.visit(this, o), Machine.CBr, 0);
 	  
 	  return null;
   }
