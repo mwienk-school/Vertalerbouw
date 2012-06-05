@@ -93,7 +93,8 @@ public final class Encoder implements Visitor {
 
   @Override
   public Object visitCaseCommand(CaseCommand ast, Object o) {
-  	// TODO Auto-generated method stub
+  	Integer valSize = (Integer) ast.E.visit(this, o);
+  	//TODO
   	return null;
   }
 
@@ -341,7 +342,7 @@ public final class Encoder implements Visitor {
   
 //Case statements
   public Object visitSingleCaseStatement(SingleCaseStatement ast, Object o) {
-	  // TODO Auto-generated method stub
+	  
 	  return null;
   }
 
