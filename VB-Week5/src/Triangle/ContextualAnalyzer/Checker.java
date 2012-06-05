@@ -19,6 +19,7 @@ import Triangle.SyntacticAnalyzer.SourcePosition;
 import Triangle.Compiler;
 import Triangle.ErrorReporter;
 import Triangle.StdEnvironment;
+import java.util.ArrayList;
 
 public final class Checker implements Visitor {
 
@@ -350,8 +351,12 @@ public final class Checker implements Visitor {
 	if(! eType.equals(StdEnvironment.integerType)) 
 		reporter.reportError("Identifier needs to be an integer type", ast.I.spelling, ast.position);
 	ast.C.visit(this, o);
-	ast.CS.visit(this, o);
-	return null;
+	ArrayList<Integer> result = (ArrayList<Integer>) ast.CS.visit(this, o);
+	Integer identifier = Integer.parseInt(ast.I.spelling);
+	if (result.contains(identifier))
+		reporter.reportError("Duplicate identifier.", ast.I.spelling, ast.I.getPosition());
+	result.add(identifier);
+	return result;
   }
   
   public Object visitSingleCaseStatement(SingleCaseStatement ast, Object o) {
@@ -359,7 +364,9 @@ public final class Checker implements Visitor {
 	if(! eType.equals(StdEnvironment.integerType)) 
 		reporter.reportError("Identifier needs to be an integer type", ast.I.spelling, ast.position);
 	ast.C.visit(this, null);
-	return null;
+	ArrayList<Integer> result = new ArrayList<Integer>();
+	result.add(Integer.parseInt(ast.I.spelling));
+	return result;
   }
 
   // Formal Parameters
