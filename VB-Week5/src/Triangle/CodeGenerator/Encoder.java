@@ -22,6 +22,10 @@ import TAM.Machine;
 import TAM.Instruction;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public final class Encoder implements Visitor {
 
@@ -93,14 +97,33 @@ public final class Encoder implements Visitor {
 
   @Override
   public Object visitCaseCommand(CaseCommand ast, Object o) {
-  	Integer valSize = (Integer) ast.E.visit(this, o);
-  	int jumpAddr;
-  	
-  	jumpAddr = nextInstrAddr;
-  	
-  	
-  	//TODO
-  	return null;
+	  Frame frame = (Frame) o;
+	  int jumpAddr = nextInstrAddr;									//	Jump to eval
+	  emit(Machine.JUMPop, 0, Machine.CBr, 0);
+	  HashMap<Integer, Integer[]> caseMap = (HashMap<Integer, Integer[]>) ast.CS.visit(this, frame);
+	  patch(jumpAddr, nextInstrAddr);
+	  
+	  Integer valSize = (Integer) ast.E.visit(this, frame);
+	  																//	Eval
+	  Iterator<Entry<Integer, Integer[]>> it = caseMap.entrySet().iterator();
+	  while (it.hasNext()) {
+		  Map.Entry<Integer, Integer[]> pairs = (Map.Entry<Integer, Integer[]>)it.next();
+		  emit(Machine.LOADAop, 0, displayRegister(frame.level, 0), frame.size);
+		  emit(Machine.LOADIop, valSize, 0, 0);
+		  emit(Machine.LOADLop, 0, 0, pairs.getKey());
+		  emit(Machine.LOADLop, 0, 0, valSize);
+		  emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.eqDisplacement);
+		  emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, pairs.getValue()[0]);
+	  }
+	  ast.C.visit(this, frame);										//	Else
+	  
+	  it = caseMap.entrySet().iterator();
+	  while (it.hasNext()) {
+		  Map.Entry<Integer, Integer[]> pairs = (Map.Entry<Integer, Integer[]>)it.next();
+		  patch(pairs.getValue()[1], nextInstrAddr);				//	Fix jump after case-statement command
+	  }
+	  
+	  return null;
   }
 
   @Override
@@ -347,15 +370,29 @@ public final class Encoder implements Visitor {
   
 //Case statements
   public Object visitSingleCaseStatement(SingleCaseStatement ast, Object o) {
-	  emit(Machine.JUMPIFop, (Integer) ast.I.visit(this, o), Machine.CBr, 0);
-	  
-	  return null;
+	  // TODO
+	  HashMap<Integer, Integer[]> result = new HashMap<Integer, Integer[]>();
+	  Integer[] addressArr = new Integer[2];
+	  addressArr[0] = nextInstrAddr;							//	Address of Command-instructions
+	  ast.C.visit(this, o);
+	  addressArr[1] = nextInstrAddr;							//	Address of jump
+	  emit(Machine.JUMPop, 0, Machine.CBr, 0);
+	  result.put(Integer.parseInt(ast.I.spelling), addressArr);
+	  return result;
   }
 
 
   public Object visitMultipleCaseStatement(MultipleCaseStatement ast, Object o) {
 	  // TODO Auto-generated method stub
-	  return null;
+	  int intLit = Integer.parseInt(ast.I.spelling);
+	  Integer[] addressArr = new Integer[2];
+	  addressArr[0] = nextInstrAddr;							//	Address of Command-instructions
+	  ast.C.visit(this, o);
+	  addressArr[1] = nextInstrAddr;							//	Address of jump
+	  emit(Machine.JUMPop, 0, Machine.CBr, 0);
+	  HashMap<Integer, Integer[]> result = (HashMap<Integer, Integer[]>)ast.CS.visit(this, o);
+	  result.put(intLit, addressArr);
+	  return result;
   }
 
 
