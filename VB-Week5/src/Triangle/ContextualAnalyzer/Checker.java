@@ -351,12 +351,13 @@ public final class Checker implements Visitor {
 	if(! eType.equals(StdEnvironment.integerType)) 
 		reporter.reportError("Identifier needs to be an integer type", ast.I.spelling, ast.position);
 	ast.C.visit(this, o);
-	ArrayList<Integer> result = (ArrayList<Integer>) ast.CS.visit(this, o);
-	Integer identifier = Integer.parseInt(ast.I.spelling);
-	if (result.contains(identifier))
-		reporter.reportError("Duplicate identifier.", ast.I.spelling, ast.I.getPosition());
-	result.add(identifier);
-	return result;
+	if(!(o instanceof ArrayList<?>)) o = new ArrayList<Integer>();
+	ast.CS.visit(this, o);
+	int identifier = Integer.parseInt(ast.I.spelling);
+	if (((ArrayList<Integer>) o).contains(identifier))
+		reporter.reportError("Duplicate identifier.", ast.I.spelling, ast.I.position);
+	((ArrayList<Integer>) o).add(identifier);
+	return null;
   }
   
   public Object visitSingleCaseStatement(SingleCaseStatement ast, Object o) {
@@ -364,9 +365,8 @@ public final class Checker implements Visitor {
 	if(! eType.equals(StdEnvironment.integerType)) 
 		reporter.reportError("Identifier needs to be an integer type", ast.I.spelling, ast.position);
 	ast.C.visit(this, null);
-	ArrayList<Integer> result = new ArrayList<Integer>();
-	result.add(Integer.parseInt(ast.I.spelling));
-	return result;
+	if(o instanceof ArrayList<?>) ((ArrayList) o).add(ast.I.spelling);
+	return null;
   }
 
   // Formal Parameters

@@ -106,15 +106,18 @@ public final class Encoder implements Visitor {
 	  Integer valSize = (Integer) ast.E.visit(this, frame);
 	  																//	Eval
 	  Iterator<Entry<Integer, Integer[]>> it = caseMap.entrySet().iterator();
-	  while (it.hasNext()) {
-		  Map.Entry<Integer, Integer[]> pairs = (Map.Entry<Integer, Integer[]>)it.next();
-		  emit(Machine.LOADAop, 0, displayRegister(frame.level, 0), frame.size);
-		  emit(Machine.LOADIop, valSize, 0, 0);
-		  emit(Machine.LOADLop, 0, 0, pairs.getKey());
-		  emit(Machine.LOADLop, 0, 0, valSize);
-		  emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.eqDisplacement);
-		  emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, pairs.getValue()[0]);
-	  }
+	    while (it.hasNext()) {
+            Map.Entry<Integer, Integer[]> pairs = (Map.Entry<Integer, Integer[]>)it.next();
+            if(it.hasNext()) {
+                    emit(Machine.LOADAop, 0, displayRegister(frame.level, 0), frame.size);
+                    emit(Machine.LOADIop, valSize, 0, 0);
+            }
+            emit(Machine.LOADLop, 0, 0, pairs.getKey());
+            emit(Machine.LOADLop, 0, 0, valSize);
+            emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.eqDisplacement);
+            emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, pairs.getValue()[0]);
+    }
+
 	  ast.C.visit(this, frame);										//	Else
 	  
 	  it = caseMap.entrySet().iterator();
