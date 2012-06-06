@@ -12,17 +12,22 @@ tokens {
   SEMICOLON = ';';
   COLON     = ':';
   COMMA     = ',';
+  VAR       = 'colour';
   
   //Types
-  INTEGER   = 'int';
-  BOOLEAN   = 'bool';
-  CHAR      = 'char';
-  STRING    = 'string';
+  INTEGER   = 'i';
+  BOOLEAN   = 'pill';
+  CHAR      = 'c';
+  STRING    = 'fate';
+  
+  TRUE      = 'red';
+  FALSE     = 'blue';
   
   //Commands
   IF        = 'if';
   WHILE     = 'while';
   DO        = 'do';
+  BECOMES   = '=';
   
   //Logic operators
   LT        = '<';
@@ -61,21 +66,26 @@ statement
   ;
   
 declaration
-  : type^ ID
+  : VAR^ id (BECOMES^ (TRUE|FALSE))?
   ;
 
 //Commands  
 command
   : ifCommand
+  | assignCommand
   | whileCommand
   ;
   
 ifCommand
   : IF^ exprrelop
   ;
+
+assignCommand
+  : id BECOMES^ (TRUE | FALSE)
+  ;
   
 whileCommand
-  : WHILE^ BOOLEAN DO! command
+  : WHILE^ exprrelop DO! command
   ;
 
 //Expressies
@@ -92,31 +102,33 @@ exprtimes
   ;
 
 operand
-  : ID
+  : id
   ;
   
-type
-  : INTEGER
-  | CHAR
-  | BOOLEAN
-  | STRING
+id
+  : type^ CAMEL
   ;
-
+  
+type   
+  : INTEGER | BOOLEAN | CHAR | STRING;
+  
 //Lexer regels
-  
-ID
-  : LETTER+
-  ;
-  
+
 COMMENT
-    :   '//' .* '\n' 
-            { $channel=HIDDEN; }
-    ;
+  :   '//' .* '\n' 
+        { $channel=HIDDEN; }
+  ;
 
 WS
-    :   (' ' | '\t' | '\f' | '\r' | '\n')+
-            { $channel=HIDDEN; }
-    ;
+  :   (' ' | '\t' | '\f' | '\r' | '\n')+
+        { $channel=HIDDEN; }
+  ;
+
+
+
+CAMEL
+  : UPPER LETTER* 
+  ;
   
 fragment DIGIT  :   ('0'..'9') ;
 fragment LOWER  :   ('a'..'z') ;
