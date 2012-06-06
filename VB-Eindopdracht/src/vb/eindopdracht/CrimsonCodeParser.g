@@ -1,4 +1,4 @@
-tree grammar CrimsonCodeLexer;
+tree grammar CrimsonCodeParser;
 
 options {
     tokenVocab=CrimsonCodeGrammar;                    // import tokens from Calc.tokens
