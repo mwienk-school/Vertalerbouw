@@ -22,6 +22,7 @@ import TAM.Machine;
 import TAM.Instruction;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -97,28 +98,38 @@ public final class Encoder implements Visitor {
 
   @Override
   public Object visitCaseCommand(CaseCommand ast, Object o) {
-	  Frame frame = (Frame) o;
+	  Object[] objArr = new Object[2];
+	  if(o instanceof Frame) {
+		  objArr[0] = (Frame) o;
+		  objArr[1] = new HashMap<Integer, Integer[]>();
+	  }
+	  else {
+		  objArr = (Object[]) o;
+	  }
+	  
 	  int jumpAddr = nextInstrAddr;									//	Jump to eval
 	  emit(Machine.JUMPop, 0, Machine.CBr, 0);
-	  HashMap<Integer, Integer[]> caseMap = (HashMap<Integer, Integer[]>) ast.CS.visit(this, frame);
+	  ast.CS.visit(this, objArr);
 	  patch(jumpAddr, nextInstrAddr);
 	  
-	  Integer valSize = (Integer) ast.E.visit(this, frame);
+	  HashMap<Integer, Integer[]> caseMap = (HashMap<Integer, Integer[]>)objArr[1];
+	  
+	  Integer valSize = (Integer) ast.E.visit(this, objArr[0]);
 	  																//	Eval
 	  Iterator<Entry<Integer, Integer[]>> it = caseMap.entrySet().iterator();
 	    while (it.hasNext()) {
             Map.Entry<Integer, Integer[]> pairs = (Map.Entry<Integer, Integer[]>)it.next();
             if(it.hasNext()) {
-                    emit(Machine.LOADAop, 0, displayRegister(frame.level, 0), frame.size);
+                    emit(Machine.LOADAop, 0, displayRegister( ((Frame)objArr[0]).level, 0), ((Frame)objArr[0]).size);
                     emit(Machine.LOADIop, valSize, 0, 0);
             }
             emit(Machine.LOADLop, 0, 0, pairs.getKey());
             emit(Machine.LOADLop, 0, 0, valSize);
             emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.eqDisplacement);
             emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, pairs.getValue()[0]);
-    }
+	    }
 
-	  ast.C.visit(this, frame);										//	Else
+	  ast.C.visit(this, objArr[0]);										//	Else
 	  
 	  it = caseMap.entrySet().iterator();
 	  while (it.hasNext()) {
@@ -374,28 +385,45 @@ public final class Encoder implements Visitor {
 //Case statements
   public Object visitSingleCaseStatement(SingleCaseStatement ast, Object o) {
 	  // TODO
-	  HashMap<Integer, Integer[]> result = new HashMap<Integer, Integer[]>();
+	  Object[] objArr = new Object[2];
+	  if(o instanceof Frame) {
+		  objArr[0] = (Frame) o;
+		  objArr[1] = new HashMap<Integer, Integer[]>();
+	  }
+	  else {
+		  objArr = (Object[]) o;
+	  }
+	  
 	  Integer[] addressArr = new Integer[2];
 	  addressArr[0] = nextInstrAddr;							//	Address of Command-instructions
-	  ast.C.visit(this, o);
+	  ast.C.visit(this, objArr[0]);
 	  addressArr[1] = nextInstrAddr;							//	Address of jump
 	  emit(Machine.JUMPop, 0, Machine.CBr, 0);
-	  result.put(Integer.parseInt(ast.I.spelling), addressArr);
-	  return result;
+	  ((HashMap<Integer, Integer[]>)objArr[1]).put(Integer.parseInt(ast.I.spelling), addressArr);
+	  return null;
   }
 
 
   public Object visitMultipleCaseStatement(MultipleCaseStatement ast, Object o) {
 	  // TODO Auto-generated method stub
+	  Object[] objArr = new Object[2];
+	  if(o instanceof Frame) {
+		  objArr[0] = (Frame) o;
+		  objArr[1] = new HashMap<Integer, Integer[]>();
+	  }
+	  else {
+		  objArr = (Object[]) o;
+	  }
+	  
 	  int intLit = Integer.parseInt(ast.I.spelling);
 	  Integer[] addressArr = new Integer[2];
 	  addressArr[0] = nextInstrAddr;							//	Address of Command-instructions
-	  ast.C.visit(this, o);
+	  ast.C.visit(this, objArr[0]);
 	  addressArr[1] = nextInstrAddr;							//	Address of jump
 	  emit(Machine.JUMPop, 0, Machine.CBr, 0);
-	  HashMap<Integer, Integer[]> result = (HashMap<Integer, Integer[]>)ast.CS.visit(this, o);
-	  result.put(intLit, addressArr);
-	  return result;
+	  ast.CS.visit(this, objArr);
+	  ((HashMap<Integer, Integer[]>)objArr[1]).put(intLit, addressArr);
+	  return null;
   }
 
 
