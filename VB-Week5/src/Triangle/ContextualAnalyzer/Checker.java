@@ -365,7 +365,7 @@ public final class Checker implements Visitor {
 		if(! eType.equals(StdEnvironment.integerType)) 
 			reporter.reportError("Identifier needs to be an integer type", ast.I.spelling, ast.position);
 		ast.C.visit(this, null);
-		if(o instanceof ArrayList<?>) ((ArrayList) o).add(Integer.parseInt(ast.I.spelling));
+		if(o instanceof ArrayList<?>) ((ArrayList<Integer>) o).add(Integer.parseInt(ast.I.spelling));
 		return null;
 	}
 
