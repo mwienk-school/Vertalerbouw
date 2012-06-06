@@ -63,18 +63,36 @@ statement
 declaration
   : type^ ID
   ;
-  
+
+//Commands  
 command
   : ifCommand
   | whileCommand
   ;
   
 ifCommand
-  : IF^ ID
+  : IF^ exprrelop
   ;
   
 whileCommand
   : WHILE^ BOOLEAN DO! command
+  ;
+
+//Expressies
+exprrelop
+  :   exprplus ((LT^ | LE^ | GT^ | GE^ | EQ^ | NEQ^) exprplus)*
+  ;
+    
+exprplus
+  :   exprtimes ((PLUS^ | MINUS^) exprtimes)*
+  ;
+    
+exprtimes
+  :   operand ((TIMES^ | DIVIDE^) operand)*
+  ;
+
+operand
+  : ID
   ;
   
 type
