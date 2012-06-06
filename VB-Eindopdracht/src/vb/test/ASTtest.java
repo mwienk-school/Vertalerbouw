@@ -1,9 +1,12 @@
-package vb.eindopdracht;
+package vb.test;
 
 import java.io.FileInputStream;
 
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.*;
+
+import vb.eindopdracht.CrimsonCodeGrammarLexer;
+import vb.eindopdracht.CrimsonCodeGrammarParser;
 
 public class ASTtest {
 	
