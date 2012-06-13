@@ -1,0 +1,4 @@
+spawn aPill; 
+spawn bPill;
+spawn hlaatInt;
+a=b=ac=blauw;

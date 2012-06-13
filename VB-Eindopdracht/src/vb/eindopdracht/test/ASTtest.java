@@ -1,4 +1,4 @@
-package vb.test;
+package vb.eindopdracht.test;
 
 import java.io.FileInputStream;
 

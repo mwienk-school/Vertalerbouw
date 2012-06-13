@@ -7,15 +7,34 @@ options {
 
 @header {
   package vb.eindopdracht;
+  import java.util.Map;
+  import java.util.HashMap;
 }
-  
+
+@rulecatch { 
+    catch (Exception e) { 
+        System.out.println("ERROR:" + e.getMessage()); 
+    } 
+}
+
+@members {
+  private static String[] tokennames = {"Pill","Int","Char"};
+}
 program
   :   ^(PROGRAM compExpr+)
   ;
 
 compExpr
   :   ^(CONST IDENTIFIER expression)
-  |   ^(VAR IDENTIFIER)
+  |   ^(VAR id=IDENTIFIER)
+        {     boolean validType = false;
+              for(String type : tokennames)
+              {
+                if($id.text.endsWith(type))
+                  validType = true;
+              }
+              if(!validType) throw new Exception("The declared type is an unknown type");
+        }
   |   expression
   ;
   
@@ -56,14 +75,4 @@ operand
   |   TRUE
   |   FALSE
   |   NUMBER
-  ;
-  
-declaration
-  :   ^(VAR id=IDENTIFIER) 
-        {   if($id.text.endsWith("Pill")) {
-              System.out.println("pilletje gevonden!");
-            } else {
-              System.out.println("WAAR IS MIJN PIL!?!?!");
-            };
-        }
   ;
