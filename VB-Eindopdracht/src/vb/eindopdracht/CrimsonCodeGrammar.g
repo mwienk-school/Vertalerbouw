@@ -91,7 +91,7 @@ constDecl
   ;
   
 varDecl
-  :   VAR^ IDENTIFIER (BECOMES^ expression)?
+  :   VAR^ IDENTIFIER
   ;
   
 //Expression
