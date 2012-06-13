@@ -10,7 +10,7 @@ options {
 }
   
 program
-  :   ^(PROGRAM compExpr)
+  :   ^(PROGRAM compExpr+)
   ;
 
 compExpr

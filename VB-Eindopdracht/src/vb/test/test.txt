@@ -1,1 +1,3 @@
-spawn a;
+spawn a; 
+spawn b;
+a=b=ac=blauw;

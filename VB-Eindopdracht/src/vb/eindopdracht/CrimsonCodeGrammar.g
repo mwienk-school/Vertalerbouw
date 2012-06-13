@@ -97,7 +97,7 @@ varDecl
   
 //Expression
 expression
-  :   arithExpr
+  :   assignExpr
   |   readExpr
   |   printExpr
   |   ccompExpr
@@ -106,23 +106,11 @@ expression
   ;
 
 //Arithmatic expressions  
+assignExpr
+  :   arithExpr (BECOMES^ assignExpr)?
+  ;
+
 arithExpr
-  :   unaryArithExpr
-  |   binaryArithExpr
-  ;
-
-unaryArithExpr
-  :   PLUS binaryArithExpr
-      -> ^(UPLUS binaryArithExpr)
-  |   MINUS binaryArithExpr
-      -> ^(UMINUS binaryArithExpr)
-  ;
-
-binaryArithExpr
-  :   orExpr (BECOMES^ orExpr)*
-  ;
-
-orExpr
   :   andExpr (OR^ andExpr)*
   ;
 
@@ -139,8 +127,16 @@ plusExpr
   ;
   
 timesExpr
-  :   operand ((TIMES^ | DIVIDE^) operand)*
-  ;  
+  :   unaryExpr ((TIMES^ | DIVIDE^) unaryExpr)*
+  ;
+
+unaryExpr
+  :   operand
+  |   PLUS operand
+      -> ^(UPLUS operand)
+  |   MINUS operand
+      -> ^(UMINUS operand)
+  ;
 
 operand
   :   IDENTIFIER
