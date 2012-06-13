@@ -1,1 +1,1 @@
-colour pillRed = red
+spawn chillPill = red;

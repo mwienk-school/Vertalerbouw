@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import org.antlr.runtime.*;
 import org.antlr.runtime.tree.*;
 
+import vb.eindopdracht.CrimsonCodeChecker;
 import vb.eindopdracht.CrimsonCodeGrammarLexer;
 import vb.eindopdracht.CrimsonCodeGrammarParser;
 
@@ -26,7 +27,8 @@ public class ASTtest {
 			
 			nodes.setTokenStream(tokens);
 			
-			//CrimsonCodeGrammarInterpreter walker = new CrimsonCodeGrammarInterpreter(nodes);
+			CrimsonCodeChecker walker = new CrimsonCodeChecker(nodes);
+			walker.program();
 			
 			System.out.println("\nWalk tree:\n");
 			

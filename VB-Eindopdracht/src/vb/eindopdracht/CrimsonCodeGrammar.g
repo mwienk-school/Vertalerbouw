@@ -12,21 +12,33 @@ tokens {
   SEMICOLON = ';';
   COLON     = ':';
   COMMA     = ',';
-  VAR       = 'colour';
+  APOS      = '\'';
+  LCURLY    = '{';
+  RCURLY    = '}';
+  LPAREN    = '(';
+  RPAREN    = ')';
+  VAR       = 'spawn';
+  CONST     = 'const';
   
   //Types
   INTEGER   = 'i';
   BOOLEAN   = 'pill';
   CHAR      = 'c';
-  STRING    = 'fate';
+  STRING    = 's';
   
   TRUE      = 'red';
   FALSE     = 'blue';
   
   //Commands
+  READ      = 'read';
+  PRINT     = 'print';
   IF        = 'if';
+  IFEND     = 'fi';
+  THEN      = 'then';
+  ELSE      = 'else';
   WHILE     = 'while';
   DO        = 'do';
+  DOEND     = 'od';
   BECOMES   = '=';
   
   //Logic operators
@@ -36,12 +48,16 @@ tokens {
   GE        = '>=';
   EQ        = '==';
   NEQ       = '!=';
+  OR        = '||';
+  AND       = '&&';
   
   //Math operators
   PLUS      = '+';
   MINUS     = '-';
   TIMES     = '*';
   DIVIDE    = '/';
+  UPLUS     = 'uplus';
+  UMINUS    = 'uminus';
   
 }
 
@@ -56,63 +72,117 @@ tokens {
 //Parser regels
 
 program
-  : statement+ EOF
-    ->^(PROGRAM statement+)
+  :   compExpr EOF
+      ->^(PROGRAM compExpr)
   ;
 
-statement
-  : declaration
-  | command
+compExpr
+  :   ( ( declaration SEMICOLON!)* expression SEMICOLON!)+
   ;
-  
+
+//Declaration  
 declaration
-  : VAR^ id (BECOMES^ (TRUE|FALSE))?
-  ;
-
-//Commands  
-command
-  : ifCommand
-  | assignCommand
-  | whileCommand
+  :   constDecl
+  |   varDecl
   ;
   
-ifCommand
-  : IF^ exprrelop
-  ;
-
-assignCommand
-  : id BECOMES^ (TRUE | FALSE)
+constDecl
+  :   CONST^ IDENTIFIER BECOMES expression
   ;
   
-whileCommand
-  : WHILE^ exprrelop DO! command
+varDecl
+  :   VAR^ IDENTIFIER (BECOMES^ expression)?
+  ;
+  
+//Expression
+expression
+  :   arithExpr
+  |   readExpr
+  |   printExpr
+  |   ccompExpr
+  |   ifExpr
+  |   whileExpr
   ;
 
-//Expressies
-exprrelop
-  :   exprplus ((LT^ | LE^ | GT^ | GE^ | EQ^ | NEQ^) exprplus)*
+//Arithmatic expressions  
+arithExpr
+  :   unaryArithExpr
+  |   binaryArithExpr
   ;
-    
-exprplus
-  :   exprtimes ((PLUS^ | MINUS^) exprtimes)*
+
+unaryArithExpr
+  :   PLUS binaryArithExpr
+      -> ^(UPLUS binaryArithExpr)
+  |   MINUS binaryArithExpr
+      -> ^(UMINUS binaryArithExpr)
   ;
-    
-exprtimes
+
+binaryArithExpr
+  :   orExpr (BECOMES^ orExpr)*
+  ;
+
+orExpr
+  :   andExpr (OR^ andExpr)*
+  ;
+
+andExpr
+  :   compareExpr (AND^ compareExpr)*
+  ;
+
+compareExpr
+  :   plusExpr ((LT^ | LE^ | GT^ | GE^ | EQ^ | NEQ^) plusExpr)*
+  ;
+
+plusExpr
+  :   timesExpr ((PLUS^ | MINUS^) timesExpr)*
+  ;
+  
+timesExpr
   :   operand ((TIMES^ | DIVIDE^) operand)*
-  ;
+  ;  
 
 operand
-  : id
+  :   IDENTIFIER
+  |   TRUE
+  |   FALSE
+  |   NUMBER
+  |   character
+  ;
+
+character
+  :   APOS! LETTER APOS!
+  ;
+
+//Functional expressions  
+readExpr
+  :   READ^ LPAREN! varlist RPAREN!
   ;
   
-id
-  : type^ CAMEL
+varlist
+  :   IDENTIFIER (COMMA! IDENTIFIER)*
+  ;
+    
+printExpr
+  :   PRINT^ LPAREN! exprlist RPAREN!
+  ;
+   
+exprlist
+  :   expression (COMMA! expression)*
+  ;
+
+ccompExpr
+  :   LCURLY! compExpr RCURLY!
+  ;
+
+whileExpr
+  :   WHILE^ expression DO! expression DOEND!
+  ;
+
+ifExpr
+  :   IF^ expression THEN! expression ELSE! expression IFEND!
   ;
   
-type   
-  : INTEGER | BOOLEAN | CHAR | STRING;
-  
-//Lexer regels
+//Lexer rules
 
 COMMENT
   :   '//' .* '\n' 
@@ -124,10 +194,12 @@ WS
         { $channel=HIDDEN; }
   ;
 
-
-
-CAMEL
-  : UPPER LETTER* 
+IDENTIFIER
+  :   LETTER+
+  ;
+  
+NUMBER
+  :   DIGIT+
   ;
   
 fragment DIGIT  :   ('0'..'9') ;
