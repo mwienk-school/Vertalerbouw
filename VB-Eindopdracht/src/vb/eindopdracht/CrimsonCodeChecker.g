@@ -15,7 +15,8 @@ program
 
 compExpr
   :   ^(CONST IDENTIFIER expression)
-  |   ^(VAR IDENTIFIER expression?)
+  |   ^(VAR IDENTIFIER)
+  |   expression
   ;
   
 expression
@@ -24,6 +25,7 @@ expression
   |   ^(PLUS expression expression)
   |   ^(MINUS expression expression)
   |   ^(BECOMES IDENTIFIER expression)
+  |   ^(VARASSIGN expression)
   |   ^(OR expression expression)
   |   ^(AND expression expression)
   |   ^(LT expression expression)
@@ -54,7 +56,6 @@ operand
   |   TRUE
   |   FALSE
   |   NUMBER
-  |   LETTER
   ;
   
 declaration

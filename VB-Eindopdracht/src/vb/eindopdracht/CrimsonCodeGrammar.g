@@ -40,6 +40,7 @@ tokens {
   DO        = 'do';
   DOEND     = 'od';
   BECOMES   = '=';
+  VARASSIGN = 'varassign';
   
   //Logic operators
   LT        = '<';
@@ -87,11 +88,11 @@ declaration
   ;
   
 constDecl
-  :   CONST^ IDENTIFIER BECOMES expression
+  :   CONST^ IDENTIFIER BECOMES! expression
   ;
   
 varDecl
-  :   VAR^ IDENTIFIER (BECOMES^ expression)?
+  :   VAR^ IDENTIFIER   
   ;
   
 //Expression
