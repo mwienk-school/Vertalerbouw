@@ -6,9 +6,11 @@ package vb.eindopdracht.symboltable;
  * @author   Theo Ruys
  * @version  2006.04.21
  */
-public class IdEntry {
+public abstract class IdEntry {
     private int  level = -1;
     
-    public int   getLevel()             { return level;         }
-    public void  setLevel(int level)    { this.level = level;   }   
+    public int   getLevel()			{ return level;			}
+    public void  setLevel(int level)	{ this.level = level;	}
+    
+    public abstract void setValue(Object o);
 }

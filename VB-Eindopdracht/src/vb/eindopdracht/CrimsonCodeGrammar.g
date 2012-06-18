@@ -41,6 +41,7 @@ tokens {
   DOEND     = 'od';
   BECOMES   = '=';
   VARASSIGN = 'varassign';
+  CCOMPEXPR = 'ccompexpr';
   
   //Logic operators
   LT        = '<';
@@ -168,7 +169,8 @@ exprlist
   ;
 
 ccompExpr
-  :   LCURLY! compExpr RCURLY!
+  :   LCURLY compExpr RCURLY
+      -> ^(CCOMPEXPR compExpr)
   ;
 
 whileExpr

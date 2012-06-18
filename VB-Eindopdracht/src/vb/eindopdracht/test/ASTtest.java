@@ -17,7 +17,7 @@ public class ASTtest {
 		RuleReturnScope result = new RuleReturnScope();
 		
 		try {
-			tokens.setTokenSource(new CrimsonCodeGrammarLexer(new ANTLRInputStream(new FileInputStream("src/vb/test/test.txt"))));
+			tokens.setTokenSource(new CrimsonCodeGrammarLexer(new ANTLRInputStream(new FileInputStream("src/vb/eindopdracht/test/test.txt"))));
 			CrimsonCodeGrammarParser jp = new CrimsonCodeGrammarParser(tokens);
 			result = jp.program();
 			

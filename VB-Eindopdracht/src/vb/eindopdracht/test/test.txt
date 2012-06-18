@@ -1,4 +1,6 @@
-spawn aPill; 
-spawn bPill;
-spawn hlaatInt;
-a=b=ac=blauw;
+const aPill = blue; 
+const bPill = red;
+spawn  iPill;
+spawn dInt;
+read(dInt, iPill);
+print(6*2);
