@@ -1,8 +1,8 @@
 tree grammar CrimsonCodeChecker;
 
 options {
-    tokenVocab=CrimsonCodeGrammar;                    // import tokens from Calc.tokens
-    ASTLabelType=CommonTree;            // AST nodes are of type CommonTree
+    tokenVocab=CrimsonCodeGrammar;
+    ASTLabelType=CommonTree;
 }
 
 @header {
@@ -87,7 +87,7 @@ expression
   |   ^(WHILE expression expression)
   |   ^(READ varlist)
   |   ^(PRINT exprlist)
-  |   ^(CCOMPEXPR { symbolTable.openScope(); } compExpr { symbolTable.closeScope(); })
+  |   ^(CCOMPEXPR { symbolTable.openScope(); } compExpr+ { symbolTable.closeScope(); })
   |   operand
   ;
   

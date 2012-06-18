@@ -2,6 +2,7 @@ const aPill = blue;
 const bPill = red;
 spawn  iPill;
 spawn dInt;
-spawn iPill;
+{ spawn iPill; 
+  read(iPill); };
 read(dInt, iPill);
 print(6*2);
