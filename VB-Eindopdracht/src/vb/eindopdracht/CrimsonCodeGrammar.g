@@ -171,15 +171,16 @@ unaryExpr
   ;
   
 arrExpr
-  :   LSQUARE operand (COMMA operand)* RSQUARE
+  :   LSQUARE expression (COMMA expression)* RSQUARE
   ;
 
 operand
-  :   IDENTIFIER^ (LSQUARE! expression RSQUARE!)?
+  :   IDENTIFIER^ (LSQUARE! expression (COMMA! expression)? RSQUARE!)?
   |   TRUE
   |   FALSE
   |   NUMBER
   |   character
+  |   LPAREN expression RPAREN
   ;
 
 character
