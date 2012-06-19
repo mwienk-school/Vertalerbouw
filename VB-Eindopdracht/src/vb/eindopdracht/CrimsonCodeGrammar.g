@@ -17,17 +17,24 @@ tokens {
   RCURLY    = '}';
   LPAREN    = '(';
   RPAREN    = ')';
+  LSQUARE   = '[';
+  RSQUARE   = ']';
   VAR       = 'spawn';
   CONST     = 'const';
   
   //Types
-  INTEGER   = 'i';
-  BOOLEAN   = 'pill';
-  CHAR      = 'c';
-  STRING    = 's';
+  INTEGER   = 'Int';
+  BOOLEAN   = 'Pill';
+  CHAR      = 'Char';
+  STRING    = 'String';
   
   TRUE      = 'red';
   FALSE     = 'blue';
+  
+  PROC      = 'Proc';
+  FUNC      = 'Func';
+  
+  TYPE      = 'Type';
   
   //Commands
   READ      = 'read';
@@ -60,7 +67,7 @@ tokens {
   DIVIDE    = '/';
   UPLUS     = 'uplus';
   UMINUS    = 'uminus';
-  
+  DOTDOT    = '..';
 }
 
 @header {
@@ -86,6 +93,9 @@ compExpr
 declaration
   :   constDecl
   |   varDecl
+  |   procDecl
+  |   funcDecl
+  |   typeDecl
   ;
   
 constDecl
@@ -96,6 +106,26 @@ varDecl
   :   VAR^ IDENTIFIER
   ;
   
+procDecl
+  :   PROC^ IDENTIFIER LPAREN! params RPAREN! ccompExpr
+  ;
+  
+funcDecl
+  :   FUNC^ IDENTIFIER LPAREN! params RPAREN! ccompExpr
+  ;
+
+params
+  :   param (COMMA! param)+
+  ;
+
+param
+  :   (VAR)? IDENTIFIER
+  ;
+
+typeDecl
+  :   TYPE^ IDENTIFIER LSQUARE! NUMBER DOTDOT! NUMBER (COMMA! NUMBER DOTDOT! NUMBER)? RSQUARE!
+  ;
+  
 //Expression
 expression
   :   assignExpr
@@ -104,6 +134,7 @@ expression
   |   ccompExpr
   |   ifExpr
   |   whileExpr
+  |   arrExpr
   ;
 
 //Arithmatic expressions  
@@ -138,9 +169,13 @@ unaryExpr
   |   MINUS operand
       -> ^(UMINUS operand)
   ;
+  
+arrExpr
+  :   LSQUARE operand (COMMA operand)* RSQUARE
+  ;
 
 operand
-  :   IDENTIFIER
+  :   IDENTIFIER^ (LSQUARE! expression RSQUARE!)?
   |   TRUE
   |   FALSE
   |   NUMBER
