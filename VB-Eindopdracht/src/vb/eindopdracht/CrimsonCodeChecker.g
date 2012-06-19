@@ -29,6 +29,7 @@ options {
     tokenSuffix.put("Pill", "vb.eindopdracht.symboltable.BooleanEntry");
     tokenSuffix.put("Int",  "vb.eindopdracht.symboltable.IntEntry");
     tokenSuffix.put("Char", "vb.eindopdracht.symboltable.CharEntry");
+    tokenSuffix.put("Array", "vb.eindopdracht.symboltable.CharEntry");
   };
 }
 program
@@ -36,7 +37,7 @@ program
   ;
 
 compExpr
-  :   ^(CONST id=IDENTIFIER e=expression)
+  :   ^(CONST id=IDENTIFIER expression)
         {
             String[] str = $id.text.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
             if(tokenSuffix.containsKey(str[str.length-1])) {
@@ -58,9 +59,50 @@ compExpr
               throw new Exception("The declared variable type " + $id.text + "  is an unknown type.");
             }
         }
+  |    ^(PROC id=IDENTIFIER
+        {
+            symbolTable.openScope();
+        } param+ expression
+        {
+            symbolTable.closeScope();
+        })
+        {
+            String[] str = $id.text.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
+            if(tokenSuffix.containsKey(str[str.length-1])) {
+              //Instantiate the procedure as it's type entry
+              IdEntry proc = (IdEntry) Class.forName(tokenSuffix.get(str[str.length-1])).newInstance();
+              symbolTable.enter($id.text, proc);
+            } else {
+              throw new Exception("The declared procedure type " + $id.text + "  is an unknown type.");
+            }
+        }
   |   expression
   ;
 
+param
+  :   ^(PARAM id=IDENTIFIER)
+        {
+            String[] str = $id.text.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
+            if(tokenSuffix.containsKey(str[str.length-1])) {
+              //Instantiate the parameter as it's type entry
+              IdEntry param = (IdEntry) Class.forName(tokenSuffix.get(str[str.length-1])).newInstance();
+              symbolTable.enter($id.text, param);
+            } else {
+              throw new Exception("The declared parameter type " + $id.text + "  is an unknown type.");
+            }
+        }
+  |   ^(VAR id=IDENTIFIER)
+        {
+            String[] str = $id.text.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
+            if(tokenSuffix.containsKey(str[str.length-1])) {
+              //Instantiate the parameter as it's type entry
+              IdEntry parameter = (IdEntry) Class.forName(tokenSuffix.get(str[str.length-1])).newInstance();
+              symbolTable.enter($id.text, parameter);
+            } else {
+              throw new Exception("The declared parameter type " + $id.text + "  is an unknown type.");
+            }
+        }
+  ;
   
 expression
   :   ^(UPLUS expression)

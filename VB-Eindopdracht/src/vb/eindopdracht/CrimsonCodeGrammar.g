@@ -21,6 +21,7 @@ tokens {
   RSQUARE   = ']';
   VAR       = 'spawn';
   CONST     = 'const';
+  PARAM     = 'param';
   
   //Types
   INTEGER   = 'Int';
@@ -119,7 +120,9 @@ params
   ;
 
 param
-  :   (VAR)? IDENTIFIER
+  :   IDENTIFIER
+        -> ^(PARAM IDENTIFIER)
+  |   VAR^ IDENTIFIER
   ;
 
 typeDecl
