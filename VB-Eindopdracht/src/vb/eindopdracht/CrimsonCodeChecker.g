@@ -27,9 +27,10 @@ options {
     symbolTable.openScope();
     tokenSuffix = new HashMap<String, String>();
     tokenSuffix.put("Pill", "vb.eindopdracht.symboltable.BooleanEntry");
-    tokenSuffix.put("Int",  "vb.eindopdracht.symboltable.IntEntry");
+    tokenSuffix.put("Int", "vb.eindopdracht.symboltable.IntEntry");
     tokenSuffix.put("Char", "vb.eindopdracht.symboltable.CharEntry");
     tokenSuffix.put("Array", "vb.eindopdracht.symboltable.CharEntry");
+    tokenSuffix.put("Proc", "vb.eindopdracht.symboltable.ProcEntry");
   };
 }
 program
@@ -72,6 +73,26 @@ compExpr
               //Instantiate the procedure as it's type entry
               IdEntry proc = (IdEntry) Class.forName(tokenSuffix.get(str[str.length-1])).newInstance();
               symbolTable.enter($id.text, proc);
+            } else {
+              throw new Exception("The declared function type " + $id.text + "  is an unknown type.");
+            }
+        }
+  |    ^(FUNC id=IDENTIFIER
+        {
+            symbolTable.openScope();
+        } param+ expression
+        {
+            symbolTable.closeScope();
+        })
+        {
+            String[] str = $id.text.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
+            if(str[str.length-1].equals("Func")) {
+              if(tokenSuffix.containsKey(str[str.length-2])) {
+                //Instantiate the function in the symboltable
+                FuncEntry func = new FuncEntry();
+                func.setReturnType(str[str.length-2]);
+                symbolTable.enter($id.text, func);
+              }
             } else {
               throw new Exception("The declared procedure type " + $id.text + "  is an unknown type.");
             }
