@@ -1,8 +1,45 @@
 const aPill = blue; 
-const bPill = red;
-spawn  iPill;
-spawn dInt;
-{ spawn iPill; 
-  read(iPill); };
-read(dInt, iPill);
+const thePill = red;
+spawn powerPill;
+spawn ohnoyoudInt;
+spawn ichooseyouChar
+{ spawn powerPill; 
+  read(powerPill); };
+read(ohnoyoudInt, powerPill);
 print(6*2);
+
+
+
+spawn ivar1Int;
+spawn ivar2Int;
+spawn vvarPill;
+spawn cvar1Char;
+spawn cvar2Char;
+const iconst1Int = 1;
+const iconst2Int = 2;
+const bconstPill = true;
+const cconstChar = ’c’;
+
+print(ivar1Int);
+print(ivar2Int);
+print(vvarPill);
+print(cvar1Char);
+print(cvar2Char);
+print(iconst1Int);
+print(iconst2Int);
+print(bconstPill);
+print(cconstChar);
+
+print(+16 + 2 * -8);
+
+print(12 / 5 * 5 + 12 % 5 == 12 && 6 >= 6);
+print(ivar1 < ivar2 && iconst1 <= iconst2);
+print(iconst1 * iconst2 > ivar2 - ivar1);
+print(cvar1 = const && (cvar2 <> ’b’ || !true));
+print(!false && bvar = bconst || true <> false);
+
+print('b');
+
+ivar2 := ivar1 := +16 + 2 * -8;
+bvar := 12 / 5 * 5 + 12 % 5 == 12 && 6 >= 6;
+cvar2 := ’z’;

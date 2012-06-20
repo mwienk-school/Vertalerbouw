@@ -130,6 +130,7 @@ expression
   |   ^(READ varlist)
   |   ^(PRINT exprlist)
   |   ^(CCOMPEXPR { symbolTable.openScope(); } compExpr+ { symbolTable.closeScope(); })
+  |   ^(ARRAY expression+)
   |   operand
   ;
   
@@ -146,11 +147,11 @@ varlist
   ;
   
 operand
-  :   id=IDENTIFIER
+  :   ^(id=IDENTIFIER
       {
         if(symbolTable.retrieve($id.text) == null)
           throw new Exception($id.text + " is not declared.");
-      }
+      } expression*)
   |   TRUE
   |   FALSE
   |   NUMBER
