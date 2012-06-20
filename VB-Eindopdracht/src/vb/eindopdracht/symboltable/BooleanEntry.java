@@ -10,5 +10,7 @@ public class BooleanEntry extends IdEntry {
 	public boolean isTrue() {
 		return value;
 	}
+	
+	public BooleanEntry(String str) {}
 
 }

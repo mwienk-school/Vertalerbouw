@@ -10,5 +10,7 @@ public class CharEntry extends IdEntry {
 	public char getChar() {
 		return ch;
 	}
+	
+	public CharEntry(String str) {}
 
 }

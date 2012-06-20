@@ -10,5 +10,7 @@ public class IntEntry extends IdEntry {
 	public int getValue() {
 		return i;
 	}
+	
+	public IntEntry(String str) {}
 
 }

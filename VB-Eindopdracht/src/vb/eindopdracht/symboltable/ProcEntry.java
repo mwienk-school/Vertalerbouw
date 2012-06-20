@@ -7,5 +7,7 @@ public class ProcEntry extends IdEntry {
 		// TODO Auto-generated method stub
 
 	}
+	
+	public ProcEntry(String str) {}
 
 }

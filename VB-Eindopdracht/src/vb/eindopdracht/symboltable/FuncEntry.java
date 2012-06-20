@@ -14,7 +14,10 @@ public class FuncEntry extends IdEntry {
 	@Override
 	public void setValue(Object o) {
 		// TODO Auto-generated method stub
-
+	}
+	
+	public FuncEntry(String str) {
+		this.setReturnType(str);
 	}
 
 }
