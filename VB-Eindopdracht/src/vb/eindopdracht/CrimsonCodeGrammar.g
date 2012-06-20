@@ -112,21 +112,25 @@ varDecl
   ;
   
 procDecl
-  :   PROC^ IDENTIFIER LPAREN! params RPAREN! ccompExpr
+  :   PROC^ IDENTIFIER LPAREN! paramdecls RPAREN! ccompExpr
   ;
   
 funcDecl
-  :   FUNC^ IDENTIFIER params ccompExpr
+  :   FUNC^ IDENTIFIER paramdecls ccompExpr
   ;
 
-params
-  :   LPAREN! param (COMMA! param)* RPAREN!
+paramdecls
+  :   LPAREN! paramdecl (COMMA! paramdecl)* RPAREN!
   ;
 
-param
+paramdecl
   :   IDENTIFIER
         -> ^(PARAM IDENTIFIER)
   |   VAR^ IDENTIFIER
+  ;
+  
+paramuses
+  :   LPAREN! expression (COMMA! expression)* RPAREN!
   ;
 
 typeDecl
@@ -166,7 +170,7 @@ plusExpr
   ;
   
 timesExpr
-  :   unaryExpr ((TIMES^ | DIVIDE^) unaryExpr)*
+  :   unaryExpr ((TIMES^ | DIVIDE^ | MOD^) unaryExpr)*
   ;
 
 unaryExpr
@@ -184,20 +188,16 @@ arrExpr
   ;
 
 operand
-  :   IDENTIFIER^ (arrIndex | params)? 
+  :   IDENTIFIER^ (arrIndex | paramuses)? 
   |   TRUE
   |   FALSE
   |   NUMBER
-  |   character
+  |   CHARACTER
   |   LPAREN expression RPAREN
   ;
 
 arrIndex
   :   LSQUARE! expression (COMMA! expression)? RSQUARE!
-  ;
-
-character
-  :   APOS! LETTER APOS!
   ;
 
 //Functional expressions  
@@ -243,14 +243,18 @@ WS
   ;
 
 IDENTIFIER
-  :   LETTER+
+  :   LETTER (LETTER | DIGIT)*
   ;
   
 NUMBER
   :   DIGIT+
   ;
   
+CHARACTER
+  :   APOS LETTER APOS
+  ;
+  
 fragment DIGIT  :   ('0'..'9') ;
 fragment LOWER  :   ('a'..'z') ;
 fragment UPPER  :   ('A'..'Z') ;
-fragment LETTER :   LOWER | UPPER ;
+fragment LETTER :   (LOWER | UPPER) ;
