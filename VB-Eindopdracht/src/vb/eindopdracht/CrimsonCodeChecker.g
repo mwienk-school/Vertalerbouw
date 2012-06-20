@@ -10,6 +10,7 @@ options {
   import java.util.Map;
   import java.util.HashMap;
   import vb.eindopdracht.symboltable.*;
+  import java.lang.reflect.Constructor;
 }
 
 @rulecatch { 
@@ -22,86 +23,73 @@ options {
 @members {
   private static SymbolTable<IdEntry> symbolTable;
   private static HashMap<String, String> tokenSuffix;
+  private static HashMap<String, String> dynamicTypes;
   static {
     symbolTable = new SymbolTable<IdEntry>();
     symbolTable.openScope();
     tokenSuffix = new HashMap<String, String>();
     tokenSuffix.put("Pill", "vb.eindopdracht.symboltable.BooleanEntry");
-    tokenSuffix.put("Int",  "vb.eindopdracht.symboltable.IntEntry");
+    tokenSuffix.put("Int", "vb.eindopdracht.symboltable.IntEntry");
     tokenSuffix.put("Char", "vb.eindopdracht.symboltable.CharEntry");
-    tokenSuffix.put("Array", "vb.eindopdracht.symboltable.CharEntry");
+    tokenSuffix.put("Proc", "vb.eindopdracht.symboltable.ProcEntry");
+    tokenSuffix.put("Func", "vb.eindopdracht.symboltable.FuncEntry");
   };
+  
+  private static IdEntry processEntry(String identifier) throws Exception {
+    String[] str = identifier.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
+    String lastPart = "";
+    for(int i = 1; i < str.length; i++) {
+      lastPart = str[str.length-i] + lastPart;
+      if(tokenSuffix.containsKey(lastPart.toString())) {
+        Constructor constructor = Class.forName(tokenSuffix.get(lastPart.toString())).getConstructor(String.class);
+        IdEntry entry = (IdEntry) constructor.newInstance(str[str.length-(i+1)]);
+        symbolTable.enter(identifier, entry);
+        return entry;
+      }
+    }
+    //Type isn't found.
+    throw new Exception("The declared type of " + identifier + "(" + lastPart + ") is an unknown type.");
+  }
+  
+  private static void processDynamicType(String identifier) throws Exception {
+    String[] str = identifier.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
+    //Uppercase the first letter so it can be seen as a type
+    identifier = identifier.substring(0,1).toUpperCase() + identifier.substring(1);
+    if("Array".equals(str[str.length-1])) tokenSuffix.put(identifier,"vb.eindopdracht.symboltable.ArrayEntry");
+    //TODO: record nog niet goed (kan maar 1 type aan).
+    if("Record".equals(str[str.length-1])) tokenSuffix.put(identifier,"vb.eindopdracht.symboltable.ArrayEntry");
+  }
+  
+  private static void processDynamicEntry(String identifier) throws Exception {
+  }
 }
 program
   :   ^(PROGRAM compExpr+)
   ;
 
 compExpr
-  :   ^(CONST id=IDENTIFIER expression)
-        {
-            String[] str = $id.text.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
-            if(tokenSuffix.containsKey(str[str.length-1])) {
-              //Instantiate the constant as it's type entry
-              IdEntry constant = (IdEntry) Class.forName(tokenSuffix.get(str[str.length-1])).newInstance();
-              symbolTable.enter($id.text, constant);
-            } else {
-              throw new Exception("The declared constant type " + $id.text + " is an unknown type.");
-            }
-        }
-  |   ^(VAR id=IDENTIFIER)
-        {
-            String[] str = $id.text.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
-            if(tokenSuffix.containsKey(str[str.length-1])) {
-              //Instantiate the variable as it's type entry
-              IdEntry var = (IdEntry) Class.forName(tokenSuffix.get(str[str.length-1])).newInstance();
-              symbolTable.enter($id.text, var);
-            } else {
-              throw new Exception("The declared variable type " + $id.text + "  is an unknown type.");
-            }
-        }
-  |    ^(PROC id=IDENTIFIER
+  :   ^(CONST id=IDENTIFIER expression) { processEntry($id.text); }
+  |   ^(VAR id=IDENTIFIER)              { processEntry($id.text); }
+  |   ^(PROC id=IDENTIFIER 
         {
             symbolTable.openScope();
         } paramdecl+ expression
         {
             symbolTable.closeScope();
-        })
+        })                              { processEntry($id.text); }
+  |   ^(FUNC id=IDENTIFIER
         {
-            String[] str = $id.text.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
-            if(tokenSuffix.containsKey(str[str.length-1])) {
-              //Instantiate the procedure as it's type entry
-              IdEntry proc = (IdEntry) Class.forName(tokenSuffix.get(str[str.length-1])).newInstance();
-              symbolTable.enter($id.text, proc);
-            } else {
-              throw new Exception("The declared procedure type " + $id.text + "  is an unknown type.");
-            }
-        }
+            symbolTable.openScope();
+        } paramdecl+ expression
+        {
+            symbolTable.closeScope();
+        })                              { processEntry($id.text); }
   |   expression
   ;
 
 paramdecl
-  :   ^(PARAM id=IDENTIFIER)
-        {
-            String[] str = $id.text.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
-            if(tokenSuffix.containsKey(str[str.length-1])) {
-              //Instantiate the parameter as it's type entry
-              IdEntry param = (IdEntry) Class.forName(tokenSuffix.get(str[str.length-1])).newInstance();
-              symbolTable.enter($id.text, param);
-            } else {
-              throw new Exception("The declared parameter type " + $id.text + "  is an unknown type.");
-            }
-        }
-  |   ^(VAR id=IDENTIFIER)
-        {
-            String[] str = $id.text.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
-            if(tokenSuffix.containsKey(str[str.length-1])) {
-              //Instantiate the parameter as it's type entry
-              IdEntry parameter = (IdEntry) Class.forName(tokenSuffix.get(str[str.length-1])).newInstance();
-              symbolTable.enter($id.text, parameter);
-            } else {
-              throw new Exception("The declared parameter type " + $id.text + "  is an unknown type.");
-            }
-        }
+  :   ^(PARAM id=IDENTIFIER) { processEntry($id.text); }
+  |   ^(VAR id=IDENTIFIER)   { processEntry($id.text); }
   ;
 
 paramuse
@@ -144,7 +132,8 @@ expression
   |   ^(READ varlist)
   |   ^(PRINT exprlist)
   |   ^(CCOMPEXPR { symbolTable.openScope(); } compExpr+ { symbolTable.closeScope(); })
-  |   ^(ARRAY expression+)
+  |   ^(ARRAY expression+)                               { processDynamicEntry($id.text); }
+  |   ^(TYPE id=IDENTIFIER NUMBER NUMBER)                { processDynamicType($id.text); }
   |   operand
   ;
   
