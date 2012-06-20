@@ -37,6 +37,8 @@ tokens {
   
   TYPE      = 'Type';
   
+  ARRAY     = 'Array';
+  
   //Commands
   READ      = 'read';
   PRINT     = 'print';
@@ -116,7 +118,7 @@ funcDecl
   ;
 
 params
-  :   param (COMMA! param)+
+  :   param (COMMA! param)*
   ;
 
 param
@@ -174,7 +176,8 @@ unaryExpr
   ;
   
 arrExpr
-  :   LSQUARE expression (COMMA expression)* RSQUARE
+  :   LSQUARE expression (COMMA expression) RSQUARE
+      -> ^(ARRAY expression+)
   ;
 
 operand
