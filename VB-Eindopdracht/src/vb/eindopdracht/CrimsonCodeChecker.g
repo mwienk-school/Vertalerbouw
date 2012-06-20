@@ -21,6 +21,7 @@ options {
 }
 
 @members {
+  //TODO: Met live private maken (dit is alleen voor debug public)
   public static SymbolTable<IdEntry> symbolTable;
   private static HashMap<String, String> tokenSuffix;
   private static HashMap<String, String> dynamicTypes;
