@@ -21,7 +21,8 @@ options {
 }
 
 @members {
-  private static SymbolTable<IdEntry> symbolTable;
+  //TODO: Met live private maken (dit is alleen voor debug public)
+  public static SymbolTable<IdEntry> symbolTable;
   private static HashMap<String, String> tokenSuffix;
   private static HashMap<String, String> dynamicTypes;
   static {
@@ -58,9 +59,6 @@ options {
     if("Array".equals(str[str.length-1])) tokenSuffix.put(identifier,"vb.eindopdracht.symboltable.ArrayEntry");
     //TODO: record nog niet goed (kan maar 1 type aan).
     if("Record".equals(str[str.length-1])) tokenSuffix.put(identifier,"vb.eindopdracht.symboltable.ArrayEntry");
-  }
-  
-  private static void processDynamicEntry(String identifier) throws Exception {
   }
 }
 program
@@ -132,7 +130,7 @@ expression
   |   ^(READ varlist)
   |   ^(PRINT exprlist)
   |   ^(CCOMPEXPR { symbolTable.openScope(); } compExpr+ { symbolTable.closeScope(); })
-  |   ^(ARRAY expression+)                               { processDynamicEntry($id.text); }
+  |   ^(ARRAY expression+)
   |   ^(TYPE id=IDENTIFIER NUMBER NUMBER)                { processDynamicType($id.text); }
   |   operand
   ;

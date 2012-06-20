@@ -76,4 +76,21 @@ public class SymbolTable<Entry extends IdEntry> {
 		}
 		return null;
 	}
+	
+	/**
+	 * Prints the complete SymbolTable at the moment in time;
+	 */
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n\n====== Current symbolTable ======= \n");
+		sb.append("level | entryType                |\n");
+		sb.append("----------------------------------\n");
+		for(HashMap<String, Entry> hm : symbolMapList) {
+			for(String str : hm.keySet()) {
+				sb.append("   " + hm.get(str).getLevel() + "  |" + str + "\n");
+			}
+		}
+		sb.append("\n*Keep in mind that the closed levels are removed.");
+		return sb.toString();
+	}
 }
