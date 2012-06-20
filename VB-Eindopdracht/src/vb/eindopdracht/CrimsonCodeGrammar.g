@@ -37,7 +37,7 @@ tokens {
   
   TYPE      = 'Type';
   
-  ARRAY     = 'Array';
+  ARRAY     = 'tokenArray';
   
   //Commands
   READ      = 'read';
