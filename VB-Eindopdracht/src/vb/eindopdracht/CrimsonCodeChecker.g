@@ -37,23 +37,27 @@ options {
   
   private static IdEntry processEntry(String identifier) throws Exception {
     String[] str = identifier.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
+    String lastPart = "";
     for(int i = 1; i < str.length; i++) {
-      if(tokenSuffix.containsKey(str[str.length-1])) {
-        Constructor constructor = Class.forName(tokenSuffix.get(str[str.length-1])).getConstructor(String.class);
-        IdEntry entry = (IdEntry) constructor.newInstance(str[str.length-2]);
+      lastPart = str[str.length-i] + lastPart;
+      if(tokenSuffix.containsKey(lastPart.toString())) {
+        Constructor constructor = Class.forName(tokenSuffix.get(lastPart.toString())).getConstructor(String.class);
+        IdEntry entry = (IdEntry) constructor.newInstance(str[str.length-(i+1)]);
         symbolTable.enter(identifier, entry);
         return entry;
       }
-    } else {
-      throw new Exception("The declared type of " + identifier + "(" + str[str.length-1] + ") is an unknown type.");
     }
+    //Type isn't found.
+    throw new Exception("The declared type of " + identifier + "(" + lastPart + ") is an unknown type.");
   }
   
   private static void processDynamicType(String identifier) throws Exception {
     String[] str = identifier.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
-    if("Array".equals(str[str.length-1])) tokenSuffix.put(identifier,"ArrayEntry<"+str[str.length-2]+">");
-    //TODO: record nog niet goed (kan maar 1 type aan.
-    if("Record".equals(str[str.length-1])) tokenSuffix.put(identifier,"ArrayEntry<"+str[str.length-2]+">");
+    //Uppercase the first letter so it can be seen as a type
+    identifier = identifier.substring(0,1).toUpperCase() + identifier.substring(1);
+    if("Array".equals(str[str.length-1])) tokenSuffix.put(identifier,"vb.eindopdracht.symboltable.ArrayEntry");
+    //TODO: record nog niet goed (kan maar 1 type aan).
+    if("Record".equals(str[str.length-1])) tokenSuffix.put(identifier,"vb.eindopdracht.symboltable.ArrayEntry");
   }
   
   private static void processDynamicEntry(String identifier) throws Exception {

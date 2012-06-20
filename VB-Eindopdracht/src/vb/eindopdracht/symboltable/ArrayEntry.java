@@ -1,6 +1,6 @@
 package vb.eindopdracht.symboltable;
 
-public class ArrayEntry<E> extends IdEntry {
+public class ArrayEntry extends IdEntry {
 	private String type;
 	private int dimensions;
 
