@@ -2,7 +2,7 @@ const aPill = blue;
 const thePill = red;
 spawn powerPill;
 spawn ohnoyoudInt;
-spawn ichooseyouChar
+spawn ichooseyouChar;
 { spawn powerPill; 
   read(powerPill); };
 read(ohnoyoudInt, powerPill);

@@ -30,7 +30,7 @@ options {
     tokenSuffix.put("Pill", "vb.eindopdracht.symboltable.BooleanEntry");
     tokenSuffix.put("Int", "vb.eindopdracht.symboltable.IntEntry");
     tokenSuffix.put("Char", "vb.eindopdracht.symboltable.CharEntry");
-    tokenSuffix.put("Array", "vb.eindopdracht.symboltable.CharEntry");
+    tokenSuffix.put("Array", "vb.eindopdracht.symboltable.ArrayEntry");
     tokenSuffix.put("Proc", "vb.eindopdracht.symboltable.ProcEntry");
     tokenSuffix.put("Func", "vb.eindopdracht.symboltable.FuncEntry");
     
@@ -103,7 +103,7 @@ expression
   |   ^(READ varlist)
   |   ^(PRINT exprlist)
   |   ^(CCOMPEXPR { symbolTable.openScope(); } compExpr+ { symbolTable.closeScope(); })
-  |   ^(ARRAY expression+)
+  |   ^(ARRAY expression+) { processEntry($id.text); }
   |   operand
   ;
   
