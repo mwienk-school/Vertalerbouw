@@ -62,12 +62,14 @@ tokens {
   NEQ       = '!=';
   OR        = '||';
   AND       = '&&';
+  NEG       = '!';
   
   //Math operators
   PLUS      = '+';
   MINUS     = '-';
   TIMES     = '*';
   DIVIDE    = '/';
+  MOD       = '%';
   UPLUS     = 'uplus';
   UMINUS    = 'uminus';
   DOTDOT    = '..';
@@ -114,11 +116,11 @@ procDecl
   ;
   
 funcDecl
-  :   FUNC^ IDENTIFIER LPAREN! params RPAREN! ccompExpr
+  :   FUNC^ IDENTIFIER params ccompExpr
   ;
 
 params
-  :   param (COMMA! param)*
+  :   LPAREN! param (COMMA! param)* RPAREN!
   ;
 
 param
@@ -173,6 +175,7 @@ unaryExpr
       -> ^(UPLUS operand)
   |   MINUS operand
       -> ^(UMINUS operand)
+  |   NEG^ operand
   ;
   
 arrExpr
@@ -181,12 +184,16 @@ arrExpr
   ;
 
 operand
-  :   IDENTIFIER^ (LSQUARE! expression (COMMA! expression)? RSQUARE!)?
+  :   IDENTIFIER^ (arrIndex | params)? 
   |   TRUE
   |   FALSE
   |   NUMBER
   |   character
   |   LPAREN expression RPAREN
+  ;
+
+arrIndex
+  :   LSQUARE! expression (COMMA! expression)? RSQUARE!
   ;
 
 character

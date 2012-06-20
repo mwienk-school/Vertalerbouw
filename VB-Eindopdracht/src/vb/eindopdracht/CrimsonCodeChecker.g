@@ -62,7 +62,7 @@ compExpr
   |    ^(PROC id=IDENTIFIER
         {
             symbolTable.openScope();
-        } param+ expression
+        } paramdecl+ expression
         {
             symbolTable.closeScope();
         })
@@ -79,7 +79,7 @@ compExpr
   |   expression
   ;
 
-param
+paramdecl
   :   ^(PARAM id=IDENTIFIER)
         {
             String[] str = $id.text.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
@@ -103,9 +103,23 @@ param
             }
         }
   ;
+
+paramuse
+  :   ^(PARAM id=IDENTIFIER)
+        {
+	        if(symbolTable.retrieve($id.text) == null)
+	          throw new Exception($id.text + " is not declared.");
+	      }
+  |   ^(VAR id=IDENTIFIER)
+        {
+	        if(symbolTable.retrieve($id.text) == null)
+	          throw new Exception($id.text + " is not declared.");
+	      }
+  ;
   
 expression
-  :   ^(UPLUS expression)
+  :   ^(NEG expression)
+  |   ^(UPLUS expression)
   |   ^(UMINUS expression)
   |   ^(PLUS expression expression)
   |   ^(MINUS expression expression)
@@ -151,7 +165,7 @@ operand
       {
         if(symbolTable.retrieve($id.text) == null)
           throw new Exception($id.text + " is not declared.");
-      } expression*)
+      } expression* paramuse*)
   |   TRUE
   |   FALSE
   |   NUMBER
