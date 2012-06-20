@@ -141,12 +141,12 @@ expression
   |   ccompExpr
   |   ifExpr
   |   whileExpr
-  |   arrExpr
   ;
 
 //Arithmatic expressions  
 assignExpr
   :   arithExpr (BECOMES^ assignExpr)?
+  |   arrExpr
   ;
 
 arithExpr
