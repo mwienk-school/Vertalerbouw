@@ -36,6 +36,7 @@ public class ASTtest {
 			
 			
 			System.out.println(tokens.toString());
+			System.out.println(CrimsonCodeChecker.symbolTable);
 			
 		} catch (RecognitionException e) {
             System.err.print("ERROR: Recognition exception thrown by compiler: ");
