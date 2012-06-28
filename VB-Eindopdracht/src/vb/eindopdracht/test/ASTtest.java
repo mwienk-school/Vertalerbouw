@@ -6,6 +6,7 @@ import org.antlr.runtime.*;
 import org.antlr.runtime.tree.*;
 
 import vb.eindopdracht.CrimsonCodeChecker;
+import vb.eindopdracht.CrimsonCodeGenerator;
 import vb.eindopdracht.CrimsonCodeGrammarLexer;
 import vb.eindopdracht.CrimsonCodeGrammarParser;
 
@@ -17,7 +18,7 @@ public class ASTtest {
 		RuleReturnScope result = new RuleReturnScope();
 		
 		try {
-			tokens.setTokenSource(new CrimsonCodeGrammarLexer(new ANTLRInputStream(new FileInputStream("src/vb/eindopdracht/test/test.txt"))));
+			tokens.setTokenSource(new CrimsonCodeGrammarLexer(new ANTLRInputStream(new FileInputStream("src/vb/eindopdracht/test/test3.txt"))));
 			CrimsonCodeGrammarParser jp = new CrimsonCodeGrammarParser(tokens);
 			result = jp.program();
 			
@@ -29,6 +30,9 @@ public class ASTtest {
 			
 			CrimsonCodeChecker walker = new CrimsonCodeChecker(nodes);
 			walker.program();
+			
+			CrimsonCodeGenerator generator = new CrimsonCodeGenerator(nodes);
+			generator.program();
 			
 			System.out.println("\nWalk tree:\n");
 			
