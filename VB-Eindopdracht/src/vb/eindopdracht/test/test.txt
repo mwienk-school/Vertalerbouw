@@ -18,7 +18,7 @@ spawn var2Char;
 const const1Int = 1;
 const const2Int = 2;
 const constPill = red;
-const constChar = ’c’;
+const constChar = 'b';
 
 print(var1Int);
 print(var2Int);
@@ -35,14 +35,14 @@ print(constChar);
 12 / 5 * 5 + 12 % 5 == 12 && 6 >= 6;
 var1Int < var2Int && const1Int <= const2Int;
 const1Int * const2Int > var2Int - var1Int;
-var1Char = const && (var2Char != ’b’ || !red);
+var1Char == constChar && (var2Char != 'b' || !red);
 !blue && varPill = constPill || red != blue;
 
 'b';
 
-var2Int := var1Int := +16 + 2 * -8;
-varPill := 12 / 5 * 5 + 12 % 5 == 12 && 6 >= 6;
-var2Char := ’z’;
+var2Int = var1Int = +16 + 2 * -8;
+varPill = 12 / 5 * 5 + 12 % 5 == 12 && 6 >= 6;
+var2Char = 'z';
 
 read(var1Int, var2Int);
 read(varPill);
@@ -52,7 +52,6 @@ write(var2Int);
 write(varPill);
 write(!blue && varPill == constPill || red != blue);
 write(var1Int, var2Int);
-write(var1Int < var2Int && const1Int <= const2Int,
-const1Int * const2Int > var2Int - var1Int);
-write(’c’);
-write(’a’, var1Char = constChar && (var2Char <> ’b’ || !red));
+write(var1Int < var2Int && const1Int <= const2Int, const1Int * const2Int > var2Int - var1Int);
+write('c');
+write('a', var1Char = constChar && (var2Char != 'b' || !red));
