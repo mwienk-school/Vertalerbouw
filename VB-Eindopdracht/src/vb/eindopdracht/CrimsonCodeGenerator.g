@@ -53,10 +53,12 @@ program
   ;
    
 compExpr
-  :   ^(CONST id=IDENTIFIER expression)
+  :   ^(CONST id=IDENTIFIER ex=expression)
       {
         //TODO De waarde opslaan in het variable object
-        vars.put($id.text, new Variable("TODO",true));
+        Variable con = new Variable(null,true);
+        con.setValue(ex);
+        vars.put($id.text, con);
       }
   |   ^(VAR id=IDENTIFIER)
       {
@@ -96,75 +98,130 @@ paramuse
   ;
     
 expression returns [String val = null;] 
-  :   ^(NEG expression)
+  :   ^(NEG ex=expression)
       {
-        //TODO
+        printTAM("CALL", "not", "Negation");
+        //TODO: Proper negation?
+        if(ex.equals("0")) {
+          val = "1";
+        } else {
+          val = "0";
+        }
       }
-  |   ^(UPLUS expression)  
+  |   ^(UPLUS ex=expression)  
       { 
-        //TODO 
+        val = ex;
       }
-  |   ^(UMINUS expression) 
+  |   ^(UMINUS ex=expression) 
       { 
         printTAM("LOADL", "-1", "Load numeric literal");
         printTAM("CALL", "mult",  "Multiply by -1");
+        val = ex;
       }
-  |   ^(PLUS expression expression)  
+  |   ^(PLUS ex=expression ey=expression)  
       { 
-        printTAM("CALL", "add", "Addition"); 
+        printTAM("CALL", "add", "Addition");
+        val = String.valueOf(Integer.parseInt(ex) + Integer.parseInt(ey)); 
       }  
-  |   ^(MINUS expression expression) 
+  |   ^(MINUS ex=expression ey=expression) 
       { 
         printTAM("CALL", "sub", "Subtraction");
+        val = String.valueOf(Integer.parseInt(ex) - Integer.parseInt(ey));
       }
-  |   ^(BECOMES id=IDENTIFIER expression)  
+  |   ^(BECOMES id=IDENTIFIER ex=expression)  
       { 
         printTAM("STORE(1)", vars.get($id.text).getValue(), "Store in variable " + $id.text);
         printTAM("LOAD(1)", vars.get($id.text).getValue(), "Load variable " + $id.text);
+        vars.get($id.text).setValue(ex);
+        val = ex;
       }
-  |   ^(VARASSIGN expression) 
+  |   ^(VARASSIGN ex=expression) 
       {
         //TODO ?? (niet in Grammar)
       }
-  |   ^(OR expression expression)
+  |   ^(OR ex=expression ey=expression)
       {
-        //TODO
+        //TODO (andere OR mogelijkheden?)
+        printTAM("CALL", "or", "OR statement");
+        if(!ex.equals("0") && !ex.equals("") || !ey.equals("0") && !ey.equals("")) {
+          val = "1";
+        } else {
+          val = "0";
+        }
       }
-  |   ^(AND expression expression)
+  |   ^(AND ex=expression ey=expression)
       {
-        //TODO
+        //TODO (andere AND mogelijkheden?)
+        printTAM("CALL", "and", "AND statement");
+        if(!ex.equals("0") && !ex.equals("") && !ey.equals("0") && !ey.equals("")) {
+          val = "1";
+        } else {
+          val = "0";
+        }
       }
-  |   ^(LT expression expression)
+  |   ^(LT ex=expression ey=expression)
       {
         printTAM("CALL", "lt", "Lesser than");
+        if(Integer.parseInt(ex) < Integer.parseInt(ey)) {
+          val = "1";
+        } else {
+          val = "0";
+        }
       }
-  |   ^(LE expression expression)
+  |   ^(LE ex=expression ey=expression)
       {
         printTAM("CALL", "le", "Lesser or equal to");
+        if(Integer.parseInt(ex) <= Integer.parseInt(ey)) {
+          val = "1";
+        } else {
+          val = "0";
+        }
       }
-  |   ^(GT expression expression)
+  |   ^(GT ex=expression ey=expression)
       {
         printTAM("CALL", "gt", "Greater than");
+        if(Integer.parseInt(ex) > Integer.parseInt(ey)) {
+          val = "1";
+        } else {
+          val = "0";
+        }
       }
-  |   ^(GE expression expression)
+  |   ^(GE ex=expression ey=expression)
       {
         printTAM("CALL", "ge", "Greater or equal to");
+        if(Integer.parseInt(ex) >= Integer.parseInt(ey)) {
+          val = "1";
+        } else {
+          val = "0";
+        }
       }
-  |   ^(EQ expression expression)
+  |   ^(EQ ex=expression ey=expression)
       {
         printTAM("CALL", "eq", "Equal to");
+        if(Integer.parseInt(ex) == Integer.parseInt(ey)) {
+          val = "1";
+        } else {
+          val = "0";
+        }
       }
-  |   ^(NEQ expression expression)
+  |   ^(NEQ ex=expression ey=expression)
       {
         printTAM("CALL", "ne", "Not equal to");
+        if(Integer.parseInt(ex) != Integer.parseInt(ey)) {
+          val = "1";
+        } else {
+          val = "0";
+        }
       }
-  |   ^(TIMES expression expression)
+  |   ^(TIMES ex=expression ey=expression)
       {
         printTAM("CALL", "mult", "Multiplication");
+        val = String.valueOf(Integer.parseInt(ex) * Integer.parseInt(ey));
       }
   |   ^(DIVIDE expression expression)
       {
         printTAM("CALL", "div", "Division");
+        val = String.valueOf(Integer.parseInt(ex) / Integer.parseInt(ey));
       }
   |   ^(IF expression 
       {

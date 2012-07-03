@@ -1,9 +1,9 @@
 package vb.eindopdracht.symboltable;
 
 /**
- * Variable can be used to store metadata about declared variables and constants.
- * In case of a constant, the value field is supposed to hold the value of the constant
- * In case of a variable, the value field is supposed to hold the address of the variable
+ * Variable can be used to store metadata about declared variables and constants
+ * In case of a constant, the address field can be empty
+ * In case of a variable, the address field is supposed to hold the address of the variable
  * @author Mark Wienk
  *
  */
@@ -11,6 +11,7 @@ public class Variable {
 	public enum Types {CONST, VAR};
 	private Types type;
 	private String value;
+	private String address;
 	
 	public Types getType() {
 		return type;
@@ -23,6 +24,12 @@ public class Variable {
 	}
 	public void setValue(String value) {
 		this.value = value;
+	}
+	public String getAddress() {
+		return this.address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	
 	public boolean isConstant() {
@@ -42,16 +49,16 @@ public class Variable {
 	
 	/***
 	 * Instantiate a variable type (constant or real variable).
-	 * @param value the content (or address)
+	 * @param address
 	 * @param isConstant true if const, false if var
 	 */
-	public Variable(String value, boolean isConstant) {
+	public Variable(String address, boolean isConstant) {
 		if(isConstant) { 
 			this.type = Types.CONST;
 		} else {
 			this.type = Types.VAR;
 		}
-		this.value = value;
+		this.address = address;
 	}
 	
 }
