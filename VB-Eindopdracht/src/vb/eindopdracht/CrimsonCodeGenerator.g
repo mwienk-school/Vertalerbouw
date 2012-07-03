@@ -53,12 +53,13 @@ program
   ;
    
 compExpr
-  :   ^(CONST id=IDENTIFIER ex=expression)
+  :   ^(CONST { constantScope = true; } id=IDENTIFIER ex=expression)
       {
         //TODO De waarde opslaan in het variable object
         Variable con = new Variable(null,true);
         con.setValue(ex);
         vars.put($id.text, con);
+        constantScope = false;
       }
   |   ^(VAR id=IDENTIFIER)
       {
@@ -66,7 +67,8 @@ compExpr
         printTAM("PUSH", "1", "Push variable " + $id.text);
         size++; 
       }
-  |   ^(PROC id=IDENTIFIER paramdecl+ expression)
+  |   //TODO implementaties van PROC & FUNC en paramdecl en paramuse
+      ^(PROC id=IDENTIFIER paramdecl+ expression)
   |   ^(FUNC id=IDENTIFIER paramdecl+ expression)
   |   expression
   ;
@@ -130,8 +132,7 @@ expression returns [String val = null;]
       }
   |   ^(BECOMES id=IDENTIFIER ex=expression)  
       { 
-        printTAM("STORE(1)", vars.get($id.text).getValue(), "Store in variable " + $id.text);
-        printTAM("LOAD(1)", vars.get($id.text).getValue(), "Load variable " + $id.text);
+        printTAM("STORE(1)", vars.get($id.text).getAddress(), "Store in variable " + $id.text);
         vars.get($id.text).setValue(ex);
         val = ex;
       }
@@ -259,9 +260,9 @@ expression returns [String val = null;]
       {
         //TODO
       }
-  |   ^(PRINT exprlist)
+  |   ^(PRINT ex=expression+)
       {
-        //TODO
+        printTAM("CALL", "put", "Print the first value on the stack");
       }
   |   ^(CCOMPEXPR compExpr+)
       {
@@ -275,36 +276,37 @@ expression returns [String val = null;]
       {
         //TODO
       }
-  |   operand
-  ;
-  
-exprlist
-  :   expression+
+  |   ex=operand 
+      {
+        val = ex;
+      }
   ;
   
 varlist
   :   id=IDENTIFIER+
   ;
   
-operand
+operand returns [String val = null;]
   :   ^(id=IDENTIFIER expression* paramuse*)  
       { 
-        if(vars.get($id.text).isConstant()) {
-          printTAM("LOADL", vars.get($id.text).getValue(), "Load literal value of constant");
-        } else {
-          printTAM("LOAD(1)", vars.get($id.text).getValue(), "Load variable " + $id.text);
-        } 
+//        if(!vars.get($id.text).isConstant()) {
+//          printTAM("LOAD(1)", vars.get($id.text).getAddress(), "Load variable " + $id.text);
+//        } TODO moet dit erin?
+        val = vars.get($id.text).getValue();
       } 
   |   TRUE
       {
         if(!constantScope) printTAM("LOADL", "1", "Load true value (1)");
+        val = "1";
       }
   |   FALSE
       {
         if(!constantScope) printTAM("LOADL", "0", "Load false value (0)");
+        val = "0";
       }
   |   n=NUMBER
       {
         if(!constantScope) printTAM("LOADL", String.valueOf(n), "Load numeric literal " + $n);
+        val = String.valueOf(n);
       }
   ;

@@ -1,4 +1,4 @@
 spawn eenPill;
 eenPill = blue;
 const tweePill = red;
-print(eenPill);
+print(eenPill, tweePill);

@@ -41,10 +41,10 @@ public class Variable {
 	
 	/**
 	 * Instantiate a var
-	 * @param value
+	 * @param address
 	 */
-	public Variable(String value) {
-		this(value,false);
+	public Variable(String address) {
+		this(address,false);
 	}
 	
 	/***
