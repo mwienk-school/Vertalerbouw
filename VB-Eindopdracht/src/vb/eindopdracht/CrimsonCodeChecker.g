@@ -103,11 +103,29 @@ paramuse
 	      }
   ;
   
-expression
-  :   ^(NEG expression)
-  |   ^(UPLUS expression)
-  |   ^(UMINUS expression)
-  |   ^(PLUS expression expression)
+expression returns [String val = null;]
+  :   ^(NEG ex=expression)
+      {
+        if($ex.text.equals("boolean"))
+          val = "boolean";
+        else
+          throw new Exception("Boolean expression expected, " + $ex.text + " expression found.");
+      }
+  |   ^(UPLUS ex=expression)
+      {
+        if($ex.text.equals("integer"))
+          val = "integer";
+        else
+          throw new Exception("Integer expression expected, " + $ex.text + " expression found.");
+      }
+  |   ^(UMINUS ex=expression)
+      {
+        if($ex.text.equals("integer"))
+          val = "integer";
+        else
+          throw new Exception("Integer expression expected, " + $ex.text + " expression found.");
+      }
+  |   ^(PLUS e1=expression e2=expression)
   |   ^(MINUS expression expression)
   |   ^(BECOMES id=IDENTIFIER expression)
       {
@@ -125,6 +143,7 @@ expression
   |   ^(NEQ expression expression)
   |   ^(TIMES expression expression)
   |   ^(DIVIDE expression expression)
+  |   ^(MOD expression expression)
   |   ^(IF expression expression expression)
   |   ^(WHILE expression expression)
   |   ^(READ varlist)
