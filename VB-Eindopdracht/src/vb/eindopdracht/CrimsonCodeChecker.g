@@ -149,7 +149,7 @@ varlist
   
 operand
   :   ^(id=IDENTIFIER
-      {
+      { 
         if(symbolTable.retrieve($id.text) == null)
           throw new Exception($id.text + " is not declared.");
       } expression* paramuse*)
