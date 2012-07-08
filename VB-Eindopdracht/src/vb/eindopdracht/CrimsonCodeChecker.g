@@ -107,21 +107,21 @@ expression returns [String val = null;]
   :   ^(NEG ex=expression)
       {
         if($ex.text.equals("boolean"))
-          val = "boolean";
+          retval.val = "boolean";
         else
           throw new Exception("Boolean expression expected, " + $ex.text + " expression found.");
       }
   |   ^(UPLUS ex=expression)
       {
         if($ex.text.equals("integer"))
-          val = "integer";
+          retval.val = "integer";
         else
           throw new Exception("Integer expression expected, " + $ex.text + " expression found.");
       }
   |   ^(UMINUS ex=expression)
       {
         if($ex.text.equals("integer"))
-          val = "integer";
+          retval.val = "integer";
         else
           throw new Exception("Integer expression expected, " + $ex.text + " expression found.");
       }
@@ -166,7 +166,7 @@ varlist
       }
   ;
   
-operand
+operand 
   :   ^(id=IDENTIFIER
       { 
         if(symbolTable.retrieve($id.text) == null)
