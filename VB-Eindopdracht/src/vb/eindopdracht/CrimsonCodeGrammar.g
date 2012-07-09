@@ -140,7 +140,6 @@ typeDecl
 //Expression
 expression
   :   assignExpr
-  |   readExpr
   |   printExpr
   |   ccompExpr
   |   ifExpr
@@ -194,6 +193,7 @@ operand
   |   NUMBER
   |   CHARACTER
   |   LPAREN! expression RPAREN!
+  |   readExpr
   ;
 
 arrIndex

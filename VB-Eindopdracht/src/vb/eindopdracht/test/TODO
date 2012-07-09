@@ -11,5 +11,3 @@ levert geen fouten op, terwijl het wel fout is.
 aBlaatIntArray = [blue, red];
 
 levert geen fouten op, terwijl het wel fout is
-
-- Er moet nog even naar read gekeken worden, het zou als operand moeten kunnen werken, maar dat kan nu niet.

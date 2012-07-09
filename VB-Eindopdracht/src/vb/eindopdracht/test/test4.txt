@@ -13,5 +13,9 @@ spawn tweePill;
 tweePill = red;
 read(eenPill, tweePill);
 
+spawn eenInt;
+read(eenInt);
+if(eenInt == 50) then line(50,50,50,50) else line(40,40,40) fi;
+
 eenPill = read(tweePill);
-eenPill = read(eenPill, tweePill);
+//eenPill = read(eenPill, tweePill);
