@@ -1,4 +1,4 @@
-//Success
+//Fail (Checker)
 spawn eenInt;
 spawn tweeInt;
 eenInt = 50;

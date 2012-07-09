@@ -30,6 +30,7 @@ public abstract class CrimsonCodeHelper {
 		for (int i = 1; i < splitted.length; i++) {
 			lastPart = splitted[splitted.length - i] + lastPart;
 			if (tokenSuffix.containsKey(lastPart.toString())) {
+				@SuppressWarnings("rawtypes")
 				Constructor constructor = Class.forName(
 						tokenSuffix.get(lastPart.toString())).getConstructor(
 						String.class);

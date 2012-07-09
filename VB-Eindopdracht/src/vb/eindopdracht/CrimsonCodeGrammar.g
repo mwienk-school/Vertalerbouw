@@ -33,8 +33,8 @@ tokens {
   TRUE      = 'red';
   FALSE     = 'blue';
   
-  PROC      = 'Proc';
-  FUNC      = 'Func';
+  PROC      = 'proc';
+  FUNC      = 'func';
   
   TYPE      = 'Type';
   
@@ -112,7 +112,7 @@ varDecl
   ;
   
 procDecl
-  :   PROC^ IDENTIFIER LPAREN! paramdecls RPAREN! ccompExpr
+  :   PROC^ IDENTIFIER paramdecls ccompExpr
   ;
   
 funcDecl
