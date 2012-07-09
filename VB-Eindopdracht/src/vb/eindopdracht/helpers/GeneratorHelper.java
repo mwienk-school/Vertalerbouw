@@ -1,5 +1,7 @@
 package vb.eindopdracht.helpers;
 
+import java.util.Arrays;
+
 import vb.eindopdracht.symboltable.IdEntry;
 
 public class GeneratorHelper extends CrimsonCodeHelper {
@@ -11,15 +13,18 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	private int labelNumber;
 	// If in constant scope, operands should not output
 	private boolean constantScope;
-	
+
 	/**
-	 * Stel constantScope in, dit heeft gevolgen voor het printen van TAM statements mbt constante waardes
-	 * @param b - De constantScope waarde
+	 * Stel constantScope in, dit heeft gevolgen voor het printen van TAM
+	 * statements mbt constante waardes
+	 * 
+	 * @param b
+	 *            - De constantScope waarde
 	 */
 	public void setConstantScope(boolean b) {
 		constantScope = b;
 	}
-	
+
 	/**
 	 * Bekijk of de Generator zich in een constantScop bevindt
 	 */
@@ -68,126 +73,207 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		printTAM("POP(0)", String.valueOf(size), "Pop " + size + " variables");
 		printTAM("HALT", "", "End of program");
 	}
-	
+
 	/**
-	 * Definieer een constante waarde (variabele die niet in het geheugen is opgeslagen).
+	 * Definieer een constante waarde (variabele die niet in het geheugen is
+	 * opgeslagen).
+	 * 
 	 * @param id
 	 * @param value
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public void defineConstant(String id, String value) throws Exception {
 		IdEntry entry = processEntry(id);
 		entry.setType(IdEntry.Type.CONST);
-        entry.setValue(value);
+		entry.setValue(value);
 	}
-	
+
 	/**
 	 * Definieer een variabele met de naam id
+	 * 
 	 * @param id
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public void defineVariable(String id) throws Exception {
 		IdEntry entry = processEntry(id);
 		entry.setAddress(size + "[SB]");
 		entry.setType(IdEntry.Type.VAR);
-        printTAM("PUSH", "1", "Push variable " + id);
-        size++;
+		printTAM("PUSH", "1", "Push variable " + id);
+		size++;
 	}
-	
+
 	/**
 	 * Print een primitive routine (een aanroep naar de VM met CALL)
+	 * 
 	 * @param cmd
 	 * @param comment
 	 */
 	public void printPrimitiveRoutine(String cmd, String comment) {
 		printTAM("CALL", cmd, comment);
 	}
-	
+
 	/**
 	 * Laadt een literal waarde op de stack
+	 * 
 	 * @param literal
 	 */
 	public void loadLiteral(String literal) {
+		literal = encode(literal);
 		printTAM("LOADL", literal, "Load literal value '" + literal + "'");
 	}
-	
+
 	/**
 	 * Sla een waarde op in een variabele 'id'
+	 * 
 	 * @param id
 	 * @param value
 	 */
 	public void storeValue(String id, String value) {
-        printTAM("STORE(1)", symbolTable.retrieve(id).getAddress(), "Store in variable " + id);
-        symbolTable.retrieve(id).setValue(value);
+		printTAM("STORE(1)", symbolTable.retrieve(id).getAddress(),
+				"Store in variable " + id);
+		symbolTable.retrieve(id).setValue(value);
 	}
-	
+
 	/**
 	 * Geef de waarde van een variabele terug
+	 * 
 	 * @param id
 	 * @return
 	 */
 	public String getValue(String id) {
-		return symbolTable.retrieve(id).getValue().toString();
+		return symbolTable.retrieve(id).toString();
 	}
-	
-	////////////////////////////////////////////////////////////
-	/// IF Statement
-	////////////////////////////////////////////////////////////
-	
+
+	/**
+	 * Encode een literal value (int of character) naar een integer value
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public String encode(String str) {
+		String result = null;
+		try {
+			Integer.parseInt(str);
+			result = str;
+		} catch (NumberFormatException e) {
+			String[] encodings = { "", "", "", "", "", "", "", "", "", "", // 00-09
+					"", "", "", "", "", "", "", "", "", "", // 10-19
+					"", "", "", "", "", "", "", "", "", "", // 20-29
+					"", "", " ", "!", "\"", "#", "$", "%", "&", "'", // 30-39
+					"(", ")", "*", "+", ",", "-", ".", "/", "0", "1", // 40-49
+					"2", "3", "4", "5", "6", "7", "8", "9", ":", ";", // 50-59
+					"<", "=", ">", "?", "@", "A", "B", "C", "D", "E", // 60-69
+					"F", "G", "H", "I", "J", "K", "L", "M", "N", "O", // 70-79
+					"P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", // 80-89
+					"Z", "[", "\\", "]", "^", "_", "`", "a", "b", "c", // 90-99
+					"d", "e", "f", "g", "h", "i", "j", "k", "l", "m", // 100-109
+					"n", "o", "p", "q", "r", "s", "t", "u", "v", "w", // 110-119
+					"x", "y", "z", "{", "|", "}", "", "", "", "" // 120-129
+			};
+			result = String.valueOf(Arrays.asList(encodings).indexOf(str));
+		}
+		return result;
+	}
+
+	// //////////////////////////////////////////////////////////
+	// / IF Statement
+	// //////////////////////////////////////////////////////////
+
 	/**
 	 * Start voor een if statement (test de stack en jumpt naar label)
 	 */
 	public int printStatementIf_Start() {
 		symbolTable.openScope();
-        int thisLabelNo = labelNumber++;
-        printTAM("JUMPIF(0)", "Else" + thisLabelNo + "[CB]", "Jump to ELSE");
-        return thisLabelNo;
+		int thisLabelNo = labelNumber++;
+		printTAM("JUMPIF(0)", "Else" + thisLabelNo + "[CB]", "Jump to ELSE");
+		return thisLabelNo;
 	}
-	
+
 	/**
 	 * Print de instructies voor de else clause
+	 * 
 	 * @param thisLabelNo
 	 */
 	public void printStatementIf_Else(int thisLabelNo) {
 		printTAM("JUMP", "End" + thisLabelNo + "[CB]", "Jump over ELSE");
-        nextLabel ="Else" + thisLabelNo;
+		nextLabel = "Else" + thisLabelNo;
 	}
-	
-	/** 
+
+	/**
 	 * Print de instructies voor het einde van het if statement
+	 * 
 	 * @param thisLabelNo
 	 */
 	public void printStatementIf_End(int thisLabelNo) {
-        nextLabel = "End" + thisLabelNo;
-        symbolTable.closeScope();
+		nextLabel = "End" + thisLabelNo;
+		symbolTable.closeScope();
 	}
 
-	////////////////////////////////////////////////////////////
-	/// WHILE Statement
-	////////////////////////////////////////////////////////////
+	// //////////////////////////////////////////////////////////
+	// / WHILE Statement
+	// //////////////////////////////////////////////////////////
 	/**
 	 * Print het begin van een while statement
+	 * 
 	 * @return WhileInfo object met informatie voor de End mehode
 	 */
 	public WhileInfo printStatementWhile_Start() {
 		symbolTable.openScope();
-        int thisLabelNo = labelNumber++;
-        if(nextLabel.equals(""))
-          nextLabel = "While" + thisLabelNo; //Wanneer while label al ingevuld is, geef deze door
-        printTAM("JUMPIF(0)", "End" + thisLabelNo + "[CB]", "Jump past body");
-        return new WhileInfo(thisLabelNo, nextLabel);
+		int thisLabelNo = labelNumber++;
+		if (nextLabel.equals(""))
+			nextLabel = "While" + thisLabelNo; // Wanneer while label al
+												// ingevuld is, geef deze door
+		printTAM("JUMPIF(0)", "End" + thisLabelNo + "[CB]", "Jump past body");
+		return new WhileInfo(thisLabelNo, nextLabel);
 	}
-	
+
 	/**
 	 * Print het einde van een while statement
-	 * @param info - De teruggegeven info van de start
+	 * 
+	 * @param info
+	 *            - De teruggegeven info van de start
 	 */
 	public void printStatementWhile_End(WhileInfo info) {
-        printTAM("JUMP", info.nextLabel + "[CB]", "Jump to WHILE-expression");
-        nextLabel = "End" + info.thisLabelNo;
-        symbolTable.closeScope();
+		printTAM("JUMP", info.nextLabel + "[CB]", "Jump to WHILE-expression");
+		nextLabel = "End" + info.thisLabelNo;
+		symbolTable.closeScope();
 	}
-	
+
+	// //////////////////////////////////////////////////////////
+	// / PRINT Statement
+	// //////////////////////////////////////////////////////////
+	/**
+	 * Print de put statements, bekijkt of het een Integer betreft (voor
+	 * putint).
+	 * 
+	 * @param ex
+	 */
+	public void printStatementPrint(String ex) {
+		try {
+			Integer.parseInt(ex);
+			printTAM("CALL", "putint", "Print the value " + ex);
+		} catch (NumberFormatException e) {
+			printTAM("CALL", "put", "Print the value " + ex);
+		}
+	}
+
+	// //////////////////////////////////////////////////////////
+	// / READ Statement
+	// //////////////////////////////////////////////////////////
+	/**
+	 * Print de get statements, bekijkt of het een Integer betreft (voor
+	 * getint).
+	 * TODO: Wordt dit nu opgeslagen of moet er nog een STORE in (TESTEN DUS)
+	 * @param ex
+	 */
+	public void printStatementRead(String id) {
+		if(symbolTable.retrieve(id).isNumeric()) {
+			printTAM("CALL", "getint", "Get a numeric value for " + id);
+		} else {
+			printTAM("CALL", "get", "Get a value for " + id);
+		}
+	}
+
 	/**
 	 * Instantieer een GeneratorHelper
 	 */

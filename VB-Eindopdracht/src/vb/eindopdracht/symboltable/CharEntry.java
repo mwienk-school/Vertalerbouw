@@ -4,14 +4,14 @@ public class CharEntry extends IdEntry {
 	private char ch;
 	
 	public void setValue(Object ch) {
-		this.ch = (Character) ch;
+		this.ch = ((String) ch).toCharArray()[0];
 	}
 	
 	public char getChar() {
 		return ch;
 	}
 	
-	public CharEntry(String str) {}
+	public CharEntry(String str) {	}
 
 	@Override
 	public Object getValue() {

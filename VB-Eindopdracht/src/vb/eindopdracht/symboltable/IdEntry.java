@@ -11,6 +11,7 @@ public abstract class IdEntry {
     private int  level = -1;
     private String address;
     private Type type;
+    protected boolean numeric = false;
     
     public int   getLevel()			{ return level;			}
     public void  setLevel(int level)	{ this.level = level;	}
@@ -18,6 +19,7 @@ public abstract class IdEntry {
     public void setAddress(String add) { this.address = add;  }
     public Type getType()				{ return type;			}
     public void setType(Type type)		{ this.type = type;		}
+    public boolean isNumeric() 		{ return this.numeric; }
     
     public abstract void setValue(Object o);
     public abstract Object getValue();

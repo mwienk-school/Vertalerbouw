@@ -22,6 +22,7 @@ public class ArrayEntry extends IdEntry {
 
 	public ArrayEntry(String str) {
 		this.setType(str);
+		this.numeric = false;
 	}
 
 	@Override
