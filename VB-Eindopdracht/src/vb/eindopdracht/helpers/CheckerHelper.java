@@ -11,7 +11,7 @@ public class CheckerHelper {
 	// SymbolTable om bij te houden wat er gedefinieerd is
 	public SymbolTable<IdEntry> symbolTable; 
 	// De types die in CrimsonCode bestaan
-	private HashMap<String, String> tokenSuffix; 
+	private HashMap<String, String> tokenSuffix;
 
 	/**
 	 * In processEntry wordt het type van de entry bepaald en daarna wordt deze
@@ -86,6 +86,37 @@ public class CheckerHelper {
 	public void checkDeclared(String id) throws Exception {
 		if(symbolTable.retrieve(id) == null)
 	          throw new Exception(id + " is not declared.");
+	}
+	
+	/**
+	 * Checkt of een variabele is gedeclareerd en van het juiste type is.
+	 * @param type
+	 * @param id
+	 * @throws Exception
+	 */
+	public String checkDeclaredType(String type, String id) throws Exception {
+		return checkType(type, getType(id));
+	}
+	
+	/**
+	 * Checkt of een variabele is gedeclareerd en returnt het type.
+	 * @param id
+	 * @throws Exception
+	 */
+	public String getType(String id) throws Exception {
+		checkDeclared(id);
+		String[] splitted = id
+				.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
+		String lastPart = "";
+		for (int i = 1; i < splitted.length; i++) {
+			lastPart = splitted[splitted.length - i] + lastPart;
+			if (tokenSuffix.containsKey(lastPart.toString())) {
+				return lastPart;
+			}
+		}
+		// Type isn't found.
+		throw new Exception("The declared type of " + id + "("
+				+ lastPart + ") is an unknown type.");
 	}
 	
 	/**
