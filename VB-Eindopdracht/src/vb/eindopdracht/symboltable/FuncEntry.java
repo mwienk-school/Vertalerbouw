@@ -20,4 +20,14 @@ public class FuncEntry extends IdEntry {
 		this.setReturnType(str);
 	}
 
+	@Override
+	public Object getValue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public String toString() {
+		return null;
+	}
+
 }

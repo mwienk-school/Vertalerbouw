@@ -50,7 +50,6 @@ tokens {
   DO        = 'do';
   DOEND     = 'od';
   BECOMES   = '=';
-  VARASSIGN = 'varassign';
   CCOMPEXPR = 'ccompexpr';
   
   //Logic operators

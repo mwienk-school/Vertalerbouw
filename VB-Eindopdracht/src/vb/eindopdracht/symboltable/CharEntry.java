@@ -13,4 +13,13 @@ public class CharEntry extends IdEntry {
 	
 	public CharEntry(String str) {}
 
+	@Override
+	public Object getValue() {
+		return ch;
+	}
+	
+	public String toString() {
+		return String.valueOf(ch);
+	}
+
 }

@@ -58,7 +58,6 @@ expression returns [String val = null;]
   |   ^(PLUS e1=expression e2=expression)
   |   ^(MINUS expression expression)
   |   ^(BECOMES id=IDENTIFIER expression)   { ch.checkDeclared($id.text);}
-  |   ^(VARASSIGN expression)
   |   ^(OR expression expression)
   |   ^(AND expression expression)
   |   ^(LT expression expression)
