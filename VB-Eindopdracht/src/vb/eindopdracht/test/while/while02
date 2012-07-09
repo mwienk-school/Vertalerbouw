@@ -1,0 +1,10 @@
+//Success
+spawn eenInt;
+spawn tweeInt;
+eenInt = 50;
+tweeInt = eenInt /50;
+while(tweeInt) 
+	do {
+		line(eenInt);
+		eenInt = eenInt -1;
+	} od;
