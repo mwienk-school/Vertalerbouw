@@ -32,6 +32,7 @@ compExpr
                                         { ch.processEntry($id.text); }
   |   ^(FUNC id=IDENTIFIER {ch.symbolTable.openScope();} paramdecl+ expression {ch.symbolTable.closeScope();})
                                         { ch.processEntry($id.text); }
+  |   ^(TYPE id=IDENTIFIER NUMBER NUMBER)     { ch.processDynamicType($id.text); }
   |   expression
   ;
 
@@ -78,26 +79,17 @@ expression returns [String val = null;]
                                                           retval.val = "void";
                                                         }
                                                       }
-  |   ^(WHILE expression expression)          { ch.checkType("Pill", $e1.text); retval.val = "void"; }
-  |   ^(READ varlist)
-  |   ^(PRINT exprlist)
+  |   ^(WHILE { ch.symbolTable.openScope(); } expression expression { ch.checkType("Pill", $e1.text); retval.val = "void"; ch.symbolTable.closeScope(); })
+  |   ^(READ id=IDENTIFIER { retval.val = ch.getType($id.text); } id=IDENTIFIER* { ch.checkDeclared($id.text); retval.val = "void"; })
+  |   ^(PRINT expression+) { retval.val = "void"; }
   |   ^(CCOMPEXPR { ch.symbolTable.openScope(); } compExpr+ { ch.symbolTable.closeScope(); })
-  |   ^(ARRAY expression+)
-  |   ^(TYPE id=IDENTIFIER NUMBER NUMBER)                { ch.processDynamicType($id.text); }
-  |   op=operand                                 { retval.val = $op.text; }
-  ;
-  
-exprlist
-  :   expression+
-  ;
-  
-varlist
-  :   id=IDENTIFIER+    { ch.checkDeclared($id.text); }
+  |   ^(ARRAY expression+)                    { retval.val = "Array"; }
+  |   op=operand                              { retval.val = $op.text; }
   ;
   
 operand returns [String val = null;]
   :   ^(id=IDENTIFIER   { retval.val = ch.getType($id.text); } expression* paramuse*)
-  |   TRUE
-  |   FALSE
-  |   NUMBER
+  |   TRUE              { retval.val = "Pill"; }
+  |   FALSE             { retval.val = "Pill"; }
+  |   NUMBER            { retval.val = "Int"; }
   ;
