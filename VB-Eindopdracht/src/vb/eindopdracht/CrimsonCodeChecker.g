@@ -58,7 +58,7 @@ expression returns [String val = null;]
   |   ^(UMINUS ex=expression)                 { $val = ch.checkType("Int", $ex.val); }
   |   ^(PLUS e1=expression e2=expression)     { $val = ch.checkType("Int", $e1.val); $val = ch.checkType($val, $e2.val); }
   |   ^(MINUS e1=expression e2=expression)    { $val = ch.checkType("Int", $e1.val); $val = ch.checkType($val, $e2.val); }
-  |   ^(BECOMES id=IDENTIFIER ex=expression)  { $val = ch.checkDeclaredType($ex.val, $id.text);}
+  |   ^(BECOMES id=IDENTIFIER ex=expression)  { $val = ch.checkType(ch.getType($id.text), $ex.val);}
   |   ^(OR e1=expression e2=expression)       { $val = ch.checkType("Pill", $e1.val); $val = ch.checkType($val, $e2.val); }
   |   ^(AND e1=expression e2=expression)      { $val = ch.checkType("Pill", $e1.val); $val = ch.checkType($val, $e2.val); }
   |   ^(LT e1=expression e2=expression)       { $val = ch.checkType("Int", $e1.val); $val = ch.checkType($val, $e2.val); }

@@ -1,0 +1,17 @@
+Type blaatIntArray [1..5];
+spawn aBlaatIntArray;
+//aBlaatIntArray = 5;
+aBlaatIntArray = [1, 2];
+aBlaatIntArray = [blue, red];
+spawn aInt;
+print(aInt);
+print(aBlaatIntArray);
+
+spawn eenPill;
+eenPill = blue;
+spawn tweePill;
+tweePill = red;
+read(eenPill, tweePill);
+
+eenPill = read(tweePill);
+eenPill = read(eenPill, tweePill);

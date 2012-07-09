@@ -1,0 +1,15 @@
+- checken van grootte array;
+
+Type blaatIntArray [1..5];
+spawn aBlaatIntArray;
+aBlaatIntArray = [1, 2];
+
+levert geen fouten op, terwijl het wel fout is.
+
+- checken types binnen array;
+
+aBlaatIntArray = [blue, red];
+
+levert geen fouten op, terwijl het wel fout is
+
+- Er moet nog even naar read gekeken worden, het zou als operand moeten kunnen werken, maar dat kan nu niet.

@@ -30,16 +30,6 @@ public class CheckerHelper extends CrimsonCodeHelper {
 	}
 	
 	/**
-	 * Checkt of een variabele is gedeclareerd en van het juiste type is.
-	 * @param type
-	 * @param id
-	 * @throws Exception
-	 */
-	public String checkDeclaredType(String type, String id) throws Exception {
-		return checkType(type, getType(id));
-	}
-	
-	/**
 	 * Checkt of een variabele is gedeclareerd en returnt het type.
 	 * @param id
 	 * @throws Exception
