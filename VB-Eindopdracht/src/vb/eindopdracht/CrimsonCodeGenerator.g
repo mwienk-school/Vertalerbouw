@@ -113,11 +113,13 @@ expression returns [String val = null;]
       }
   |   ^(EQ ex=expression ey=expression)
       {
+        gh.loadLiteral("1");
         gh.printPrimitiveRoutine("eq", "Equal to");
         val = Integer.parseInt(ex) == Integer.parseInt(ey) ? "1" : "0";
       }
   |   ^(NEQ ex=expression ey=expression)
       {
+        gh.loadLiteral("1");
         gh.printPrimitiveRoutine("ne", "Not equal to");
         val = Integer.parseInt(ex) != Integer.parseInt(ey) ? "1" : "0";
       }
@@ -126,18 +128,20 @@ expression returns [String val = null;]
         gh.printPrimitiveRoutine("mult", "Multiplication");
         val = String.valueOf(Integer.parseInt(ex) * Integer.parseInt(ey));
       }
-  |   ^(DIVIDE expression expression)
+  |   ^(DIVIDE ex=expression ey=expression)
       {
         gh.printPrimitiveRoutine("div", "Division");
         val = String.valueOf(Integer.parseInt(ex) / Integer.parseInt(ey));
       }
   |   ^(IF expression  { int ifVal = gh.printStatementIf_Start();} 
            expression  { gh.printStatementIf_Else(ifVal);} 
-           expression) { gh.printStatementIf_End(ifVal); }
-  |   ^(WHILE expression  { WhileInfo info = gh.printStatementWhile_Start(); }
-              expression) { gh.printStatementWhile_End(info); }
+           expression?) { gh.printStatementIf_End(ifVal); }
+  |   ^(WHILE { WhileInfo info = gh.printStatementWhile_Start(); }
+            expression  { gh.printStatementWhile_Do(info); }
+            expression) { gh.printStatementWhile_End(info); }
   |   ^(READ readvar+)
   |   ^(PRINT printexpr+)
+  |   ^(PRINTLN printexpr+) { gh.printStatementPrint("\n"); }
   |   ^(CCOMPEXPR { gh.symbolTable.openScope(); } compExpr+)
       { 
         gh.symbolTable.closeScope();
@@ -167,7 +171,6 @@ printexpr
 operand returns [String val = null;]
   :   ^(id=IDENTIFIER expression* paramuse*)  
       { 
-        //TODO: Multiple assignment en expression binden
         $val = gh.getValue($id.text);
       } 
   |   TRUE

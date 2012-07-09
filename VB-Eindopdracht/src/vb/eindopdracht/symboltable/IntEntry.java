@@ -4,7 +4,7 @@ public class IntEntry extends IdEntry {
 	private int i;
 	
 	public void setValue(Object i) {
-		this.i = (Integer) i;
+		this.i = Integer.parseInt((String) i);
 	}
 	
 	@Override

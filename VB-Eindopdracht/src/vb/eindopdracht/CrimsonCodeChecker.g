@@ -70,7 +70,7 @@ expression returns [String val = null;]
   |   ^(TIMES e1=expression e2=expression)    { $val = ch.checkType("Int", $e1.val); $val = ch.checkType($val, $e2.val); }
   |   ^(DIVIDE e1=expression e2=expression)   { $val = ch.checkType("Int", $e1.val); $val = ch.checkType($val, $e2.val); }
   |   ^(MOD e1=expression e2=expression)      { $val = ch.checkType("Int", $e1.val); $val = ch.checkType($val, $e2.val); }
-  |   ^(IF e1=expression e2=expression e3=expression) {
+  |   ^(IF e1=expression e2=expression e3=expression?) {
                                                         ch.checkType("Pill", $e1.val);
                                                         try {
                                                           $val = ch.checkType($e2.val, $e3.val);
@@ -79,9 +79,10 @@ expression returns [String val = null;]
                                                           $val = "void";
                                                         }
                                                       }
-  |   ^(WHILE { ch.symbolTable.openScope(); } expression expression { ch.checkType("Pill", $e1.val); $val = "void"; ch.symbolTable.closeScope(); })
+  |   ^(WHILE { ch.symbolTable.openScope(); } e1=expression e2=expression { ch.checkType("Pill", $e1.val); $val = "void"; ch.symbolTable.closeScope(); })
   |   ^(READ id=IDENTIFIER { $val = ch.getType($id.text); } id=IDENTIFIER* { ch.checkDeclared($id.text); $val = "void"; })
   |   ^(PRINT expression+) { $val = "void"; }
+  |   ^(PRINTLN expression+) {$val = "void"; }
   |   ^(CCOMPEXPR { ch.symbolTable.openScope(); } compExpr+ { ch.symbolTable.closeScope(); })
   |   ^(ARRAY expression+)                    { $val = "Array"; }
   |   op=operand                              { $val = $op.val; }

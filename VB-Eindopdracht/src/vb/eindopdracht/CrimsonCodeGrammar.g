@@ -22,6 +22,7 @@ tokens {
   VAR       = 'spawn';
   CONST     = 'const';
   PARAM     = 'param';
+  PRINTLN   = 'line';
   
   //Types
   INTEGER   = 'Int';
@@ -192,7 +193,7 @@ operand
   |   FALSE
   |   NUMBER
   |   CHARACTER
-  |   LPAREN expression RPAREN
+  |   LPAREN! expression RPAREN!
   ;
 
 arrIndex
@@ -210,6 +211,7 @@ varlist
     
 printExpr
   :   PRINT^ LPAREN! exprlist RPAREN!
+  |   PRINTLN^ LPAREN! exprlist RPAREN!
   ;
    
 exprlist
@@ -226,7 +228,7 @@ whileExpr
   ;
 
 ifExpr
-  :   IF^ expression THEN! expression ELSE! expression IFEND!
+  :   IF^ expression THEN! expression (ELSE! expression)? IFEND!
   ;
   
 //Lexer rules
