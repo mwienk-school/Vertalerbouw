@@ -84,7 +84,7 @@ expression returns [String type = null;]
   |   ^(PRINT expression+) { $type = "void"; }
   |   ^(PRINTLN expression+) {$type = "void"; }
   |   ^(CCOMPEXPR { ch.symbolTable.openScope(); } (ce=compExpr { $type = $ce.type; })+ { ch.symbolTable.closeScope(); })
-  |   ^(ARRAY expression+)                    { $type = "Array"; }
+  |   ^(ARRAY ex=expression { $type = $ex.type; } (ex=expression { ch.checkType($type, $ex.type); })*) { $type = $type + "Array"; }
   |   op=operand                              { $type = $op.type; }
   ;
   

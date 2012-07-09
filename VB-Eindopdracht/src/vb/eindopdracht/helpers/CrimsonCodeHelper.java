@@ -76,7 +76,6 @@ public abstract class CrimsonCodeHelper {
 		tokenSuffix.put("Char", "vb.eindopdracht.symboltable.CharEntry");
 		tokenSuffix.put("Proc", "vb.eindopdracht.symboltable.ProcEntry");
 		tokenSuffix.put("Func", "vb.eindopdracht.symboltable.FuncEntry");
-		tokenSuffix.put("Array", "vb.eindopdracht.symboltable.ArrayEntry");
 	}
 
 }
