@@ -1,10 +1,7 @@
 package vb.eindopdracht.test;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
-
-import org.antlr.runtime.RecognitionException;
 
 import junit.framework.TestCase;
 

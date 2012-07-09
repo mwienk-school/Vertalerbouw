@@ -2,7 +2,7 @@ package vb.eindopdracht.helpers;
 
 import java.util.Arrays;
 
-import vb.eindopdracht.symboltable.IdEntry;
+import vb.eindopdracht.symboltable.*;
 
 public class GeneratorHelper extends CrimsonCodeHelper {
 	// Keep track of the Stack size
@@ -141,7 +141,8 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * @return
 	 */
 	public String getValue(String id) {
-		printTAM("LOAD(1)", symbolTable.retrieve(id).getAddress(), "Load the variable address");
+		printTAM("LOAD(1)", symbolTable.retrieve(id).getAddress(),
+				"Load the variable address");
 		return symbolTable.retrieve(id).toString();
 	}
 
@@ -177,6 +178,35 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	}
 
 	// //////////////////////////////////////////////////////////
+	// / Procedure
+	// //////////////////////////////////////////////////////////
+
+	/**
+	 * Definieer een procedure
+	 * 
+	 * @param id
+	 * @throws Exception
+	 */
+	public int defineProcedure_Start(String id) throws Exception {
+		ProcEntry proc = new ProcEntry(id);
+		int thisLabelNo = labelNumber++;
+		nextLabel = "Proc" + thisLabelNo;
+		proc.setAddress(nextLabel);
+		symbolTable.enter(id, proc);
+		symbolTable.openScope(); // Aan het eind, voor de body van de procedure
+		return thisLabelNo;
+	}
+
+	/**
+	 * Einde van defineProcedure
+	 */
+	public void defineProcedure_End(int thisLabelNo) {
+		symbolTable.closeScope();
+		nextLabel = "End" + thisLabelNo;
+		printTAM("RETURN(0)", "0","Return from the Procedure");
+	}
+
+	// //////////////////////////////////////////////////////////
 	// / IF Statement
 	// //////////////////////////////////////////////////////////
 
@@ -206,8 +236,9 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * @param thisLabelNo
 	 */
 	public void printStatementIf_End(int thisLabelNo) {
-		if(!nextLabel.equals("")) 
-			printTAM("JUMP", "End" + thisLabelNo + "[CB]", "Jump to End, no Else clause");
+		if (!nextLabel.equals(""))
+			printTAM("JUMP", "End" + thisLabelNo + "[CB]",
+					"Jump to End, no Else clause");
 		nextLabel = "End" + thisLabelNo;
 		symbolTable.closeScope();
 	}
@@ -225,16 +256,18 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		int thisLabelNo = labelNumber++;
 		// Wanneer while label al ingevuld is, geef deze door
 		if (nextLabel.equals(""))
-			nextLabel = "While" + thisLabelNo; 
+			nextLabel = "While" + thisLabelNo;
 		return new WhileInfo(thisLabelNo, nextLabel);
 	}
-	
+
 	/**
 	 * Print het begin van het DO statement.
+	 * 
 	 * @param info
 	 */
 	public void printStatementWhile_Do(WhileInfo info) {
-		printTAM("JUMPIF(0)", "End" + info.thisLabelNo + "[CB]", "Jump past body");
+		printTAM("JUMPIF(0)", "End" + info.thisLabelNo + "[CB]",
+				"Jump past body");
 	}
 
 	/**
@@ -261,9 +294,10 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	public void printStatementPrint(String ex) {
 		try {
 			Integer.parseInt(ex);
-			printTAM("CALL", "putint", "Print the int value on top of the stack");
+			printTAM("CALL", "putint",
+					"Print the int value on top of the stack");
 		} catch (NumberFormatException e) {
-			if(ex.equals("\n")) {
+			if (ex.equals("\n")) {
 				printTAM("CALL", "puteol", "Print a newline to the stdout");
 			} else {
 				printTAM("CALL", "put", "Print the value on top of the stack");
@@ -277,11 +311,13 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	/**
 	 * Print de get statements, bekijkt of het een Integer betreft (voor
 	 * getint).
+	 * 
 	 * @param ex
 	 */
 	public void printStatementRead(String id) {
-		printTAM("LOADA", symbolTable.retrieve(id).getAddress(), "Load variable address for " + id);
-		if(symbolTable.retrieve(id).isNumeric()) {
+		printTAM("LOADA", symbolTable.retrieve(id).getAddress(),
+				"Load variable address for " + id);
+		if (symbolTable.retrieve(id).isNumeric()) {
 			printTAM("CALL", "getint", "Get a numeric value for " + id);
 		} else {
 			printTAM("CALL", "get", "Get a value for " + id);
