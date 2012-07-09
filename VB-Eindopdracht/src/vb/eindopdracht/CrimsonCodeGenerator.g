@@ -33,8 +33,8 @@ compExpr
   :   ^(CONST { gh.setConstantScope(true); } id=IDENTIFIER ex=expression) { gh.defineConstant($id.text, ex); gh.setConstantScope(false); }
   |   ^(VAR id=IDENTIFIER) { gh.defineVariable($id.text); }
   |   //TODO implementaties van PROC & FUNC en paramdecl en paramuse
-      ^(PROC id=IDENTIFIER paramdecl+ expression)
-  |   ^(FUNC id=IDENTIFIER paramdecl+ expression)
+      ^(PROC id=IDENTIFIER { gh.symbolTable.openScope(); } paramdecl+ expression {gh.symbolTable.closeScope();})
+  |   ^(FUNC id=IDENTIFIER { gh.symbolTable.openScope(); } paramdecl+ expression {gh.symbolTable.closeScope();})
   |   expression
   ;
   
@@ -86,10 +86,6 @@ expression returns [String val = null;]
         gh.storeValue($id.text, ex);
         val = ex;
       }
-  |   ^(VARASSIGN ex=expression) 
-      {
-        //TODO ?? (niet in Grammar)
-      }
   |   ^(OR ex=expression ey=expression)
       {
         gh.printPrimitiveRoutine("or", "OR statement");
@@ -97,7 +93,6 @@ expression returns [String val = null;]
       }
   |   ^(AND ex=expression ey=expression)
       {
-        //TODO (andere AND mogelijkheden?)
         gh.printPrimitiveRoutine("and", "AND statement");
         val = (!ex.equals("0") && !ex.equals("") && !ey.equals("0") && !ey.equals("")) ? "1" : "0";
       }
@@ -146,17 +141,11 @@ expression returns [String val = null;]
            expression) { gh.printStatementIf_End(ifVal); }
   |   ^(WHILE expression  { WhileInfo info = gh.printStatementWhile_Start(); }
               expression) { gh.printStatementWhile_End(info); }
-  |   ^(READ varlist)
-      {
-        //TODO
-      }
-  |   ^(PRINT ex=expression+)
-      {
-        gh.printPrimitiveRoutine("put", "Print the first value on the stack");
-      }
-  |   ^(CCOMPEXPR compExpr+)
-      {
-        //TODO
+  |   ^(READ readvar+)
+  |   ^(PRINT printexpr+)
+  |   ^(CCOMPEXPR { gh.symbolTable.openScope(); } compExpr+)
+      { 
+        gh.symbolTable.closeScope();
       }
   |   ^(ARRAY expression+)
       {
@@ -172,8 +161,12 @@ expression returns [String val = null;]
       }
   ;
   
-varlist
-  :   id=IDENTIFIER+
+readvar
+  :   id=IDENTIFIER { gh.printPrimitiveRoutine("get", "Get a value for an id"); }
+  ;
+  
+printexpr
+  :   expression { gh.printPrimitiveRoutine("put", "Print the first value on the stack"); }
   ;
   
 operand returns [String val = null;]

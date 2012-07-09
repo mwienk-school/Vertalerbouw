@@ -58,7 +58,6 @@ expression returns [String val = null;]
   |   ^(PLUS e1=expression e2=expression)     { retval.val = ch.checkType("Int", $e1.text); retval.val = ch.checkType(retval.val, $e2.text); }
   |   ^(MINUS e1=expression e2=expression)    { retval.val = ch.checkType("Int", $e1.text); retval.val = ch.checkType(retval.val, $e2.text); }
   |   ^(BECOMES id=IDENTIFIER expression)     { retval.val = ch.checkDeclaredType($ex.text, $id.text);}
-  |   ^(VARASSIGN expression)
   |   ^(OR e1=expression e2=expression)       { retval.val = ch.checkType("Pill", $e1.text); retval.val = ch.checkType(retval.val, $e2.text); }
   |   ^(AND e1=expression e2=expression)      { retval.val = ch.checkType("Pill", $e1.text); retval.val = ch.checkType(retval.val, $e2.text); }
   |   ^(LT e1=expression e2=expression)       { retval.val = ch.checkType("Int", $e1.text); retval.val = ch.checkType(retval.val, $e2.text); }

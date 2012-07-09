@@ -4,7 +4,7 @@ public class ArrayEntry extends IdEntry {
 	private String type;
 	private int dimensions;
 
-	public String getType() {
+	public String getArrayType() {
 		return type;
 	}
 
@@ -20,13 +20,22 @@ public class ArrayEntry extends IdEntry {
 		this.dimensions = dimensions;
 	}
 
+	public ArrayEntry(String str) {
+		this.setType(str);
+	}
+
 	@Override
 	public void setValue(Object o) {
 		// TODO Auto-generated method stub
 	}
 	
-	public ArrayEntry(String str) {
-		this.setType(str);
+	@Override
+	public Object getValue() {
+		return null;
+	}
+	
+	public String toString() {
+		return null;
 	}
 
 }

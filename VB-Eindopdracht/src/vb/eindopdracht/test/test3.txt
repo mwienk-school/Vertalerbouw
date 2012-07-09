@@ -1,4 +1,5 @@
 spawn eenPill;
 eenPill = blue;
-const tweePill = red;
-print(eenPill, tweePill);
+spawn tweePill;
+tweePill = red;
+read(eenPill, tweePill);

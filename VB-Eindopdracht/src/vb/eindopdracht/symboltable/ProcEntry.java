@@ -10,4 +10,14 @@ public class ProcEntry extends IdEntry {
 	
 	public ProcEntry(String str) {}
 
+	@Override
+	public Object getValue() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public String toString() {
+		return null;
+	}
+
 }

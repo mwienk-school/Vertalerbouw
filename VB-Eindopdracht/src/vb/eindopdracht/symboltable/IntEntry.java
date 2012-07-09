@@ -7,10 +7,15 @@ public class IntEntry extends IdEntry {
 		this.i = (Integer) i;
 	}
 	
-	public int getValue() {
+	@Override
+	public Object getValue() {
 		return i;
 	}
 	
 	public IntEntry(String str) {}
+	
+	public String toString() {
+		return String.valueOf(i);
+	}
 
 }

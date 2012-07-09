@@ -1,20 +1,14 @@
 package vb.eindopdracht.helpers;
 
-import java.util.HashMap;
+import vb.eindopdracht.symboltable.IdEntry;
 
-import vb.eindopdracht.symboltable.Variable;
-
-public class GeneratorHelper {
+public class GeneratorHelper extends CrimsonCodeHelper {
 	// Keep track of the Stack size
 	private int size;
-	// Keep track of the level
-	private int indent;
 	// Label for the next output
 	private String nextLabel;
-	// Identifier for labels (in case of two e.g. 2 if statements)
+	// Identifier for labels (in case of nested (if) statements)
 	private int labelNumber;
-	// Keep track of variables and constants
-	private HashMap<String, Variable> vars;
 	// If in constant scope, operands should not output
 	private boolean constantScope;
 	
@@ -68,20 +62,6 @@ public class GeneratorHelper {
 	}
 
 	/**
-	 * printTAM print een mooi opgemaakte TAM instructie Het nextLabel veld en
-	 * het commenteer zijn leeg.
-	 * 
-	 * @param cmd
-	 *            - De instructie
-	 * @param arg
-	 *            - Het argument van de instructie
-	 */
-	private void printTAM(String cmd, String arg) {
-		printTAM(nextLabel, cmd, arg, "");
-		nextLabel = "";
-	}
-	
-	/**
 	 * Clears the stack and sends a Halt signal to the virtual machine.
 	 */
 	public void endProgram() {
@@ -93,21 +73,23 @@ public class GeneratorHelper {
 	 * Definieer een constante waarde (variabele die niet in het geheugen is opgeslagen).
 	 * @param id
 	 * @param value
+	 * @throws Exception 
 	 */
-	public void defineConstant(String id, String value) {
-        Variable constant = new Variable(null,true);
-        constant.setValue(value);
-        vars.put(id, constant);
-        constantScope = false;
+	public void defineConstant(String id, String value) throws Exception {
+		IdEntry entry = processEntry(id);
+		entry.setType(IdEntry.Type.CONST);
+        entry.setValue(value);
 	}
 	
 	/**
 	 * Definieer een variabele met de naam id
-	 * TODO: Vervangen door SymbolTable implementatie?
 	 * @param id
+	 * @throws Exception 
 	 */
-	public void defineVariable(String id) {
-        vars.put(id, new Variable(size + "[SB]"));
+	public void defineVariable(String id) throws Exception {
+		IdEntry entry = processEntry(id);
+		entry.setAddress(size + "[SB]");
+		entry.setType(IdEntry.Type.VAR);
         printTAM("PUSH", "1", "Push variable " + id);
         size++;
 	}
@@ -135,8 +117,8 @@ public class GeneratorHelper {
 	 * @param value
 	 */
 	public void storeValue(String id, String value) {
-        printTAM("STORE(1)", vars.get(id).getAddress(), "Store in variable " + id);
-        vars.get(id).setValue(value);
+        printTAM("STORE(1)", symbolTable.retrieve(id).getAddress(), "Store in variable " + id);
+        symbolTable.retrieve(id).setValue(value);
 	}
 	
 	/**
@@ -145,7 +127,7 @@ public class GeneratorHelper {
 	 * @return
 	 */
 	public String getValue(String id) {
-		return vars.get(id).getValue();
+		return symbolTable.retrieve(id).getValue().toString();
 	}
 	
 	////////////////////////////////////////////////////////////
@@ -156,9 +138,9 @@ public class GeneratorHelper {
 	 * Start voor een if statement (test de stack en jumpt naar label)
 	 */
 	public int printStatementIf_Start() {
+		symbolTable.openScope();
         int thisLabelNo = labelNumber++;
         printTAM("JUMPIF(0)", "Else" + thisLabelNo + "[CB]", "Jump to ELSE");
-        indent++;
         return thisLabelNo;
 	}
 	
@@ -176,19 +158,23 @@ public class GeneratorHelper {
 	 * @param thisLabelNo
 	 */
 	public void printStatementIf_End(int thisLabelNo) {
-        indent--;
         nextLabel = "End" + thisLabelNo;
+        symbolTable.closeScope();
 	}
 
 	////////////////////////////////////////////////////////////
 	/// WHILE Statement
 	////////////////////////////////////////////////////////////
+	/**
+	 * Print het begin van een while statement
+	 * @return WhileInfo object met informatie voor de End mehode
+	 */
 	public WhileInfo printStatementWhile_Start() {
+		symbolTable.openScope();
         int thisLabelNo = labelNumber++;
         if(nextLabel.equals(""))
           nextLabel = "While" + thisLabelNo; //Wanneer while label al ingevuld is, geef deze door
         printTAM("JUMPIF(0)", "End" + thisLabelNo + "[CB]", "Jump past body");
-        indent++;
         return new WhileInfo(thisLabelNo, nextLabel);
 	}
 	
@@ -199,18 +185,17 @@ public class GeneratorHelper {
 	public void printStatementWhile_End(WhileInfo info) {
         printTAM("JUMP", info.nextLabel + "[CB]", "Jump to WHILE-expression");
         nextLabel = "End" + info.thisLabelNo;
-        indent--;
+        symbolTable.closeScope();
 	}
 	
 	/**
-	 * Instantiate a GeneratorHelper
+	 * Instantieer een GeneratorHelper
 	 */
 	public GeneratorHelper() {
+		super();
 		this.size = 0;
-		this.indent = 0;
 		this.nextLabel = "";
 		this.labelNumber = 0;
-		this.vars = new HashMap<String, Variable>();
 		this.constantScope = false;
 	}
 }
