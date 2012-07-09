@@ -53,43 +53,43 @@ paramuse
   ;
   
 expression returns [String val = null;]
-  :   ^(NEG ex=expression)                    { retval.val = ch.checkType("Pill", $ex.text); }
-  |   ^(UPLUS ex=expression)                  { retval.val = ch.checkType("Int", $ex.text); }
-  |   ^(UMINUS ex=expression)                 { retval.val = ch.checkType("Int", $ex.text); }
-  |   ^(PLUS e1=expression e2=expression)     { retval.val = ch.checkType("Int", $e1.text); retval.val = ch.checkType(retval.val, $e2.text); }
-  |   ^(MINUS e1=expression e2=expression)    { retval.val = ch.checkType("Int", $e1.text); retval.val = ch.checkType(retval.val, $e2.text); }
-  |   ^(BECOMES id=IDENTIFIER expression)     { retval.val = ch.checkDeclaredType($ex.text, $id.text);}
-  |   ^(OR e1=expression e2=expression)       { retval.val = ch.checkType("Pill", $e1.text); retval.val = ch.checkType(retval.val, $e2.text); }
-  |   ^(AND e1=expression e2=expression)      { retval.val = ch.checkType("Pill", $e1.text); retval.val = ch.checkType(retval.val, $e2.text); }
-  |   ^(LT e1=expression e2=expression)       { retval.val = ch.checkType("Int", $e1.text); retval.val = ch.checkType(retval.val, $e2.text); }
-  |   ^(LE e1=expression e2=expression)       { retval.val = ch.checkType("Int", $e1.text); retval.val = ch.checkType(retval.val, $e2.text); }
-  |   ^(GT e1=expression e2=expression)       { retval.val = ch.checkType("Int", $e1.text); retval.val = ch.checkType(retval.val, $e2.text); }
-  |   ^(GE e1=expression e2=expression)       { retval.val = ch.checkType("Int", $e1.text); retval.val = ch.checkType(retval.val, $e2.text); }
-  |   ^(EQ e1=expression e2=expression)       { retval.val = ch.checkType($e1.text, $e2.text); }
-  |   ^(NEQ e1=expression e2=expression)      { retval.val = ch.checkType($e1.text, $e2.text); }
-  |   ^(TIMES e1=expression e2=expression)    { retval.val = ch.checkType("Int", $e1.text); retval.val = ch.checkType(retval.val, $e2.text); }
-  |   ^(DIVIDE e1=expression e2=expression)   { retval.val = ch.checkType("Int", $e1.text); retval.val = ch.checkType(retval.val, $e2.text); }
-  |   ^(MOD e1=expression e2=expression)      { retval.val = ch.checkType("Int", $e1.text); retval.val = ch.checkType(retval.val, $e2.text); }
+  :   ^(NEG ex=expression)                    { $val = ch.checkType("Pill", $ex.val); }
+  |   ^(UPLUS ex=expression)                  { $val = ch.checkType("Int", $ex.val); }
+  |   ^(UMINUS ex=expression)                 { $val = ch.checkType("Int", $ex.val); }
+  |   ^(PLUS e1=expression e2=expression)     { $val = ch.checkType("Int", $e1.val); $val = ch.checkType($val, $e2.val); }
+  |   ^(MINUS e1=expression e2=expression)    { $val = ch.checkType("Int", $e1.val); $val = ch.checkType($val, $e2.val); }
+  |   ^(BECOMES id=IDENTIFIER ex=expression)  { $val = ch.checkDeclaredType($ex.val, $id.text);}
+  |   ^(OR e1=expression e2=expression)       { $val = ch.checkType("Pill", $e1.val); $val = ch.checkType($val, $e2.val); }
+  |   ^(AND e1=expression e2=expression)      { $val = ch.checkType("Pill", $e1.val); $val = ch.checkType($val, $e2.val); }
+  |   ^(LT e1=expression e2=expression)       { $val = ch.checkType("Int", $e1.val); $val = ch.checkType($val, $e2.val); }
+  |   ^(LE e1=expression e2=expression)       { $val = ch.checkType("Int", $e1.val); $val = ch.checkType($val, $e2.val); }
+  |   ^(GT e1=expression e2=expression)       { $val = ch.checkType("Int", $e1.val); $val = ch.checkType($val, $e2.val); }
+  |   ^(GE e1=expression e2=expression)       { $val = ch.checkType("Int", $e1.val); $val = ch.checkType($val, $e2.val); }
+  |   ^(EQ e1=expression e2=expression)       { $val = ch.checkType($e1.val, $e2.val); }
+  |   ^(NEQ e1=expression e2=expression)      { $val = ch.checkType($e1.val, $e2.val); }
+  |   ^(TIMES e1=expression e2=expression)    { $val = ch.checkType("Int", $e1.val); $val = ch.checkType($val, $e2.val); }
+  |   ^(DIVIDE e1=expression e2=expression)   { $val = ch.checkType("Int", $e1.val); $val = ch.checkType($val, $e2.val); }
+  |   ^(MOD e1=expression e2=expression)      { $val = ch.checkType("Int", $e1.val); $val = ch.checkType($val, $e2.val); }
   |   ^(IF e1=expression e2=expression e3=expression) {
-                                                        ch.checkType("Pill", $e1.text);
+                                                        ch.checkType("Pill", $e1.val);
                                                         try {
-                                                          retval.val = ch.checkType($e2.text, $e3.text);
+                                                          $val = ch.checkType($e2.val, $e3.val);
                                                         }
                                                         catch(Exception e) {
-                                                          retval.val = "void";
+                                                          $val = "void";
                                                         }
                                                       }
-  |   ^(WHILE { ch.symbolTable.openScope(); } expression expression { ch.checkType("Pill", $e1.text); retval.val = "void"; ch.symbolTable.closeScope(); })
-  |   ^(READ id=IDENTIFIER { retval.val = ch.getType($id.text); } id=IDENTIFIER* { ch.checkDeclared($id.text); retval.val = "void"; })
-  |   ^(PRINT expression+) { retval.val = "void"; }
+  |   ^(WHILE { ch.symbolTable.openScope(); } expression expression { ch.checkType("Pill", $e1.val); $val = "void"; ch.symbolTable.closeScope(); })
+  |   ^(READ id=IDENTIFIER { $val = ch.getType($id.text); } id=IDENTIFIER* { ch.checkDeclared($id.text); $val = "void"; })
+  |   ^(PRINT expression+) { $val = "void"; }
   |   ^(CCOMPEXPR { ch.symbolTable.openScope(); } compExpr+ { ch.symbolTable.closeScope(); })
-  |   ^(ARRAY expression+)                    { retval.val = "Array"; }
-  |   op=operand                              { retval.val = $op.text; }
+  |   ^(ARRAY expression+)                    { $val = "Array"; }
+  |   op=operand                              { $val = $op.val; }
   ;
   
 operand returns [String val = null;]
-  :   ^(id=IDENTIFIER   { retval.val = ch.getType($id.text); } expression* paramuse*)
-  |   TRUE              { retval.val = "Pill"; }
-  |   FALSE             { retval.val = "Pill"; }
-  |   NUMBER            { retval.val = "Int"; }
+  :   ^(id=IDENTIFIER   { $val = ch.getType($id.text); } expression* paramuse*)
+  |   TRUE              { $val = "Pill"; }
+  |   FALSE             { $val = "Pill"; }
+  |   NUMBER            { $val = "Int"; }
   ;
