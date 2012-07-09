@@ -2,7 +2,7 @@ package vb.eindopdracht.symboltable;
 
 public class BooleanEntry extends IdEntry {
 	private boolean value = false;
-	
+		
 	/**
 	 * Set de value van op true als de waarde "1" is, laat anders ongewijzigd (false)
 	 */
@@ -28,6 +28,8 @@ public class BooleanEntry extends IdEntry {
 		return value ? "1" : "0";
 	}
 	
-	public BooleanEntry(String str) {}
+	public BooleanEntry(String str) {
+		this.numeric = true;
+	}
 
 }

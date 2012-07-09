@@ -2,4 +2,6 @@ spawn eenPill;
 eenPill = blue;
 spawn tweePill;
 tweePill = red;
-read(eenPill, tweePill);
+spawn zesChar;
+zesChar = 'c';
+read(eenPill, tweePill, zesChar);

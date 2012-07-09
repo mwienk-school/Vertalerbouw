@@ -32,8 +32,9 @@ program
 compExpr
   :   ^(CONST { gh.setConstantScope(true); } id=IDENTIFIER ex=expression) { gh.defineConstant($id.text, ex); gh.setConstantScope(false); }
   |   ^(VAR id=IDENTIFIER) { gh.defineVariable($id.text); }
-  |   //TODO implementaties van PROC & FUNC en paramdecl en paramuse
-      ^(PROC id=IDENTIFIER { gh.symbolTable.openScope(); } paramdecl+ expression {gh.symbolTable.closeScope();})
+  |   ^(PROC id=IDENTIFIER { gh.symbolTable.openScope(); } paramdecl+ expression {gh.symbolTable.closeScope();
+        //TODO implementaties van PROC & FUNC en paramdecl en paramuse
+        })
   |   ^(FUNC id=IDENTIFIER { gh.symbolTable.openScope(); } paramdecl+ expression {gh.symbolTable.closeScope();})
   |   expression
   ;
@@ -45,13 +46,7 @@ paramdecl
 
 paramuse
   :   ^(PARAM id=IDENTIFIER)
-      {
-        //TODO ??
-      } 
   |   ^(VAR id=IDENTIFIER)
-      {
-        //TODO ??
-      }
   ;
     
 expression returns [String val = null;] 
@@ -149,11 +144,11 @@ expression returns [String val = null;]
       }
   |   ^(ARRAY expression+)
       {
-        //TODO
+        //TODO Array implementeren
       }
   |   ^(TYPE id=IDENTIFIER NUMBER NUMBER)
       {
-        //TODO
+        //TODO Euhm?
       }
   |   ex=operand 
       {
@@ -162,34 +157,37 @@ expression returns [String val = null;]
   ;
   
 readvar
-  :   id=IDENTIFIER { gh.printPrimitiveRoutine("get", "Get a value for an id"); }
+  :   id=IDENTIFIER { gh.printStatementRead($id.text); }
   ;
   
 printexpr
-  :   expression { gh.printPrimitiveRoutine("put", "Print the first value on the stack"); }
+  :   ex=expression { gh.printStatementPrint(ex); }
   ;
   
 operand returns [String val = null;]
   :   ^(id=IDENTIFIER expression* paramuse*)  
       { 
-//        if(!vars.get($id.text).isConstant()) {
-//          printTAM("LOAD(1)", vars.get($id.text).getAddress(), "Load variable " + $id.text);
-//        } TODO moet dit erin?
-        val = gh.getValue($id.text);
+        //TODO: Multiple assignment en expression binden
+        $val = gh.getValue($id.text);
       } 
   |   TRUE
       {
-        if(!gh.isConstantScope()) gh.loadLiteral("1");
-        val = "1";
+        $val = "1";
+        if(!gh.isConstantScope()) gh.loadLiteral(val);
       }
   |   FALSE
       {
-        if(!gh.isConstantScope()) gh.loadLiteral("0");
-        val = "0";
+        $val = "0";
+        if(!gh.isConstantScope()) gh.loadLiteral(val);
       }
   |   n=NUMBER
       {
-        if(!gh.isConstantScope()) gh.loadLiteral(String.valueOf(n));
-        val = String.valueOf(n);
+        $val = String.valueOf(n);
+        if(!gh.isConstantScope()) gh.loadLiteral(val);
+      }
+  |   ch=CHARACTER
+      {
+        $val = $ch.text.substring(1,2);
+        if(!gh.isConstantScope()) gh.loadLiteral(val);
       }
   ;

@@ -12,7 +12,9 @@ public class IntEntry extends IdEntry {
 		return i;
 	}
 	
-	public IntEntry(String str) {}
+	public IntEntry(String str) {
+		this.numeric = true;
+	}
 	
 	public String toString() {
 		return String.valueOf(i);

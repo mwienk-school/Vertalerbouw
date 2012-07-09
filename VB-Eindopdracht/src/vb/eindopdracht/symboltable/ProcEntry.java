@@ -8,7 +8,9 @@ public class ProcEntry extends IdEntry {
 
 	}
 	
-	public ProcEntry(String str) {}
+	public ProcEntry(String str) {
+		this.numeric = false;
+	}
 
 	@Override
 	public Object getValue() {
