@@ -100,6 +100,9 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		entry.setType(IdEntry.Type.VAR);
 		printTAM("PUSH", "1", "Push variable " + id);
 		size++;
+		//TODO Size waarschijnlijk uit SymbolTable halen (ivm LB en SB), 
+		// SB gebruiken voor currentLevel = 0? check ook de andere voorkomens van size, 
+		// ik denk dat size uit GeneratorHelper.java moet en volledig in SymTab moet werken.
 	}
 
 	/**
@@ -141,9 +144,12 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * @return
 	 */
 	public String getValue(String id) {
-		printTAM("LOAD(1)", symbolTable.retrieve(id).getAddress(),
-				"Load the variable address");
-		return symbolTable.retrieve(id).toString();
+		IdEntry entry = symbolTable.retrieve(id);
+		if(entry.isFunctional()) {
+			printTAM("JUMP", entry.getAddress(), "Jump to the process " + id);
+		}
+		printTAM("LOAD(1)", entry.getAddress(),	"Load the variable address");
+		return entry.toString();
 	}
 
 	/**
@@ -191,8 +197,9 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		ProcEntry proc = new ProcEntry(id);
 		int thisLabelNo = labelNumber++;
 		nextLabel = "Proc" + thisLabelNo;
-		proc.setAddress(nextLabel);
+		proc.setAddress(nextLabel + "[CB]");
 		symbolTable.enter(id, proc);
+		printTAM("JUMP", "End" + thisLabelNo + "[CB]", "Skip procedure " + id + " body.");
 		symbolTable.openScope(); // Aan het eind, voor de body van de procedure
 		return thisLabelNo;
 	}
@@ -202,8 +209,8 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 */
 	public void defineProcedure_End(int thisLabelNo) {
 		symbolTable.closeScope();
-		nextLabel = "End" + thisLabelNo;
 		printTAM("RETURN(0)", "0","Return from the Procedure");
+		nextLabel = "End" + thisLabelNo;
 	}
 
 	// //////////////////////////////////////////////////////////

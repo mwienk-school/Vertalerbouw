@@ -9,7 +9,7 @@ public class ProcEntry extends IdEntry {
 	}
 	
 	public ProcEntry(String str) {
-		this.numeric = false;
+		this.functional = true;
 	}
 
 	@Override

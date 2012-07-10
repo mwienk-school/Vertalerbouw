@@ -12,6 +12,7 @@ public abstract class IdEntry {
     private String address;
     private Type type;
     protected boolean numeric = false;
+    protected boolean functional = false;
     
     public int   getLevel()			{ return level;			}
     public void  setLevel(int level)	{ this.level = level;	}
@@ -20,6 +21,7 @@ public abstract class IdEntry {
     public Type getType()				{ return type;			}
     public void setType(Type type)		{ this.type = type;		}
     public boolean isNumeric() 		{ return this.numeric; }
+    public boolean isFunctional()		{ return this.functional; }
     
     public abstract void setValue(Object o);
     public abstract Object getValue();
