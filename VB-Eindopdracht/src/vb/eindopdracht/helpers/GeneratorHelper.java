@@ -117,9 +117,8 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		String[] splitted = CrimsonCodeHelper.splitString(id);
 		if("Var".equals(splitted[splitted.length-1])) {
 			varparam = true;
-			splitted = Arrays.copyOfRange(splitted, 0, splitted.length-2);
 		}
-		IdEntry entry = processEntry(id);
+		IdEntry entry = processEntry(id.substring(0, (varparam?id.length()-3:id.length())));
 		entry.setAddress(offset + "[LB]");
 		entry.setType(IdEntry.Type.VAR);
 		entry.setVarparam(varparam);

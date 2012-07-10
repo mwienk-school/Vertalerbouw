@@ -1,5 +1,5 @@
 //Success
-proc increment(eenInt) {
+proc increment(spawn eenInt) {
 	eenInt = eenInt +1;
 };
 spawn tweeInt;
