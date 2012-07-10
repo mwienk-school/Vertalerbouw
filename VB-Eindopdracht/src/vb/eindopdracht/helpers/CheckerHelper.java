@@ -13,10 +13,17 @@ public class CheckerHelper extends CrimsonCodeHelper {
 	 * @throws Exception
 	 */
 	public String checkType(String type, String ex) throws Exception {
+		
+		String[] splitType = type.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
+		String[] splitEx = ex.split("(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])");
+		
 		if(ex.equals(type))
 	          return type;
-	    else 
-	    	  throw new Exception(type + " expression expected, " + ex + " expression found.");
+	    else if(splitType[splitType.length - 1].equals(splitEx[splitEx.length - 1])
+	    		&& splitType[splitType.length - 2].equals(splitEx[splitEx.length - 2]))
+	    	return type;
+	    else
+	    	throw new Exception(type + " expression expected, " + ex + " expression found.");
 	}
 	
 	/**

@@ -5,9 +5,3 @@ spawn aBlaatIntArray;
 aBlaatIntArray = [1, 2];
 
 levert geen fouten op, terwijl het wel fout is.
-
-- checken types binnen array;
-
-aBlaatIntArray = [blue, red];
-
-levert geen fouten op, terwijl het wel fout is
