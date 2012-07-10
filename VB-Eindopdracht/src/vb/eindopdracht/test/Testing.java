@@ -41,7 +41,6 @@ public class Testing extends TestCase {
 					"End0:     POP(0)            2 ; Pop 2 variables\n" +
 					"          HALT                ; End of program\n", outContent.toString());
 		} catch (Exception e) {
-			e.printStackTrace();
 			fail();
 		}
 	}
@@ -52,6 +51,14 @@ public class Testing extends TestCase {
 			//Test moet falen, maar kan pas als checker goed werkt.
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void testProc1() {
+		try {
+			new Tester("src/vb/eindopdracht/test/proc/proc1");
+		} catch (Exception e) {
+			fail();
 		}
 	}
 
