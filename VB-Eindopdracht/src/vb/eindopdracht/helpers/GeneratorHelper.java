@@ -209,7 +209,39 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 */
 	public void defineProcedure_End(int thisLabelNo) {
 		symbolTable.closeScope();
+		//TODO parameters poppen
 		printTAM("RETURN(0)", "0","Return from the Procedure");
+		nextLabel = "End" + thisLabelNo;
+	}
+
+	// //////////////////////////////////////////////////////////
+	// / Functie
+	// //////////////////////////////////////////////////////////
+
+	/**
+	 * Definieer een functie
+	 * 
+	 * @param id
+	 * @throws Exception
+	 */
+	public int defineFunction_Start(String id) throws Exception {
+		FuncEntry func = new FuncEntry(id);
+		int thisLabelNo = labelNumber++;
+		nextLabel = "Proc" + thisLabelNo;
+		func.setAddress(nextLabel + "[CB]");
+		symbolTable.enter(id, func);
+		printTAM("JUMP", "End" + thisLabelNo + "[CB]", "Skip function " + id + " body.");
+		symbolTable.openScope(); // Aan het eind, voor de body van de functie
+		return thisLabelNo;
+	}
+
+	/**
+	 * Einde van defineFunction
+	 */
+	public void defineFunction_End(int thisLabelNo) {
+		symbolTable.closeScope();
+		//TODO parameters poppen en resultaat returnen
+		printTAM("RETURN(0)", "0","Return from the function");
 		nextLabel = "End" + thisLabelNo;
 	}
 

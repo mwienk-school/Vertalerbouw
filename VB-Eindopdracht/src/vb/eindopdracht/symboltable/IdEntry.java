@@ -13,6 +13,7 @@ public abstract class IdEntry {
     private Type type;
     protected boolean numeric = false;
     protected boolean functional = false;
+    protected boolean varparam = false;
     
     public int   getLevel()			{ return level;			}
     public void  setLevel(int level)	{ this.level = level;	}
@@ -20,8 +21,10 @@ public abstract class IdEntry {
     public void setAddress(String add) { this.address = add;  }
     public Type getType()				{ return type;			}
     public void setType(Type type)		{ this.type = type;		}
+    public void setVarParam(boolean varparam)	{ this.varparam = varparam; }
     public boolean isNumeric() 		{ return this.numeric; }
     public boolean isFunctional()		{ return this.functional; }
+    public boolean isVarParam()			{ return this.varparam; }
     
     public abstract void setValue(Object o);
     public abstract Object getValue();
