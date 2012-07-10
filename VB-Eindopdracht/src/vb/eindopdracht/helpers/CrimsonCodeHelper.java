@@ -85,6 +85,7 @@ public abstract class CrimsonCodeHelper {
 			ArrayEntry entry = new ArrayEntry(identifier);
 			entry.setDimensions(Integer.parseInt(start), Integer.parseInt(end));
 			dynamicTypes.put(identifier, entry);
+			symbolTable.enter(identifier, entry);
 		}
 			
 		

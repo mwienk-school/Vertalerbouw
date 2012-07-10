@@ -153,13 +153,13 @@ expression returns [String val = null;]
       { 
         gh.symbolTable.closeScope();
       }
-  |   ^(ARRAY expression+)
+  |   ^(ARRAY (expression)+)
       {
-        //TODO Array implementeren
+        //TODO Arrays afmaken
       }
-  |   ^(TYPE id=IDENTIFIER NUMBER NUMBER)
+  |   ^(TYPE id=IDENTIFIER n1=NUMBER n2=NUMBER)
       {
-        //TODO Euhm?
+        gh.defineArray_Type($id.text, $n1.text, $n2.text);
       }
   |   ex=operand 
       {

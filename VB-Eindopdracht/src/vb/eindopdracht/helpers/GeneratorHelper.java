@@ -364,7 +364,15 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		nextLabel = "End" + info.thisLabelNo;
 		symbolTable.closeScope();
 	}
-
+	
+	// //////////////////////////////////////////////////////////
+	// / PRINT Statement
+	// //////////////////////////////////////////////////////////
+	
+	public void defineArray_Type(String identifier, String start, String end) throws Exception {
+		processDynamicType(identifier, start, end);
+	}
+	
 	// //////////////////////////////////////////////////////////
 	// / PRINT Statement
 	// //////////////////////////////////////////////////////////
