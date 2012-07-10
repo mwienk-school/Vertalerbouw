@@ -32,7 +32,7 @@ compExpr returns [String type = null;]
                                         { ch.processEntry($id.text); $type = "no_type"; }
   |   ^(FUNC id=IDENTIFIER {ch.symbolTable.openScope();} paramdecl+ expression {ch.symbolTable.closeScope();})
                                         { ch.processEntry($id.text); $type = "no_type"; }
-  |   ^(TYPE id=IDENTIFIER NUMBER NUMBER)     { ch.processDynamicType($id.text); $type = "no_type"; }
+  |   ^(TYPE id=IDENTIFIER n1=NUMBER n2=NUMBER)     { ch.processDynamicType($id.text, $n1.text, $n2.text); $type = "no_type"; }
   |   expression
   ;
 
@@ -84,7 +84,18 @@ expression returns [String type = null;]
   |   ^(PRINT expression+) { $type = "void"; }
   |   ^(PRINTLN expression+) {$type = "void"; }
   |   ^(CCOMPEXPR { ch.symbolTable.openScope(); } (ce=compExpr { $type = $ce.type; })+ { ch.symbolTable.closeScope(); })
-  |   ^(ARRAY ex=expression { $type = $ex.type; } (ex=expression { ch.checkType($type, $ex.type); })*) { $type = $type + "Array"; }
+  |   ^(ARRAY ex=expression 
+               { 
+                 int n = 1; $type = $ex.type; 
+               } 
+             (ex=expression { 
+                 ch.checkType($type, $ex.type); 
+                 n++; 
+               })*
+       ) 
+       { 
+        $type = $type + "Array"; 
+       }
   |   op=operand                              { $type = $op.type; }
   ;
   
