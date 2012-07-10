@@ -104,4 +104,5 @@ operand returns [String type = null;]
   |   TRUE              { $type = "Pill"; }
   |   FALSE             { $type = "Pill"; }
   |   NUMBER            { $type = "Int"; }
+  |   CHARACTER         { $type = "Char"; }
   ;
