@@ -20,6 +20,10 @@ public class ArrayEntry extends IdEntry implements Cloneable {
 	public int getEndDimension() {
 		return enddim;
 	}
+	
+	public int getArraySize() {
+		return enddim - startdim +1;
+	}
 
 	public void setDimensions(int startdim, int enddim) {
 		this.startdim = startdim;

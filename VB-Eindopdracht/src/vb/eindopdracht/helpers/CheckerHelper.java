@@ -19,11 +19,13 @@ public class CheckerHelper extends CrimsonCodeHelper {
 		String[] splitType = CrimsonCodeHelper.splitString(type);
 		String[] splitEx   = CrimsonCodeHelper.splitString(ex);
 		
-		if(ex.equals(type))
-	          return type;
-	    else if(splitType[splitType.length - 1].equals(splitEx[splitEx.length - 1])
-	    		&& splitType[splitType.length - 2].equals(splitEx[splitEx.length - 2]))
-	    	//Dynamic Type (last 2 parts are equal).
+		if(ex.equals(type)) {
+			//Basic types
+			return type;
+		}
+		
+	    else if (splitType[splitType.length - 1].equals(splitEx[splitEx.length - 1])
+	    	   && splitType[splitType.length - 2].equals(splitEx[splitEx.length - 2])) 	    	
 	    	return type;
 	    else
 	    	throw new Exception(type + " expression expected, " + ex + " expression found.");
@@ -62,14 +64,25 @@ public class CheckerHelper extends CrimsonCodeHelper {
 	/**
 	 * 
 	 * @param identifier
-	 * @throws Exception 
+	 * @param exType
+	 * @return
+	 * @throws Exception
 	 */
-	public void processArray(String identifier, String size) throws Exception {
-		ArrayEntry entry = (ArrayEntry) processEntry(identifier);
-		int arraySize = entry.getEndDimension() - entry.getStartDimension();
-		if(arraySize != Integer.parseInt(size)) {
-			throw new Exception("The declared array " + identifier + " does not have the right size (" + arraySize + ")");
+	public String processAssignment(String identifier, String exType) throws Exception {
+		int arrayLength = 0;
+		if (exType.contains("Array[")) {
+			arrayLength = Integer.parseInt(exType.substring(exType.lastIndexOf("[") + 1, exType.lastIndexOf("]")));
+			exType = exType.substring(0, exType.lastIndexOf("["));
 		}
+		String returnType = checkType(getType(identifier), exType);
+		if(returnType.endsWith("Array")){
+			//Check length for arrays
+		    ArrayEntry idEntry = (ArrayEntry) symbolTable.retrieve(identifier);
+	    	if(idEntry.getArraySize() != arrayLength) {
+	    		throw new Exception("The declared array " + identifier + " does not have the right size (" + idEntry.getArraySize() + ")");
+	    	}
+		}
+		return returnType;
 	}
 	
 	/**

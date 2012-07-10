@@ -58,7 +58,7 @@ expression returns [String type = null;]
   |   ^(UMINUS ex=expression)                 { $type = ch.checkType("Int", $ex.type); }
   |   ^(PLUS e1=expression e2=expression)     { $type = ch.checkType("Int", $e1.type); $type = ch.checkType($type, $e2.type); }
   |   ^(MINUS e1=expression e2=expression)    { $type = ch.checkType("Int", $e1.type); $type = ch.checkType($type, $e2.type); }
-  |   ^(BECOMES id=IDENTIFIER ex=expression)  { $type = ch.checkType(ch.getType($id.text), $ex.type);}
+  |   ^(BECOMES id=IDENTIFIER ex=expression)  { $type = ch.processAssignment($id.text, $ex.type); }
   |   ^(OR e1=expression e2=expression)       { $type = ch.checkType("Pill", $e1.type); $type = ch.checkType($type, $e2.type); }
   |   ^(AND e1=expression e2=expression)      { $type = ch.checkType("Pill", $e1.type); $type = ch.checkType($type, $e2.type); }
   |   ^(LT e1=expression e2=expression)       { ch.checkType("Int", $e1.type); ch.checkType("Int", $e2.type); $type = "Pill"; }
@@ -94,7 +94,7 @@ expression returns [String type = null;]
                })*
        ) 
        { 
-        $type = $type + "Array"; 
+        $type = $type + "Array[" + n + "]"; 
        }
   |   op=operand                              { $type = $op.type; }
   ;
