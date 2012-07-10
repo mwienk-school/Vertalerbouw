@@ -1,5 +1,6 @@
 package vb.eindopdracht.helpers;
 
+import java.lang.reflect.Constructor;
 import java.util.Arrays;
 
 import vb.eindopdracht.symboltable.*;
@@ -104,6 +105,25 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		// SB gebruiken voor currentLevel = 0? check ook de andere voorkomens van size, 
 		// ik denk dat size uit GeneratorHelper.java moet en volledig in SymTab moet werken.
 	}
+	
+	/**
+	 * Definieer een parameter met de naam id op locatie offset[LB]
+	 * 
+	 * @param id
+	 * @throws Exception
+	 */
+	public void defineParameter(String id, int offset) throws Exception {
+		boolean varparam = false;
+		String[] splitted = CrimsonCodeHelper.splitString(id);
+		if("Var".equals(splitted[splitted.length-1])) {
+			varparam = true;
+			splitted = Arrays.copyOfRange(splitted, 0, splitted.length-2);
+		}
+		IdEntry entry = processEntry(id);
+		entry.setAddress(offset + "[LB]");
+		entry.setType(IdEntry.Type.VAR);
+		entry.setVarparam(varparam);
+	}
 
 	/**
 	 * Print een primitive routine (een aanroep naar de VM met CALL)
@@ -132,9 +152,17 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * @param value
 	 */
 	public void storeValue(String id, String value) {
-		printTAM("STORE(1)", symbolTable.retrieve(id).getAddress(),
-				"Store in variable " + id);
-		symbolTable.retrieve(id).setValue(value);
+		IdEntry entry = symbolTable.retrieve(id);
+		if(entry.isVarparam()) {
+			printTAM("LOAD(1)", entry.getAddress(), "Load the variable parameter address");
+			printTAM("STOREI(1)", "", "Store at the variable parameter address");
+			//TODO juiste variabele uit symbolTable updaten.
+		}
+		else {
+			printTAM("STORE(1)", symbolTable.retrieve(id).getAddress(),
+					"Store in variable " + id);
+			symbolTable.retrieve(id).setValue(value);
+		}
 	}
 
 	/**
@@ -145,11 +173,27 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 */
 	public String getValue(String id) {
 		IdEntry entry = symbolTable.retrieve(id);
-		if(entry.isFunctional()) {
+		if(entry.isFunctional())
 			printTAM("JUMP", entry.getAddress(), "Jump to the process " + id);
+		else if(entry.isVarparam()) {
+			printTAM("LOAD(1)", entry.getAddress(), "Load the variable parameter address");
+			printTAM("LOADI(1)", "", "Load the variable parameter");
 		}
-		printTAM("LOAD(1)", entry.getAddress(),	"Load the variable address");
+		else
+			printTAM("LOAD(1)", entry.getAddress(),	"Load the variable address");
 		return entry.toString();
+	}
+
+	/**
+	 * Geef het adres van een variabele terug
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public String getAddress(String id) {
+		IdEntry entry = symbolTable.retrieve(id);
+		printTAM("LOADA", entry.getAddress(),	"Load the variable address");
+		return entry.getAddress();
 	}
 
 	/**

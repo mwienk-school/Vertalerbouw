@@ -21,10 +21,10 @@ public abstract class IdEntry {
     public void setAddress(String add) { this.address = add;  }
     public Type getType()				{ return type;			}
     public void setType(Type type)		{ this.type = type;		}
-    public void setVarParam(boolean varparam)	{ this.varparam = varparam; }
+    public void setVarparam(boolean varparam)	{ this.varparam = varparam; }
     public boolean isNumeric() 		{ return this.numeric; }
     public boolean isFunctional()		{ return this.functional; }
-    public boolean isVarParam()			{ return this.varparam; }
+    public boolean isVarparam()			{ return this.varparam; }
     
     public abstract void setValue(Object o);
     public abstract Object getValue();
