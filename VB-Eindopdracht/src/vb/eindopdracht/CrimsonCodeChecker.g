@@ -70,7 +70,7 @@ expression returns [String type = null;]
   |   ^(TIMES e1=expression e2=expression)    { $type = ch.checkType("Int", $e1.type); $type = ch.checkType($type, $e2.type); }
   |   ^(DIVIDE e1=expression e2=expression)   { $type = ch.checkType("Int", $e1.type); $type = ch.checkType($type, $e2.type); }
   |   ^(MOD e1=expression e2=expression)      { $type = ch.checkType("Int", $e1.type); $type = ch.checkType($type, $e2.type); }
-  |   ^(IF e1=expression e2=expression e3=expression?) {
+  |   ^(IF e1=expression e2=expression (e3=expression)?) {
                                                         ch.checkType("Pill", $e1.type);
                                                         try {
                                                           $type = ch.checkType($e2.type, $e3.type);
@@ -81,7 +81,7 @@ expression returns [String type = null;]
                                                       }
   |   ^(WHILE { ch.symbolTable.openScope(); } e1=expression e2=expression { ch.checkType("Pill", $e1.type); $type = "void"; ch.symbolTable.closeScope(); })
   |   ^(READ id=IDENTIFIER { $type = ch.getType($id.text); } (id=IDENTIFIER { ch.checkDeclared($id.text); $type = "void"; })*)
-  |   ^(PRINT expression+) { $type = "void"; }
+  |   ^(PRINT ex=expression { $type = $ex.type; } (expression { $type = "void"; })*) 
   |   ^(PRINTLN expression+) {$type = "void"; }
   |   ^(CCOMPEXPR { ch.symbolTable.openScope(); } (ce=compExpr { $type = $ce.type; })+ { ch.symbolTable.closeScope(); })
   |   ^(ARRAY ex=expression 
