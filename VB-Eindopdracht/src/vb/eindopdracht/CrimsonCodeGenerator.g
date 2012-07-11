@@ -43,7 +43,7 @@ compExpr
              expression)
   |   ^(FUNC id=IDENTIFIER { gh.symbolTable.openScope(); } paramdecls expression {gh.symbolTable.closeScope(); //TODO implementaties van PROC & FUNC en paramdecl en paramuse
   })
-  |   expression
+  |   expression { gh.clearRuleStack(); }
   ;
   
 paramdecls returns [List paramList = new ArrayList();]
