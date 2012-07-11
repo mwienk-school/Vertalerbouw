@@ -17,6 +17,7 @@ public class FuncEntry extends IdEntry {
 	}
 	
 	public FuncEntry(String str) {
+		this.functional = true;
 		this.setReturnType(str);
 	}
 
