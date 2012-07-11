@@ -18,28 +18,36 @@ public class Testing extends TestCase {
 		try {
 			new Tester("src/vb/eindopdracht/test/while/while01");
 			assertEquals(
-					"          PUSH              1 ; Push variable eenInt\n" +
-					"          PUSH              1 ; Push variable tweeInt\n" +
-					"          LOADL            50 ; Load literal value '50'\n" +
-					"          STORE(1)      0[SB] ; Store in variable eenInt\n" +
-					"          LOAD(1)       0[SB] ; Load the variable address\n" +
-					"          LOADL            50 ; Load literal value '50'\n" +
-					"          CALL            div ; Division\n" +
-					"          STORE(1)      1[SB] ; Store in variable tweeInt\n" +
-					"While0:   LOAD(1)       0[SB] ; Load the variable address\n" +
-					"          LOAD(1)       1[SB] ; Load the variable address\n" +
-					"          CALL             lt ; Lesser than\n" +
-					"          JUMPIF(0)  End0[CB] ; Jump past body\n" +
-					"          LOAD(1)       0[SB] ; Load the variable address\n" +
-					"          CALL         putint ; Print the int value on top of the stack\n" +
-					"          CALL         puteol ; Print a newline to the stdout\n" +
-					"          LOAD(1)       0[SB] ; Load the variable address\n" +
-					"          LOADL             1 ; Load literal value '1'\n" +
-					"          CALL            sub ; Subtract the top of the stack\n" +
-					"          STORE(1)      0[SB] ; Store in variable eenInt\n" +
-					"          JUMP      While0[CB] ; Jump to WHILE-expression\n" +
-					"End0:     POP(0)            2 ; Pop 2 variables\n" +
-					"          HALT                ; End of program\n", outContent.toString());
+"          PUSH              1 ; Push variable eenInt\n"+
+"          PUSH              1 ; Push variable tweeInt\n"+
+"          LOADL            50 ; Load literal value '50'\n"+
+"          STORE(1)      0[SB] ; Store in variable eenInt\n"+
+"          LOAD(1)       0[SB] ; Load stored variable eenInt on the stack.\n"+
+"          POP(0)            1 ; Keep the stack clean.\n"+
+"          LOAD(1)       0[SB] ; Load the variable address\n"+
+"          LOADL            50 ; Load literal value '50'\n"+
+"          CALL            div ; Division\n"+
+"          STORE(1)      1[SB] ; Store in variable tweeInt\n"+
+"          LOAD(1)       1[SB] ; Load stored variable tweeInt on the stack.\n"+
+"          POP(0)            1 ; Keep the stack clean.\n"+
+"While0:   LOAD(1)       0[SB] ; Load the variable address\n"+
+"          LOAD(1)       1[SB] ; Load the variable address\n"+
+"          CALL             lt ; Lesser than\n"+
+"          JUMPIF(0)  End0[CB] ; Jump past body\n"+
+"          LOAD(1)       0[SB] ; Load the variable address\n"+
+"          CALL         putint ; Print the int value on top of the stack\n"+
+"          CALL         puteol ; Print a newline to the stdout\n"+
+"          POP(0)            1 ; Keep the stack clean.\n"+
+"          LOAD(1)       0[SB] ; Load the variable address\n"+
+"          LOADL             1 ; Load literal value '1'\n"+
+"          CALL            sub ; Subtract the top of the stack\n"+
+"          STORE(1)      0[SB] ; Store in variable eenInt\n"+
+"          LOAD(1)       0[SB] ; Load stored variable eenInt on the stack.\n"+
+"          POP(0)            1 ; Keep the stack clean.\n"+
+"          JUMP      While0[CB] ; Jump to WHILE-expression\n"+
+"End0:     POP(0)            2 ; Pop 2 variables\n"+
+"          HALT                ; End of program\n"
+			, outContent.toString());
 		} catch (Exception e) {
 			fail();
 		}
@@ -68,34 +76,43 @@ public class Testing extends TestCase {
 		try {
 			new Tester("src/vb/eindopdracht/test/standard/standard1");
 			assertEquals(
-			"          PUSH              1 ; Push variable eenInt\n" +
-			"          PUSH              1 ; Push variable eenPill\n"+
-			"          LOADL             1 ; Load literal value '1'\n"+
-			"          STORE(1)      1[SB] ; Store in variable eenPill\n"+
-			"          LOADL            10 ; Load literal value '10'\n"+
-			"          STORE(1)      0[SB] ; Store in variable eenInt\n"+
-			"While0:   LOAD(1)       1[SB] ; Load the variable address\n"+
-			"          JUMPIF(0)  End0[CB] ; Jump past body\n"+
-			"          LOAD(1)       0[SB] ; Load the variable address\n"+
-			"          CALL         putint ; Print the int value on top of the stack\n"+
-			"          LOADL            32 ; Load literal value '32'\n"+
-			"          CALL            put ; Print the value on top of the stack\n"+
-			"          LOAD(1)       0[SB] ; Load the variable address\n"+
-			"          LOADL             1 ; Load literal value '1'\n"+
-			"          CALL            sub ; Subtract the top of the stack\n"+
-			"          STORE(1)      0[SB] ; Store in variable eenInt\n"+
-			"          LOAD(1)       0[SB] ; Load the variable address\n"+
-			"          LOADL             1 ; Load literal value '1'\n"+
-			"          LOADL             1 ; Load literal value '1'\n"+
-			"          CALL             eq ; Equal to\n"+
-			"          JUMPIF(0) Else1[CB] ; Jump to ELSE\n"+
-			"          LOADL             0 ; Load literal value '0'\n"+
-			"          STORE(1)      1[SB] ; Store in variable eenPill\n"+
-			"          JUMP       End1[CB] ; Jump over ELSE\n"+
-			"Else1:    JUMP       End1[CB] ; Jump to End, no Else clause\n"+
-			"End1:     JUMP      While0[CB] ; Jump to WHILE-expression\n"+
-			"End0:     POP(0)            2 ; Pop 2 variables\n"+
-			"          HALT                ; End of program\n", 
+"          PUSH              1 ; Push variable eenInt\n"+
+"          PUSH              1 ; Push variable eenPill\n"+
+"          LOADL             1 ; Load literal value '1'\n"+
+"          STORE(1)      1[SB] ; Store in variable eenPill\n"+
+"          LOAD(1)       1[SB] ; Load stored variable eenPill on the stack.\n"+
+"          POP(0)            1 ; Keep the stack clean.\n"+
+"          LOADL            10 ; Load literal value '10'\n"+
+"          STORE(1)      0[SB] ; Store in variable eenInt\n"+
+"          LOAD(1)       0[SB] ; Load stored variable eenInt on the stack.\n"+
+"          POP(0)            1 ; Keep the stack clean.\n"+
+"While0:   LOAD(1)       1[SB] ; Load the variable address\n"+
+"          JUMPIF(0)  End0[CB] ; Jump past body\n"+
+"          LOAD(1)       0[SB] ; Load the variable address\n"+
+"          CALL         putint ; Print the int value on top of the stack\n"+
+"          LOADL            32 ; Load literal value '32'\n"+
+"          CALL            put ; Print the value on top of the stack\n"+
+"          POP(0)            1 ; Keep the stack clean.\n"+
+"          LOAD(1)       0[SB] ; Load the variable address\n"+
+"          LOADL             1 ; Load literal value '1'\n"+
+"          CALL            sub ; Subtract the top of the stack\n"+
+"          STORE(1)      0[SB] ; Store in variable eenInt\n"+
+"          LOAD(1)       0[SB] ; Load stored variable eenInt on the stack.\n"+
+"          POP(0)            1 ; Keep the stack clean.\n"+
+"          LOAD(1)       0[SB] ; Load the variable address\n"+
+"          LOADL             1 ; Load literal value '1'\n"+
+"          LOADL             1 ; Load literal value '1'\n"+
+"          CALL             eq ; Equal to\n"+
+"          JUMPIF(0) Else1[CB] ; Jump to ELSE\n"+
+"          LOADL             0 ; Load literal value '0'\n"+
+"          STORE(1)      1[SB] ; Store in variable eenPill\n"+
+"          LOAD(1)       1[SB] ; Load stored variable eenPill on the stack.\n"+
+"          POP(0)            2 ; Keep the stack clean.\n"+
+"          JUMP       End1[CB] ; Jump over ELSE\n"+
+"Else1:    JUMP       End1[CB] ; Jump to End, no Else clause\n"+
+"End1:     JUMP      While0[CB] ; Jump to WHILE-expression\n"+
+"End0:     POP(0)            2 ; Pop 2 variables\n"+
+"          HALT                ; End of program\n", 
 			outContent.toString());
 		} catch (Exception e) {
 			fail();
@@ -165,6 +182,45 @@ public class Testing extends TestCase {
 "	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.run(RemoteTestRunner.java:390)\n"+
 "	at org.eclipse.jdt.internal.junit.runner.RemoteTestRunner.main(RemoteTestRunner.java:197)\n"
 ,			errContent.toString());
+		} catch (Exception e) {
+			fail();
+		}
+	}
+	
+	public void testStandard3() {
+		try {
+			new Tester("src/vb/eindopdracht/test/standard/standard3");
+			assertEquals(
+				  "          PUSH              1 ; Push variable aInt\n"+
+		          "          PUSH              1 ; Push variable bInt\n"+
+		          "          LOADL            12 ; Load literal value '12'\n"+
+		          "          STORE(1)      1[SB] ; Store in variable bInt\n"+
+		          "          LOAD(1)       1[SB] ; Load stored variable bInt on the stack.\n"+
+		          "          STORE(1)      0[SB] ; Store in variable aInt\n"+
+		          "          LOAD(1)       0[SB] ; Load stored variable aInt on the stack.\n"+
+		          "          POP(0)            1 ; Keep the stack clean.\n"+
+		          "          LOAD(1)       0[SB] ; Load the variable address\n"+
+		          "          LOADL            12 ; Load literal value '12'\n"+
+		          "          LOADL             1 ; Load literal value '1'\n"+
+		          "          CALL             eq ; Equal to\n"+
+		          "          JUMPIF(0) Else0[CB] ; Jump to ELSE\n"+
+		          "          LOAD(1)       1[SB] ; Load the variable address\n"+
+		          "          CALL         putint ; Print the int value on top of the stack\n"+
+		          "          POP(0)            1 ; Keep the stack clean.\n"+
+		          "          LOAD(1)       1[SB] ; Load the variable address\n"+
+		          "          LOADL             1 ; Load literal value '1'\n"+
+		          "          CALL            sub ; Subtract the top of the stack\n"+
+		          "          STORE(1)      1[SB] ; Store in variable bInt\n"+
+		          "          LOAD(1)       1[SB] ; Load stored variable bInt on the stack.\n"+
+		          "          POP(0)            1 ; Keep the stack clean.\n"+
+		          "          JUMP       End0[CB] ; Jump over ELSE\n"+
+		          "Else0:    JUMP       End0[CB] ; Jump to End, no Else clause\n"+
+		          "End0:     LOAD(1)       0[SB] ; Load the variable address\n"+
+		          "          CALL         putint ; Print the int value on top of the stack\n"+
+		          "          LOAD(1)       1[SB] ; Load the variable address\n"+
+		          "          CALL         putint ; Print the int value on top of the stack\n"+
+		          "          POP(0)            2 ; Pop 2 variables\n"+
+		          "          HALT                ; End of program\n", outContent.toString());
 		} catch (Exception e) {
 			fail();
 		}

@@ -35,8 +35,10 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	}
 	
 	public void clearRuleStack() {
-		printTAM("POP(0)", String.valueOf(ruleSize), "Keep the stack clean.");
-		ruleSize = 0;
+		if(ruleSize > 0 ) {
+			printTAM("POP(0)", String.valueOf(ruleSize), "Keep the stack clean.");
+			ruleSize = 0;
+		}
 	}
 
 	/**
@@ -137,7 +139,21 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * @param comment
 	 */
 	public void printPrimitiveRoutine(String cmd, String comment) {
+		// Bekijk hoeveel argumenten een routine gebruikt, om de stack op te schonen
+		// "id,not,succ,pred,neg,new" niet nodig, verschil is 0.
+		int resultMinusArgs = 0;
+		if("and,or,add,sub,mult,div,mod,lt,le,ge,gt,get,put,getint,putint".contains(cmd)) {
+			// Verschil is 1
+			resultMinusArgs = 1;
+		} else if ("eq,neq,dispose".contains(cmd)) {
+			// Verschil is 2
+			resultMinusArgs = 2;
+		} else if ("eol,eof".contains(cmd)) {
+			// Verschil is -1 (pusht de stack)
+			resultMinusArgs = -1;
+		}
 		printTAM("CALL", cmd, comment);
+		ruleSize = ruleSize - resultMinusArgs;
 	}
 
 	/**
@@ -156,18 +172,21 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * 
 	 * @param id
 	 * @param value
+	 * @param size
 	 */
 	public void storeValue(String id, String value) {
+		int size = 1;
 		IdEntry entry = symbolTable.retrieve(id);
+		if(entry instanceof ArrayEntry) size = ((ArrayEntry) entry).getArraySize();
 		if(entry.isVarparam()) {
-			printTAM("LOAD(1)", entry.getAddress(), "Load the variable parameter address");
-			printTAM("STOREI(1)", "", "Store at the variable parameter address");
+			printTAM("LOAD(" + size + ")", entry.getAddress(), "Load the variable parameter address");
+			printTAM("STOREI(" + size + ")", "", "Store at the variable parameter address");
 			//TODO juiste variabele uit symbolTable updaten.
 		}
 		else {
-			printTAM("STORE(1)", symbolTable.retrieve(id).getAddress(),
+			printTAM("STORE(" + size + ")", symbolTable.retrieve(id).getAddress(),
 					"Store in variable " + id);
-			printTAM("LOAD(1)", symbolTable.retrieve(id).getAddress(),
+			printTAM("LOAD(" + size + ")", symbolTable.retrieve(id).getAddress(),
 					"Load stored variable " + id + " on the stack.");
 			symbolTable.retrieve(id).setValue(value);
 		}
@@ -396,13 +415,12 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	public void printStatementPrint(String ex) {
 		try {
 			Integer.parseInt(ex);
-			printTAM("CALL", "putint",
-					"Print the int value on top of the stack");
+			printPrimitiveRoutine("putint", "Print the int value on top of the stack");
 		} catch (NumberFormatException e) {
 			if (ex.equals("\n")) {
-				printTAM("CALL", "puteol", "Print a newline to the stdout");
+				printPrimitiveRoutine("puteol", "Print a newline to the stdout");
 			} else {
-				printTAM("CALL", "put", "Print the value on top of the stack");
+				printPrimitiveRoutine("put", "Print the value on top of the stack");
 			}
 		}
 	}
@@ -420,9 +438,9 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		printTAM("LOADA", symbolTable.retrieve(id).getAddress(),
 				"Load variable address for " + id);
 		if (symbolTable.retrieve(id).isNumeric()) {
-			printTAM("CALL", "getint", "Get a numeric value for " + id);
+			printPrimitiveRoutine("getint", "Get a numeric value for " + id);
 		} else {
-			printTAM("CALL", "get", "Get a value for " + id);
+			printPrimitiveRoutine("get", "Get a value for " + id);
 		}
 	}
 
