@@ -7,6 +7,8 @@ import vb.eindopdracht.symboltable.*;
 public class GeneratorHelper extends CrimsonCodeHelper {
 	// Keep track of the Stack size
 	private int size;
+	// Keep track of Stack size for a rule
+	private int ruleSize;
 	// Label for the next output
 	private String nextLabel;
 	// Identifier for labels (in case of nested (if) statements)
@@ -30,6 +32,11 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 */
 	public boolean isConstantScope() {
 		return constantScope;
+	}
+	
+	public void clearRuleStack() {
+		printTAM("POP(0)", String.valueOf(ruleSize), "Keep the stack clean.");
+		ruleSize = 0;
 	}
 
 	/**
@@ -141,6 +148,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	public void loadLiteral(String literal) {
 		literal = encode(literal);
 		printTAM("LOADL", literal, "Load literal value '" + literal + "'");
+		ruleSize++;
 	}
 
 	/**
@@ -159,6 +167,8 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		else {
 			printTAM("STORE(1)", symbolTable.retrieve(id).getAddress(),
 					"Store in variable " + id);
+			printTAM("LOAD(1)", symbolTable.retrieve(id).getAddress(),
+					"Load stored variable " + id + " on the stack.");
 			symbolTable.retrieve(id).setValue(value);
 		}
 	}
@@ -179,6 +189,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		}
 		else
 			printTAM("LOAD(1)", entry.getAddress(),	"Load the variable address");
+		ruleSize++;
 		return entry.toString();
 	}
 
@@ -419,6 +430,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	public GeneratorHelper() {
 		super();
 		this.size = 0;
+		this.ruleSize = 0;
 		this.nextLabel = "";
 		this.labelNumber = 0;
 		this.constantScope = false;

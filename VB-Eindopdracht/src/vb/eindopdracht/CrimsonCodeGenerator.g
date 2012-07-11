@@ -87,6 +87,7 @@ expression returns [String val = null;]
       { 
         gh.storeValue($id.text, ex);
         val = ex;
+        gh.clearRuleStack();
       }
   |   ^(OR ex=expression ey=expression)
       {
@@ -153,7 +154,10 @@ expression returns [String val = null;]
       { 
         gh.symbolTable.closeScope();
       }
-  |   ^(ARRAY (expression { gh.storeValue(null, null);} )+)
+  |   ^(ARRAY (expression 
+               {
+                 // gh.StoreValue();
+               })+)
       {
         //TODO Arrays afmaken
       }
