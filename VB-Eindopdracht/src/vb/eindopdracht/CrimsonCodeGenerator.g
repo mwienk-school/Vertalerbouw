@@ -160,13 +160,7 @@ expression returns [String val = null;]
       { 
         gh.symbolTable.closeScope();
       }
-  |   ^(ARRAY (expression 
-               {
-                 // gh.StoreValue();
-               })+)
-      {
-        //TODO Arrays afmaken
-      }
+  |   ^(ARRAY expression+)
   |   ^(TYPE id=IDENTIFIER n1=NUMBER n2=NUMBER)
       {
         gh.defineArray_Type($id.text, $n1.text, $n2.text);
@@ -182,11 +176,11 @@ readvar returns [String val = null;]
   ;
   
 printexpr returns [String val = null;]
-  :   ex=expression { gh.printStatementPrint($ex.val); $val = $ex.val; }
+  :   ex=expression { System.out.println($ex.val); gh.printStatementPrint($ex.val); $val = $ex.val; }
   ;
   
 operand returns [String val = null;]
-  :   ^(id=IDENTIFIER expression* paramuse*)  
+  :   ^(id=IDENTIFIER ex=expression* paramuse*)  
       {
         $val = gh.getValue($id.text);
       } 

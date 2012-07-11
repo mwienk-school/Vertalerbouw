@@ -210,6 +210,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 			printTAM("LOAD(1)", entry.getAddress(), "Load the variable parameter address");
 			printTAM("LOADI(1)", "", "Load the variable parameter");
 		}
+		//else if(entry.is)
 		else
 			printTAM("LOAD(1)", entry.getAddress(),	"Load the variable address");
 		ruleSize++;

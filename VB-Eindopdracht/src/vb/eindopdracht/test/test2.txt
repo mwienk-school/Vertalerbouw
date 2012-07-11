@@ -1,4 +1,4 @@
 Type blaatIntArray [1..5];
 spawn aBlaatIntArray;
-aBlaatIntArray = [7, 1, 2, 0, 5];
+aBlaatIntArray = [7, 5, 2, 0, 5];
 print(aBlaatIntArray[1]);
