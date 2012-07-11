@@ -252,10 +252,18 @@ NUMBER
   ;
   
 CHARACTER
-  :   APOS LETTER APOS
+@after
+  {
+      this.setText(getText().substring(1,2)); 
+  }
+  :   APOS SINGLECHAR APOS
   ;
   
-fragment DIGIT  :   ('0'..'9') ;
-fragment LOWER  :   ('a'..'z') ;
-fragment UPPER  :   ('A'..'Z') ;
-fragment LETTER :   (LOWER | UPPER) ;
+fragment DIGIT        :   ('0'..'9') ;
+fragment LOWER        :   ('a'..'z') ;
+fragment UPPER        :   ('A'..'Z') ;
+fragment LETTER       :   (LOWER | UPPER) ;
+fragment SYMBOL       :   (' '|'-');
+fragment SINGLECHAR   :   (LETTER | SYMBOL | DIGIT);
+
+

@@ -1,6 +1,5 @@
 package vb.eindopdracht.helpers;
 
-import java.lang.reflect.Constructor;
 import java.util.Arrays;
 
 import vb.eindopdracht.symboltable.*;
@@ -365,7 +364,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	}
 	
 	// //////////////////////////////////////////////////////////
-	// / PRINT Statement
+	// / ARRAY Statements
 	// //////////////////////////////////////////////////////////
 	
 	public void defineArray_Type(String identifier, String start, String end) throws Exception {

@@ -31,6 +31,7 @@ public class Tester {
 		CrimsonCodeChecker checker = new CrimsonCodeChecker(nodes);
 		checker.program();
 		
+		nodes = new CommonTreeNodeStream(tree);
 		CrimsonCodeGenerator generator = new CrimsonCodeGenerator(nodes);
 		generator.program();	
 	}

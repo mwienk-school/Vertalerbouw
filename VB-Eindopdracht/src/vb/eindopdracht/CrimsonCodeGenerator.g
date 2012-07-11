@@ -153,7 +153,7 @@ expression returns [String val = null;]
       { 
         gh.symbolTable.closeScope();
       }
-  |   ^(ARRAY (expression)+)
+  |   ^(ARRAY (expression { gh.storeValue(null, null);} )+)
       {
         //TODO Arrays afmaken
       }
@@ -197,7 +197,7 @@ operand returns [String val = null;]
       }
   |   ch=CHARACTER
       {
-        $val = $ch.text.substring(1,2);
+        $val = $ch.text;
         if(!gh.isConstantScope()) gh.loadLiteral(val);
       }
   ;
