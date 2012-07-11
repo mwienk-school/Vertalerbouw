@@ -33,16 +33,23 @@ compExpr
   :   ^(CONST { gh.setConstantScope(true); } id=IDENTIFIER ex=expression) { gh.defineConstant($id.text, ex); gh.setConstantScope(false); }
   |   ^(VAR id=IDENTIFIER) { gh.defineVariable($id.text); }
   |   ^(PROC id=IDENTIFIER { int number = gh.defineProcedure_Start($id.text); } 
-             par=paramdecls 
-             {
-               gh.defineProcedure_End(number);
-               for(int i = 0; i < $par.paramList.size(); i++) {
-                gh.defineParameter((String)$par.paramList.get(i), i-$par.paramList.size());
-               }
-             }
-             expression)
-  |   ^(FUNC id=IDENTIFIER { gh.symbolTable.openScope(); } paramdecls expression {gh.symbolTable.closeScope(); //TODO implementaties van PROC & FUNC en paramdecl en paramuse
-  })
+              par=paramdecls 
+              {
+                int i;
+                for(i = 0; i < $par.paramList.size(); i++) {
+                  gh.defineParameter((String)$par.paramList.get(i), i-$par.paramList.size());
+                }
+              }
+             expression) { gh.defineProcedure_End(number, i); }
+  |   ^(FUNC id=IDENTIFIER { int number = gh.defineFunction_Start($id.text); }
+              par=paramdecls 
+              {
+                int i;
+                for(i = 0; i < $par.paramList.size(); i++) {
+                  gh.defineParameter((String)$par.paramList.get(i), i-$par.paramList.size());
+                }
+              }
+              expression) { gh.defineFunction_End(number, i); }
   |   expression
   ;
   

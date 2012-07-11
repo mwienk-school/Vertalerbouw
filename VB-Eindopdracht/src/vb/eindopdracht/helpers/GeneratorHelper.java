@@ -172,6 +172,9 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 */
 	public String getValue(String id) {
 		IdEntry entry = symbolTable.retrieve(id);
+		//TODO debugcode
+		if(entry == null)
+			System.out.println(id);
 		if(entry.isFunctional())
 			printTAM("JUMP", entry.getAddress(), "Jump to the process " + id);
 		else if(entry.isVarparam()) {
@@ -250,10 +253,9 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	/**
 	 * Einde van defineProcedure
 	 */
-	public void defineProcedure_End(int thisLabelNo) {
+	public void defineProcedure_End(int thisLabelNo, int parameters) {
 		symbolTable.closeScope();
-		//TODO parameters poppen
-		printTAM("RETURN(0)", "0","Return from the Procedure");
+		printTAM("RETURN(0)", "" + parameters, "Return from the Procedure");
 		nextLabel = "End" + thisLabelNo;
 	}
 
@@ -281,10 +283,10 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	/**
 	 * Einde van defineFunction
 	 */
-	public void defineFunction_End(int thisLabelNo) {
+	public void defineFunction_End(int thisLabelNo, int parameters) {
 		symbolTable.closeScope();
-		//TODO parameters poppen en resultaat returnen
-		printTAM("RETURN(0)", "0","Return from the function");
+		//TODO resultaat returnen
+		printTAM("RETURN(0)", "" + parameters, "Return from the function");
 		nextLabel = "End" + thisLabelNo;
 	}
 
