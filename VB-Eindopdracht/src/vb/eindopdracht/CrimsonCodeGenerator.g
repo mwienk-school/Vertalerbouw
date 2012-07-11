@@ -50,7 +50,7 @@ compExpr returns [String val = null;]
                 }
               }
               expression) { gh.defineFunction_End(number, i); }
-  |   expr=expression { $val = $expr.val; gh.clearRuleStack(); }
+  |   expr=expression { $val = $expr.val; }
   ;
   
 paramdecls returns [List paramList = new ArrayList();]
@@ -180,7 +180,7 @@ printexpr returns [String val = null;]
   ;
   
 operand returns [String val = null;]
-  :   ^(id=IDENTIFIER ex=expression* paramuse*)  
+  :   ^(id=IDENTIFIER { gh.initOperand($id.text); }ex=expression* paramuse*)  
       {
         $val = gh.getValue($id.text);
       } 

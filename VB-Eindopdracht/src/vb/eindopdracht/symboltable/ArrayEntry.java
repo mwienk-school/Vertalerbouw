@@ -36,6 +36,19 @@ public class ArrayEntry extends IdEntry implements Cloneable {
 	}
 	
 	/**
+	 * Return het address van een entry in de array
+	 * @param offset
+	 * @return
+	 */
+	public String getOffsetAddress(String offset) {
+		int numoffset = Integer.parseInt(offset);
+		//Get numeric part of the address
+		int numaddress = Integer.parseInt((getAddress().substring(0,getAddress().indexOf("["))));
+		//Get registry part of the address
+		return "" + (numoffset+numaddress) + (getAddress().substring(getAddress().indexOf("["), getAddress().indexOf("]")+1));
+	}
+	
+	/**
 	 * Generate a new Array instance from the Array description
 	 * @param id
 	 * @return

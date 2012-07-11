@@ -2,7 +2,6 @@ package vb.eindopdracht.helpers;
 
 import vb.eindopdracht.symboltable.ArrayEntry;
 import vb.eindopdracht.symboltable.FuncEntry;
-import vb.eindopdracht.symboltable.ProcEntry;
 
 /**
  * CheckerHelper is een helper class voor de CrimsonCode Checker 
