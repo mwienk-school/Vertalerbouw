@@ -32,7 +32,7 @@ program
 compExpr
   :   ^(CONST { gh.setConstantScope(true); } id=IDENTIFIER ex=expression) { gh.defineConstant($id.text, ex); gh.setConstantScope(false); }
   |   ^(VAR id=IDENTIFIER) { gh.defineVariable($id.text); }
-  |   ^(PROC id=IDENTIFIER { int number = gh.defineProcedure_Start($id.text);} 
+  |   ^(PROC id=IDENTIFIER { int number = gh.defineProcedure_Start($id.text); } 
              par=paramdecls 
              {
                gh.defineProcedure_End(number);

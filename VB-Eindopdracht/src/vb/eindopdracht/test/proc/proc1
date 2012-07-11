@@ -1,8 +1,12 @@
 //Success
-proc increment(spawn eenInt) {
+proc incrementProc(spawn eenInt) {
 	eenInt = eenInt +1;
+};
+func incrementFunc(eenInt) {
+	eenInt + 1;
 };
 spawn tweeInt;
 tweeInt = 1;
-increment(tweeInt);
+incrementProc(tweeInt);
+tweeInt = incrementFunc(tweeInt);
 print(tweeInt);

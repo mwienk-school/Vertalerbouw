@@ -269,7 +269,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	public int defineFunction_Start(String id) throws Exception {
 		FuncEntry func = new FuncEntry(id);
 		int thisLabelNo = labelNumber++;
-		nextLabel = "Proc" + thisLabelNo;
+		nextLabel = "Func" + thisLabelNo;
 		func.setAddress(nextLabel + "[CB]");
 		symbolTable.enter(id, func);
 		printTAM("JUMP", "End" + thisLabelNo + "[CB]", "Skip function " + id + " body.");

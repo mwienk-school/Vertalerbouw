@@ -1,6 +1,8 @@
 package vb.eindopdracht.helpers;
 
 import vb.eindopdracht.symboltable.ArrayEntry;
+import vb.eindopdracht.symboltable.FuncEntry;
+import vb.eindopdracht.symboltable.ProcEntry;
 
 /**
  * CheckerHelper is een helper class voor de CrimsonCode Checker 
@@ -53,6 +55,11 @@ public class CheckerHelper extends CrimsonCodeHelper {
 		for (int i = 1; i < splitted.length; i++) {
 			lastPart = splitted[splitted.length - i] + lastPart;
 			if (tokenSuffix.containsKey(lastPart.toString())) {
+				if("Proc".equals(lastPart))
+					lastPart = "void";
+				else if("Func".equals(lastPart)) {
+					lastPart = ((FuncEntry) symbolTable.retrieve(id)).getReturnType();
+				}
 				return lastPart;
 			}
 		}
@@ -84,7 +91,7 @@ public class CheckerHelper extends CrimsonCodeHelper {
 		}
 		return returnType;
 	}
-	
+
 	/**
 	 * Constructor (instantieert de standaard types van CrimsonCode).
 	 */
