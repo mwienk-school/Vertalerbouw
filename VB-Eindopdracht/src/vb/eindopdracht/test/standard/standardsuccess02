@@ -1,0 +1,35 @@
+spawn varInt;
+varInt =
+{
+	spawn var1Int, var2Int;
+	read(var1Int, var2Int);
+	write(var1Int, var2Int);
+	const const1Int = 1;
+	const const2Int = 2;
+	var2Int = var1Int = +16 + 2 * -8;
+	write(var1Int < var2Int && const1Int <= const2Int,
+		const1Int * const2Int > var2Int - var1Int);
+	var1Int < read(var2Int) && const1Int <= const2Int;
+	var2Int = write(var2Int) + 1;
+} + 1;
+spawn varPill;
+varPill =
+{
+	spawn varPill;
+	read(varPill);
+	write(varPill);
+	varPill = 12 / 5 * 5 + 12 % 5 = 12 && 6 >= 6;
+	const constPill = true;
+	write(!false && varPill == constPill || true <> false);
+} && true;
+spawn varChar;
+varChar =
+{
+	spawn var1Char, var2Char;
+	read(var1Char);
+	const constChar = ’c’;
+	var2Char = ’z’;
+	write(’a’, var1Char == constChar && (var2Char <> ’b’ || !true));
+	’b’;
+};
+write(varInt, varPill, varChar);

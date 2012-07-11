@@ -1,0 +1,123 @@
+//Constants
+const constInt = 50;
+const constChar = 'c';
+const const1Pill = red;
+const const2Pill = blue;
+
+line(constInt);		//Should be 50
+line(constChar);		//Should be c
+line(const1Pill);	//Should be red
+line(const2Pill);	//Should be blue
+
+//Variables and expressions
+//Integers
+spawn eenInt;
+eenInt = 1;
+spawn tweeInt;
+tweeInt = 2;
+spawn drieInt;
+drieInt = constInt;
+
+line(eenInt);		//Should be 1
+line(tweeInt);		//Should be 2
+line(drieInt);		//Should be 50
+
+eenInt = eenInt + -tweeInt * drieInt + constInt;
+read(drieInt);
+line(eenInt);		//Should be -49
+line(tweeInt);		//Should be 2
+line(drieInt);		//Should be whatever was entered
+line(constInt);	//Should be 50
+line(20%3);		//Should be 2
+line(20/3);		//Should be 6
+
+eenInt = tweeInt = +16 + 2 * -8;
+print(eenInt);		//Should be 0
+print(tweeInt);		//Should be 0
+
+//Characters
+spawn eenChar;
+eenChar = 'a';
+line(eenChar);		//Should be a
+spawn tweeChar;
+tweeChar = '9';
+line(tweeChar);		//Should be 9
+spawn drieChar;
+drieChar = ' ';
+line(drieChar);		//Should be ' '
+spawn vierChar;
+read(vierChar);
+line(vierChar);		//Should be whatever was entered
+
+//Booleans
+spawn eenPill;
+eenPill = 12 / 5 * 5 + 12 % 5 == 12 && 6 >= 6;
+spawn tweePill;
+tweePill = blue;
+line(eenPill);		//Should be red
+line(tweePill);		//Should be blue
+
+line(red && red);	//Should be red
+line(red && blue);	//Should be blue
+line(blue && red);	//Should be blue
+line(blue && blue);	//Should be blue
+
+line(red || red);	//Should be red
+line(red || blue);	//Should be red
+line(blue || red);	//Should be red
+line(blue || blue);	//Should be blue
+
+//EQ/NEQ
+line(red == red);	//Should be red
+line(red == blue);	//Should be blue
+line(blue == red);	//Should be blue
+line(blue == blue);	//Should be red
+
+line(red != red);	//Should be blue
+line(red != blue);	//Should be red
+line(blue != red);	//Should be red
+line(blue != blue);	//Should be blue
+
+line(10 == 10);		//Should be red
+line(10 == 15);		//Should be blue
+line(15 == 10);		//Should be blue
+
+line(10 != 10);		//Should be blue
+line(10 != 15);		//Should be red
+line(15 != 10);		//Should be red
+
+line('a' == 'a');	//Should be red
+line('a' == 'b');	//Should be blue
+line('b' == 'a');	//Should be blue
+
+line('a' != 'a');	//Should be blue
+line('a' != 'b');	//Should be red
+line('b' != 'a');	//Should be red
+
+//LT/LE/GE/GT
+line(11 < 12);		//Should be red
+line(11 < 11);		//Should be blue
+line(11 < 10);		//Should be blue
+
+line(11 <= 12);		//Should be red
+line(11 <= 11);		//Should be red
+line(11 <= 10);		//Should be blue
+
+line(10 < 11);		//Should be red
+line(11 < 11);		//Should be blue
+line(12 < 11);		//Should be blue
+
+line(10 <= 11);		//Should be red
+line(11 <= 11);		//Should be red
+line(12 <= 11);		//Should be blue
+
+//read/write
+read(eenInt, tweeInt);
+line(eenInt, tweeInt);
+
+eenInt = read(tweeInt) + 1;
+line(eenInt, tweeInt);
+
+read(eenInt);
+tweeInt = line(eenInt) + 1;
+line(tweeInt);

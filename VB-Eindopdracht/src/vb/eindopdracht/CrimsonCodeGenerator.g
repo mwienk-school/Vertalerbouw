@@ -129,13 +129,13 @@ expression returns [String val = null;]
       {
         gh.loadLiteral("1");
         gh.printPrimitiveRoutine("eq", "Equal to");
-        $val = Integer.parseInt($ex.val) == Integer.parseInt($ey.val) ? "1" : "0";
+        $val = $ex.val.equals($ey.val) ? "1" : "0";
       }
   |   ^(NEQ ex=expression ey=expression)
       {
         gh.loadLiteral("1");
         gh.printPrimitiveRoutine("ne", "Not equal to");
-        $val = Integer.parseInt($ex.val) != Integer.parseInt($ey.val) ? "1" : "0";
+        $val = $ex.val.equals($ey.val) ? "0" : "1";
       }
   |   ^(TIMES ex=expression ey=expression)
       {
@@ -146,6 +146,11 @@ expression returns [String val = null;]
       {
         gh.printPrimitiveRoutine("div", "Division");
         $val = String.valueOf(Integer.parseInt($ex.val) / Integer.parseInt($ey.val));
+      }
+  |   ^(MOD ex=expression ey=expression)
+      {
+        gh.printPrimitiveRoutine("mod", "Modulus");
+        $val = String.valueOf(Integer.parseInt($ex.val) \% Integer.parseInt($ey.val));
       }
   |   ^(IF ex=expression  { int ifVal = gh.printStatementIf_Start(); boolean condition = $ex.val.equals("Red"); } 
            ex=expression  { gh.printStatementIf_Else(ifVal); if(condition) $val = $ex.val; } 
