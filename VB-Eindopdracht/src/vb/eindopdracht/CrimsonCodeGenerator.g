@@ -42,14 +42,14 @@ compExpr returns [String val = null;]
               }
              expression) { gh.defineProcedure_End(number, i); }
   |   ^(FUNC id=IDENTIFIER { int number = gh.defineFunction_Start($id.text); }
-              par=paramdecls 
+              par=paramdecls
               {
                 int i;
                 for(i = 0; i < $par.paramList.size(); i++) {
                   gh.defineParameter((String)$par.paramList.get(i), i-$par.paramList.size());
                 }
               }
-              expression) { gh.defineFunction_End(number, i); }
+              ex=expression) { gh.defineFunction_End(number, i); }
   |   expr=expression { $val = $expr.val; gh.clearRuleStack(); }
   ;
   
@@ -176,7 +176,7 @@ readvar returns [String val = null;]
   ;
   
 printexpr returns [String val = null;]
-  :   ex=expression { System.out.println($ex.val); gh.printStatementPrint($ex.val); $val = $ex.val; }
+  :   ex=expression { gh.printStatementPrint($ex.val); $val = $ex.val; }
   ;
   
 operand returns [String val = null;]

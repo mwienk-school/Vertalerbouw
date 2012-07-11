@@ -317,7 +317,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	public void defineFunction_End(int thisLabelNo, int parameters) {
 		symbolTable.closeScope();
 		//TODO resultaat returnen
-		printTAM("RETURN(0)", "" + parameters, "Return from the function");
+		printTAM("RETURN(1)", "" + parameters, "Return from the function");
 		nextLabel = "End" + thisLabelNo;
 	}
 
