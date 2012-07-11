@@ -94,7 +94,6 @@ public abstract class CrimsonCodeHelper {
 			tokenSuffix.put(identifier,
 					"vb.eindopdracht.symboltable.ArrayEntry");
 	}
-	
 		
 	public CrimsonCodeHelper() {
 		symbolTable = new SymbolTable<IdEntry>();

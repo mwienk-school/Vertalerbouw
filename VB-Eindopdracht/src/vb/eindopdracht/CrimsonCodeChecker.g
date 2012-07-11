@@ -8,6 +8,7 @@ options {
 @header {
   package vb.eindopdracht;
   import vb.eindopdracht.helpers.CheckerHelper;
+  import vb.eindopdracht.symboltable.FuncEntry;
 }
 
 @rulecatch { 
@@ -28,12 +29,10 @@ program
 compExpr returns [String type = null;]
   :   ^(CONST id=IDENTIFIER expression) { ch.processEntry($id.text); $type = "no_type"; }
   |   ^(VAR id=IDENTIFIER)              { ch.processEntry($id.text); $type = "no_type"; }
-  |   ^(PROC id=IDENTIFIER {ch.symbolTable.openScope();} paramdecl+ expression {ch.symbolTable.closeScope();})
-                                        { ch.processEntry($id.text); $type = "no_type"; }
-  |   ^(FUNC id=IDENTIFIER {ch.symbolTable.openScope();} paramdecl+ expression {ch.symbolTable.closeScope();})
-                                        { ch.processEntry($id.text); $type = "no_type"; }
+  |   ^(PROC id=IDENTIFIER { ch.processEntry($id.text); ch.symbolTable.openScope(); } paramdecl+ expression { $type = "no_type"; ch.symbolTable.closeScope(); })
+  |   ^(FUNC id=IDENTIFIER { FuncEntry fe = (FuncEntry) ch.processEntry($id.text); ch.symbolTable.openScope(); } paramdecl+ ex=expression { $type = "no_type"; fe.setReturnType($ex.type); ch.symbolTable.closeScope(); })
   |   ^(TYPE id=IDENTIFIER n1=NUMBER n2=NUMBER)     { ch.processDynamicType($id.text, $n1.text, $n2.text); $type = "no_type"; }
-  |   expression
+  |   ex=expression                     { $type = $ex.type; }
   ;
 
 paramdecl
