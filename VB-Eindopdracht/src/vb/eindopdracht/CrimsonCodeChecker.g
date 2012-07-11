@@ -81,7 +81,7 @@ expression returns [String type = null;]
   |   ^(WHILE { ch.symbolTable.openScope(); } e1=expression e2=expression { ch.checkType("Pill", $e1.type); $type = "void"; ch.symbolTable.closeScope(); })
   |   ^(READ id=IDENTIFIER { $type = ch.getType($id.text); } (id=IDENTIFIER { ch.checkDeclared($id.text); $type = "void"; })*)
   |   ^(PRINT ex=expression { $type = $ex.type; } (expression { $type = "void"; })*) 
-  |   ^(PRINTLN expression+) {$type = "void"; }
+  |   ^(PRINTLN ex=expression { $type = $ex.type; } (expression { $type = "void"; })*)
   |   ^(CCOMPEXPR { ch.symbolTable.openScope(); } (ce=compExpr { $type = $ce.type; })+ { ch.symbolTable.closeScope(); })
   |   ^(ARRAY ex=expression 
                { 

@@ -200,11 +200,12 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 */
 	public String getValue(String id) {
 		IdEntry entry = symbolTable.retrieve(id);
-		//TODO debugcode
-		if(entry == null)
-			System.out.println(id);
-		if(entry.isFunctional())
+		String val = entry.toString();
+		if(entry.isFunctional()) {
 			printTAM("JUMP", entry.getAddress(), "Jump to the process " + id);
+			if(entry instanceof FuncEntry)
+				val = "1";	// Dummy value
+		}
 		else if(entry.isVarparam()) {
 			printTAM("LOAD(1)", entry.getAddress(), "Load the variable parameter address");
 			printTAM("LOADI(1)", "", "Load the variable parameter");
@@ -212,7 +213,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		else
 			printTAM("LOAD(1)", entry.getAddress(),	"Load the variable address");
 		ruleSize++;
-		return entry.toString();
+		return val;
 	}
 
 	/**
