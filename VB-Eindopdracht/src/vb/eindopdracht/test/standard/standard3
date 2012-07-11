@@ -1,0 +1,9 @@
+//Standard 3 - Test multiple assignment
+spawn aInt;
+spawn bInt;
+aInt = bInt = 12;
+if(aInt == 12) then {
+  print(bInt);
+  bInt = bInt -1;
+} fi;
+print(aInt, bInt);

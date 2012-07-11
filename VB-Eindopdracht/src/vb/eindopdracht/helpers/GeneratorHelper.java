@@ -7,8 +7,6 @@ import vb.eindopdracht.symboltable.*;
 public class GeneratorHelper extends CrimsonCodeHelper {
 	// Keep track of the Stack size
 	private int size;
-	// Keep track of Stack size for a rule
-	private int ruleSize;
 	// Label for the next output
 	private String nextLabel;
 	// Identifier for labels (in case of nested (if) statements)
@@ -34,13 +32,6 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		return constantScope;
 	}
 	
-	public void clearRuleStack() {
-		if(ruleSize > 0 ) {
-			printTAM("POP(0)", String.valueOf(ruleSize), "Keep the stack clean.");
-			ruleSize = 0;
-		}
-	}
-
 	/**
 	 * printTAM print een mooi opgemaakte TAM instructie
 	 * 
@@ -141,19 +132,19 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	public void printPrimitiveRoutine(String cmd, String comment) {
 		// Bekijk hoeveel argumenten een routine gebruikt, om de stack op te schonen
 		// "id,not,succ,pred,neg,new" niet nodig, verschil is 0.
-		int resultMinusArgs = 0;
-		if("and,or,add,sub,mult,div,mod,lt,le,ge,gt,get,put,getint,putint".contains(cmd)) {
-			// Verschil is 1
-			resultMinusArgs = 1;
-		} else if ("eq,neq,dispose".contains(cmd)) {
-			// Verschil is 2
-			resultMinusArgs = 2;
-		} else if ("eol,eof".contains(cmd)) {
-			// Verschil is -1 (pusht de stack)
-			resultMinusArgs = -1;
-		}
+		//TODO: weghalen als echt niet nodig is
+//		int resultMinusArgs = 0;
+//		if("and,or,add,sub,mult,div,mod,lt,le,ge,gt,get,put,getint,putint".contains(cmd)) {
+//			// Verschil is 1
+//			resultMinusArgs = 1;
+//		} else if ("eq,neq,dispose".contains(cmd)) {
+//			// Verschil is 2
+//			resultMinusArgs = 2;
+//		} else if ("eol,eof".contains(cmd)) {
+//			// Verschil is -1 (pusht de stack)
+//			resultMinusArgs = -1;
+//		}
 		printTAM("CALL", cmd, comment);
-		ruleSize = ruleSize - resultMinusArgs;
 	}
 
 	/**
@@ -164,7 +155,6 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	public void loadLiteral(String literal) {
 		literal = encode(literal);
 		printTAM("LOADL", literal, "Load literal value '" + literal + "'");
-		ruleSize++;
 	}
 
 	/**
@@ -210,11 +200,29 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 			printTAM("LOAD(1)", entry.getAddress(), "Load the variable parameter address");
 			printTAM("LOADI(1)", "", "Load the variable parameter");
 		}
-		//else if(entry.is)
+		else if(entry instanceof ArrayEntry) {
+			ArrayEntry arr = (ArrayEntry) entry;
+			
+			//printTAM("LOADI(" +  + ")", "", "Load the array indexed value");
+		}
 		else
 			printTAM("LOAD(1)", entry.getAddress(),	"Load the variable address");
-		ruleSize++;
 		return val;
+	}
+	
+	public void initOperand(String id) {
+		String[] str = CrimsonCodeHelper.splitString(id);
+		if(str[str.length-1].equals("Array")) {
+			printArrayValue_Start(id);
+		}
+	}
+	
+	/**
+	 * Laadt het address van de array.
+	 */
+	public void printArrayValue_Start(String id) {
+		ArrayEntry arr = (ArrayEntry) symbolTable.retrieve(id);
+		printTAM("LOADA(" + arr.getArraySize() + ")", arr.getAddress(), "Load the array address.");
 	}
 
 	/**
@@ -452,7 +460,6 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	public GeneratorHelper() {
 		super();
 		this.size = 0;
-		this.ruleSize = 0;
 		this.nextLabel = "";
 		this.labelNumber = 0;
 		this.constantScope = false;

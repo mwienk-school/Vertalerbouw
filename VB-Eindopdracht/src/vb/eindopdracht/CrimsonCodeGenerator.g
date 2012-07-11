@@ -49,8 +49,8 @@ compExpr returns [String val = null;]
                   gh.defineParameter((String)$par.paramList.get(i), i-$par.paramList.size());
                 }
               }
-              ex=expression) { gh.defineFunction_End(number, i); }
-  |   expr=expression { $val = $expr.val; gh.clearRuleStack(); }
+              expression) { gh.defineFunction_End(number, i); }
+  |   expr=expression { $val = $expr.val; }
   ;
   
 paramdecls returns [List paramList = new ArrayList();]
@@ -180,7 +180,7 @@ printexpr returns [String val = null;]
   ;
   
 operand returns [String val = null;]
-  :   ^(id=IDENTIFIER ex=expression* paramuse*)  
+  :   ^(id=IDENTIFIER { gh.initOperand($id.text); }ex=expression* paramuse*)  
       {
         $val = gh.getValue($id.text);
       } 
