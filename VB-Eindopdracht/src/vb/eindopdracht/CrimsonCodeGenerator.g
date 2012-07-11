@@ -50,7 +50,7 @@ compExpr returns [String val = null;]
                 }
               }
               expression) { gh.defineFunction_End(number, i); }
-  |   expr=expression { $val = $expr.val; }
+  |   expr=expression { $val = $expr.val; gh.clearRuleStack(); }
   ;
   
 paramdecls returns [List paramList = new ArrayList();]
@@ -160,7 +160,10 @@ expression returns [String val = null;]
       { 
         gh.symbolTable.closeScope();
       }
-  |   ^(ARRAY (expression)+)
+  |   ^(ARRAY (expression 
+               {
+                 // gh.StoreValue();
+               })+)
       {
         //TODO Arrays afmaken
       }
@@ -204,7 +207,7 @@ operand returns [String val = null;]
       }
   |   ch=CHARACTER
       {
-        $val = $ch.text.substring(1,2);
+        $val = $ch.text;
         if(!gh.isConstantScope()) gh.loadLiteral(val);
       }
   ;
