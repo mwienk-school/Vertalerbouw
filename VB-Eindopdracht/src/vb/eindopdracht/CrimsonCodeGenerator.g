@@ -26,7 +26,12 @@ options {
 //Parser regels
 
 program
-  : ^(PROGRAM compExpr+) { gh.endProgram(); }
+  :   ^(PROGRAM (cex=compExpr
+              {
+                if($cex.val != null)
+                  gh.printStatementCleanup("non-returning expression");
+              })+
+              ) { gh.endProgram(); }
   ;
    
 compExpr returns [String val = null;]
@@ -153,18 +158,39 @@ expression returns [String val = null;]
         $val = String.valueOf(Integer.parseInt($ex.val) \% Integer.parseInt($ey.val));
       }
   |   ^(IF ex=expression  { int ifVal = gh.printStatementIf_Start(); boolean condition = $ex.val.equals("Red"); } 
-           ex=expression  { gh.printStatementIf_Else(ifVal); if(condition) $val = $ex.val; } 
-           ex=expression?) { gh.printStatementIf_End(ifVal); if(!condition) $val = $ex.val; }
+            ex=expression  { gh.printStatementIf_Else(ifVal); if(condition) $val = $ex.val; } 
+            ex=expression?) { gh.printStatementIf_End(ifVal); if(!condition) $val = $ex.val; }
   |   ^(WHILE { WhileInfo info = gh.printStatementWhile_Start(); }
             expression  { gh.printStatementWhile_Do(info); }
             expression) { gh.printStatementWhile_End(info); }
-  |   ^(READ r=readvar { $val = $r.val; } (readvar { $val = null; })*)
-  |   ^(PRINT p=printexpr { $val = $p.val; } (printexpr { $val = null; })*)
-  |   ^(PRINTLN p=printexpr { $val = $p.val; } (printexpr { $val = null; })*) { gh.printStatementPrint("\n"); }
-  |   ^(CCOMPEXPR { gh.symbolTable.openScope(); } (cex=compExpr { $val = $cex.val; })+)
-      { 
-        gh.symbolTable.closeScope();
-      }
+  |   ^(READ r=readvar { $val = $r.val; }
+            (
+              readvar { gh.printStatementCleanup("read"); gh.printStatementCleanup("read"); $val = null; }
+              (readvar { gh.printStatementCleanup("read"); })*
+            )?)
+  |   ^(PRINT p=printexpr { $val = $p.val; }
+            (
+              printexpr { gh.printStatementCleanup("print"); gh.printStatementCleanup("print"); $val = null;}
+              (printexpr { gh.printStatementCleanup("print"); })*
+            )?)
+  |   ^(PRINTLN p=printexpr { $val = $p.val; }
+            (
+              printexpr { gh.printStatementCleanup("print"); gh.printStatementCleanup("print"); $val = null;}
+              (printexpr { gh.printStatementCleanup("print"); })*
+            )?) { gh.printStatementPrint("\n"); }
+  |   ^(CCOMPEXPR { gh.symbolTable.openScope(); }
+              cex=compExpr { $val = $cex.val; }
+              (
+                {
+                  if($val != null)
+                    gh.printStatementCleanup("non-returning expression");
+                }
+                cex=compExpr { $val = $cex.val; }
+              )*
+            )
+			      { 
+			        gh.symbolTable.closeScope();
+			      }
   |   ^(ARRAY expression+)
   |   ^(TYPE id=IDENTIFIER n1=NUMBER n2=NUMBER)
       {
@@ -177,7 +203,7 @@ expression returns [String val = null;]
   ;
   
 readvar returns [String val = null;]
-  :   id=IDENTIFIER { gh.printStatementRead($id.text); $val = "1"; /*dummy value*/ }
+  :   id=IDENTIFIER { gh.printStatementRead($id.text); $val = "1"; /*TODO: dummy value*/ }
   ;
   
 printexpr returns [String val = null;]
@@ -192,21 +218,21 @@ operand returns [String val = null;]
   |   TRUE
       {
         $val = "1";
-        if(!gh.isConstantScope()) gh.loadLiteral(val);
+        if(!gh.isConstantScope()) gh.loadLiteral($val);
       }
   |   FALSE
       {
         $val = "0";
-        if(!gh.isConstantScope()) gh.loadLiteral(val);
+        if(!gh.isConstantScope()) gh.loadLiteral($val);
       }
   |   n=NUMBER
       {
         $val = String.valueOf(n);
-        if(!gh.isConstantScope()) gh.loadLiteral(val);
+        if(!gh.isConstantScope()) gh.loadLiteral($val);
       }
   |   ch=CHARACTER
       {
         $val = $ch.text;
-        if(!gh.isConstantScope()) gh.loadLiteral(val);
+        if(!gh.isConstantScope()) gh.loadLiteral($val);
       }
   ;

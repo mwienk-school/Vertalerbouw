@@ -5,9 +5,11 @@ const const1Pill = red;
 const const2Pill = blue;
 
 line(constInt);		//Should be 50
-line(constChar);		//Should be c
-line(const1Pill);	//Should be red
-line(const2Pill);	//Should be blue
+line(constChar);	//Should be c
+line(const1Pill);	//Should be 1
+line(const2Pill);	//Should be 0
+line(' ');
+line(' ');
 
 //Variables and expressions
 //Integers
@@ -21,103 +23,139 @@ drieInt = constInt;
 line(eenInt);		//Should be 1
 line(tweeInt);		//Should be 2
 line(drieInt);		//Should be 50
+line(' ');
+line(' ');
 
 eenInt = eenInt + -tweeInt * drieInt + constInt;
 read(drieInt);
 line(eenInt);		//Should be -49
 line(tweeInt);		//Should be 2
 line(drieInt);		//Should be whatever was entered
-line(constInt);	//Should be 50
-line(20%3);		//Should be 2
-line(20/3);		//Should be 6
+line(constInt);		//Should be 50
+line(20%3);			//Should be 2
+line(20/3);			//Should be 6
+line(' ');
 
 eenInt = tweeInt = +16 + 2 * -8;
-print(eenInt);		//Should be 0
-print(tweeInt);		//Should be 0
+line(eenInt);		//Should be 0
+line(tweeInt);		//Should be 0
+line(' ');
+line(' ');
 
 //Characters
 spawn eenChar;
 eenChar = 'a';
 line(eenChar);		//Should be a
 spawn tweeChar;
-tweeChar = '9';
-line(tweeChar);		//Should be 9
+tweeChar = 'A';
+line(tweeChar);		//Should be A
 spawn drieChar;
-drieChar = ' ';
-line(drieChar);		//Should be ' '
+drieChar = '9';
+line(drieChar);		//Should be 9
 spawn vierChar;
 read(vierChar);
-line(vierChar);		//Should be whatever was entered
+line(vierChar);		//Should be the input
+line(' ');
+line(' ');
 
 //Booleans
 spawn eenPill;
 eenPill = 12 / 5 * 5 + 12 % 5 == 12 && 6 >= 6;
 spawn tweePill;
 tweePill = blue;
-line(eenPill);		//Should be red
-line(tweePill);		//Should be blue
+line(eenPill);		//Should be 1
+line(tweePill);		//Should be 0
+line(' ');
+line(' ');
 
-line(red && red);	//Should be red
-line(red && blue);	//Should be blue
-line(blue && red);	//Should be blue
-line(blue && blue);	//Should be blue
+line(red && red);	//Should be 1
+line(red && blue);	//Should be 0
+line(blue && red);	//Should be 0
+line(blue && blue);	//Should be 0
+line(' ');
 
-line(red || red);	//Should be red
-line(red || blue);	//Should be red
-line(blue || red);	//Should be red
-line(blue || blue);	//Should be blue
+line(red || red);	//Should be 1
+line(red || blue);	//Should be 1
+line(blue || red);	//Should be 1
+line(blue || blue);	//Should be 0
+line(' ');
+line(' ');
 
 //EQ/NEQ
-line(red == red);	//Should be red
-line(red == blue);	//Should be blue
-line(blue == red);	//Should be blue
-line(blue == blue);	//Should be red
+line(red == red);	//Should be 1
+line(red == blue);	//Should be 0
+line(blue == red);	//Should be 0
+line(blue == blue);	//Should be 1
+line(' ');
 
-line(red != red);	//Should be blue
-line(red != blue);	//Should be red
-line(blue != red);	//Should be red
-line(blue != blue);	//Should be blue
+line(red != red);	//Should be 0
+line(red != blue);	//Should be 1
+line(blue != red);	//Should be 1
+line(blue != blue);	//Should be 0
+line(' ');
+line(' ');
 
-line(10 == 10);		//Should be red
-line(10 == 15);		//Should be blue
-line(15 == 10);		//Should be blue
+line(10 == 10);		//Should be 1
+line(10 == 15);		//Should be 0
+line(15 == 10);		//Should be 0
+line(' ');
 
-line(10 != 10);		//Should be blue
-line(10 != 15);		//Should be red
-line(15 != 10);		//Should be red
+line(10 != 10);		//Should be 0
+line(10 != 15);		//Should be 1
+line(15 != 10);		//Should be 1
+line(' ');
+line(' ');
 
-line('a' == 'a');	//Should be red
-line('a' == 'b');	//Should be blue
-line('b' == 'a');	//Should be blue
+line('a' == 'a');	//Should be 1
+line('a' == 'b');	//Should be 0
+line('b' == 'a');	//Should be 0
+line(' ');
 
-line('a' != 'a');	//Should be blue
-line('a' != 'b');	//Should be red
-line('b' != 'a');	//Should be red
+line('a' != 'a');	//Should be 0
+line('a' != 'b');	//Should be 1
+line('b' != 'a');	//Should be 1
+line(' ');
+line(' ');
 
 //LT/LE/GE/GT
-line(11 < 12);		//Should be red
-line(11 < 11);		//Should be blue
-line(11 < 10);		//Should be blue
+line(11 < 12);		//Should be 1
+line(11 < 11);		//Should be 0
+line(11 < 10);		//Should be 0
+line(' ');
 
-line(11 <= 12);		//Should be red
-line(11 <= 11);		//Should be red
-line(11 <= 10);		//Should be blue
+line(11 <= 12);		//Should be 1
+line(11 <= 11);		//Should be 1
+line(11 <= 10);		//Should be 0
+line(' ');
 
-line(10 < 11);		//Should be red
-line(11 < 11);		//Should be blue
-line(12 < 11);		//Should be blue
+line(10 < 11);		//Should be 1
+line(11 < 11);		//Should be 0
+line(12 < 11);		//Should be 0
+line(' ');
 
-line(10 <= 11);		//Should be red
-line(11 <= 11);		//Should be red
-line(12 <= 11);		//Should be blue
+line(10 <= 11);		//Should be 1
+line(11 <= 11);		//Should be 1
+line(12 <= 11);		//Should be 0
+line(' ');
+line(' ');
 
 //read/write
 read(eenInt, tweeInt);
-line(eenInt, tweeInt);
+line(eenInt, tweeInt);	//Should be the concatenation of the input
 
 eenInt = read(tweeInt) + 1;
-line(eenInt, tweeInt);
+line(eenInt, tweeInt);	//Should be input + 1 followed by input
 
 read(eenInt);
-tweeInt = line(eenInt) + 1;
-line(tweeInt);
+tweeInt = line(eenInt) + 1;	//Should be input
+line(tweeInt);		//Should be input + 1
+
+//Closed compound expressions
+eenInt =
+{
+	spawn eenInt;
+	eenInt = 5;
+	spawn tweeInt;
+	tweeInt = eenInt;
+} + 1;
+line(eenInt);		//Should be 6

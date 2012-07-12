@@ -73,6 +73,20 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		printTAM("POP(0)", String.valueOf(size), "Pop " + size + " variables");
 		printTAM("HALT", "", "End of program");
 	}
+	
+	/**
+	 * Debug method to compare expected stack size to actual stack size
+	 */
+	public void printStackSize() {
+		printPrimitiveRoutine("puteol", "");
+		printTAM("LOADL", size + "", "");
+		printPrimitiveRoutine("putint", "");
+		printTAM("LOADL", encode("|"), "");
+		printPrimitiveRoutine("put", "");
+		printTAM("LOADA", 0 + "[ST]", "");
+		printPrimitiveRoutine("putint", "");
+		printPrimitiveRoutine("puteol", "");
+	}
 
 	/**
 	 * Definieer een constante waarde (variabele die niet in het geheugen is
@@ -197,7 +211,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 				val = "1";	// Dummy value
 		}
 		else if(entry.isVarparam()) {
-			printTAM("LOAD(1)", entry.getAddress(), "Load the variable parameter address");
+			printTAM("LOAD(1)", entry.getAddress(), "Load the variable parameter address " + id);
 			printTAM("LOADI(1)", "", "Load the variable parameter");
 		}
 		else if(entry instanceof ArrayEntry) {
@@ -205,8 +219,11 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 			
 			//printTAM("LOADI(" +  + ")", "", "Load the array indexed value");
 		}
+		else if(entry.getAddress() == null) {
+			printTAM("LOADL", encode(val), "Load the constant " + id);
+		}
 		else
-			printTAM("LOAD(1)", entry.getAddress(),	"Load the variable address");
+			printTAM("LOAD(1)", entry.getAddress(),	"Load the variable " + id);
 		return val;
 	}
 	
@@ -423,14 +440,19 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * @param ex
 	 */
 	public void printStatementPrint(String ex) {
+		//TODO: testen
 		try {
 			Integer.parseInt(ex);
+			printTAM("LOADA", -1+"[ST]", "Load address of int on top of stack");
+			printTAM("LOADI(1)", "", "Duplicate int on top of stack");
 			printPrimitiveRoutine("putint", "Print the int value on top of the stack");
 		} catch (NumberFormatException e) {
 			if (ex.equals("\n")) {
 				printPrimitiveRoutine("puteol", "Print a newline to the stdout");
 			} else {
-				printPrimitiveRoutine("put", "Print the value on top of the stack");
+				printTAM("LOADA", -1+"[ST]", "Load address of char on top of stack");
+				printTAM("LOADI(1)", "", "Duplicate char on top of stack");
+				printPrimitiveRoutine("put", "Print the char value on top of the stack");
 			}
 		}
 	}
@@ -452,6 +474,14 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		} else {
 			printPrimitiveRoutine("get", "Get a value for " + id);
 		}
+		printTAM("LOAD(1)", symbolTable.retrieve(id).getAddress(), "Load resulting value");
+	}
+	
+	/**
+	 * Cleant de stack als een resultaat niet meer nodig is.
+	 */
+	public void printStatementCleanup(String name) {
+		printTAM("POP(0)", "1", "Pop resulting value of " + name);
 	}
 
 	/**
