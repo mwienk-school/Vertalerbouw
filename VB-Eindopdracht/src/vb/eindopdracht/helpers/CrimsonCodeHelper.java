@@ -68,6 +68,20 @@ public abstract class CrimsonCodeHelper {
 	}
 	
 	/**
+	 * In processConstantEntry wordt het type van de entry bepaald en daarna wordt deze
+	 * in de symbolTable opgeslagen als een getypeerde IdEntry.
+	 * 
+	 * @param identifier
+	 * @return
+	 * @throws Exception
+	 */
+	public IdEntry processConstantEntry(String identifier) throws Exception {
+		IdEntry idEntry = processEntry(identifier);
+		idEntry.setConstant(true);
+		return idEntry;
+	}
+	
+	/**
 	 * Verwerkt een dynamisch type (voegt nieuwe token types toe aan de
 	 * CrimsonCode taal).
 	 * 

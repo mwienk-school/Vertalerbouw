@@ -1,0 +1,23 @@
+//Program containing spelling and context-free errors
+
+spawn aInt;
+spawn bInt;
+
+//Incorrect identifier
+spawn 3Int;
+
+//Error in an expression
+aInt + * bInt;
+aInt + < bInt;
+
+//Incomplete NEQ token
+aInt ! bInt;
+
+//Expression within a read statement
+read(aInt + bInt);
+
+//Non-existing/misspelled keywords
+spwan cInt;
+
+//Closed compound expression ending in a declaration
+{ spawn aPill; aPill = red; spawn bPill; };

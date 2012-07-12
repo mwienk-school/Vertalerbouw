@@ -1,0 +1,6 @@
+//Program containing runtime errors.
+
+10 / 0;
+
+spawn eenChar;
+line(eenChar);

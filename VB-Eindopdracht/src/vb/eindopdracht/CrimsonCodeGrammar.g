@@ -146,7 +146,6 @@ expression
 //Arithmatic expressions  
 assignExpr
   :   arithExpr (BECOMES^ assignExpr)?
-  |   arrExpr
   ;
 
 arithExpr
@@ -194,6 +193,7 @@ operand
   |   printExpr
   |   ifExpr
   |   ccompExpr
+  |   arrExpr
   ;
 
 arrIndex

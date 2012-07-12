@@ -27,7 +27,7 @@ program
   ;
 
 compExpr returns [String type = null;]
-  :   ^(CONST id=IDENTIFIER expression) { ch.processEntry($id.text); $type = "no_type"; }
+  :   ^(CONST id=IDENTIFIER expression) { ch.processConstantEntry($id.text); $type = "no_type"; }
   |   ^(VAR id=IDENTIFIER)              { ch.processEntry($id.text); $type = "no_type"; }
   |   ^(PROC id=IDENTIFIER { ch.processEntry($id.text); ch.symbolTable.openScope(); } paramdecl+ expression { $type = "no_type"; ch.symbolTable.closeScope(); })
   |   ^(FUNC id=IDENTIFIER { FuncEntry fe = (FuncEntry) ch.processEntry($id.text); ch.symbolTable.openScope(); } paramdecl+ ex=expression { $type = "no_type"; fe.setReturnType($ex.type); ch.symbolTable.closeScope(); })

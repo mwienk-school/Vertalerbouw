@@ -1,0 +1,32 @@
+//Program containing contextual errors
+
+spawn xInt;
+spawn yInt;
+const zInt = 1;
+zInt = 10;
+12 = 10;
+xInt + yInt = 10;
+
+-'a';
++ red;
+spawn cChar;
+!cChar;
+spawn bPill;
+bPill + 10 * cChar % 2;
+'a' < cChar;
+bPill && 10 || cChar;
+
+'a' == bPill;
+bPill != 10;
+xInt + yInt == cChar;
+
+cChar = xInt + yInt;
+bPill = 10;
+
+pInt;
+qInt;
+spawn qInt;
+
+read(xInt, yInt) + 10;
+'c' != line(xInt, yInt);
+10 + { spawn uInt; spawn vInt; read(uInt, vInt); line(uInt, vInt); };

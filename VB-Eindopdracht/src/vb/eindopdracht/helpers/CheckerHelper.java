@@ -2,6 +2,7 @@ package vb.eindopdracht.helpers;
 
 import vb.eindopdracht.symboltable.ArrayEntry;
 import vb.eindopdracht.symboltable.FuncEntry;
+import vb.eindopdracht.symboltable.IdEntry;
 
 /**
  * CheckerHelper is een helper class voor de CrimsonCode Checker 
@@ -29,7 +30,7 @@ public class CheckerHelper extends CrimsonCodeHelper {
 	    	   && splitType[splitType.length - 2].equals(splitEx[splitEx.length - 2])) 	    	
 	    	return type;
 	    else
-	    	throw new Exception(type + " expression expected, " + ex + " expression found.");
+	    	throw new Exception(type + " expression expected, " + ex + " expression found");
 	}
 	
 	/**
@@ -40,6 +41,20 @@ public class CheckerHelper extends CrimsonCodeHelper {
 	public void checkDeclared(String id) throws Exception {
 		if(symbolTable.retrieve(id) == null)
 	          throw new Exception(id + " is not declared.");
+	}
+	
+	/**
+	 * Checkt of een identifier een constante is.
+	 * @param id
+	 * @throws Exception
+	 */
+	public boolean checkConstant(String id) throws Exception {
+		IdEntry idEntry;
+		if((idEntry = symbolTable.retrieve(id)) == null)
+	          throw new Exception(id + " is not declared.");
+		if(idEntry.isConstant())
+			return true;
+		return false;
 	}
 	
 	/**
@@ -79,6 +94,9 @@ public class CheckerHelper extends CrimsonCodeHelper {
 		if (exType.contains("Array[")) {
 			arrayLength = Integer.parseInt(exType.substring(exType.lastIndexOf("[") + 1, exType.lastIndexOf("]")));
 			exType = exType.substring(0, exType.lastIndexOf("["));
+		}
+		if(checkConstant(identifier)) {
+			throw new Exception("You cannot assign a value to constant " + identifier);
 		}
 		String returnType = checkType(getType(identifier), exType);
 		if(returnType.endsWith("Array")){
