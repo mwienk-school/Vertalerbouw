@@ -69,19 +69,34 @@ expression returns [String type = null;]
   |   ^(TIMES e1=expression e2=expression)    { $type = ch.checkType("Int", $e1.type); $type = ch.checkType($type, $e2.type); }
   |   ^(DIVIDE e1=expression e2=expression)   { $type = ch.checkType("Int", $e1.type); $type = ch.checkType($type, $e2.type); }
   |   ^(MOD e1=expression e2=expression)      { $type = ch.checkType("Int", $e1.type); $type = ch.checkType($type, $e2.type); }
-  |   ^(IF e1=expression e2=expression (e3=expression)?) {
-                                                        ch.checkType("Pill", $e1.type);
-                                                        try {
-                                                          $type = ch.checkType($e2.type, $e3.type);
-                                                        }
-                                                        catch(Exception e) {
-                                                          $type = "void";
-                                                        }
-                                                      }
+  |   ^(IF                                    { ch.symbolTable.openScope(); }
+            e1=compExpr* e2=thenExpr)         {
+                                                ch.checkType("Pill", $e1.type);
+                                                $type = $e2.type;
+                                                ch.symbolTable.closeScope();
+                                              }
   |   ^(WHILE { ch.symbolTable.openScope(); } e1=expression e2=expression { ch.checkType("Pill", $e1.type); $type = "void"; ch.symbolTable.closeScope(); })
   |   ^(READ id=IDENTIFIER { $type = ch.getType($id.text); } (id=IDENTIFIER { ch.checkDeclared($id.text); $type = "void"; })*)
-  |   ^(PRINT ex=expression { $type = $ex.type; } (expression { $type = "void"; })*) 
-  |   ^(PRINTLN ex=expression { $type = $ex.type; } (expression { $type = "void"; })*)
+  |   ^(PRINT ex=expression                   {
+                                                $type = $ex.type;
+                                                if("void".equals($ex.type))
+                                                  throw new Exception("Can't print void expression");
+                                              }
+            (ex=expression                    {
+                                                $type = "void";
+                                                if("void".equals($ex.type))
+                                                  throw new Exception("Can't print void expression");
+                                              })*)
+  |   ^(PRINTLN ex=expression                   {
+                                                $type = $ex.type;
+                                                if("void".equals($ex.type))
+                                                  throw new Exception("Can't print void expression");
+                                              }
+            (ex=expression                    {
+                                                $type = "void";
+                                                if("void".equals($ex.type))
+                                                  throw new Exception("Can't print void expression");
+                                              })*)
   |   ^(CCOMPEXPR { ch.symbolTable.openScope(); } (ce=compExpr { $type = $ce.type; })+ { ch.symbolTable.closeScope(); })
   |   ^(ARRAY ex=expression 
                { 
@@ -96,6 +111,24 @@ expression returns [String type = null;]
         $type = $type + "Array[" + n + "]"; 
        }
   |   op=operand                              { $type = $op.type; }
+  ;
+  
+thenExpr returns [String type = null;]
+  :   ^(THEN                                  { ch.symbolTable.openScope(); }
+            e1=compExpr*                      { ch.symbolTable.closeScope(); }
+            (e2=elseExpr)?)                   {
+                                                try {
+                                                  $type = ch.checkType($e1.type, $e2.type);
+                                                }
+                                                catch(Exception e) {
+                                                  $type = "void";
+                                                }
+                                              }
+  ;
+
+elseExpr returns [String type = null;]
+  :   ^(ELSE                                  { ch.symbolTable.openScope(); }
+            e1=compExpr*)                     { $type = $e1.type; ch.symbolTable.closeScope(); }
   ;
   
 operand returns [String type = null;]

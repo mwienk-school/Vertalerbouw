@@ -21,6 +21,8 @@ options {
 
 @members {
   private GeneratorHelper gh = new GeneratorHelper();
+  int label;  //helpvariable to pass label to different rules
+  boolean condition;  //helpvariable to pass condition to different rules 
 }
 
 //Parser regels
@@ -157,9 +159,24 @@ expression returns [String val = null;]
         gh.printPrimitiveRoutine("mod", "Modulus");
         $val = String.valueOf(Integer.parseInt($ex.val) \% Integer.parseInt($ey.val));
       }
-  |   ^(IF ex=expression  { int ifVal = gh.printStatementIf_Start(); boolean condition = $ex.val.equals("Red"); } 
-            ex=expression  { gh.printStatementIf_Else(ifVal); if(condition) $val = $ex.val; } 
-            ex=expression?) { gh.printStatementIf_End(ifVal); if(!condition) $val = $ex.val; }
+  |   ^(IF                      { gh.openScope(); }
+            ex=compExpr
+            (
+              {
+                if($ex.val != null)
+                  gh.printStatementCleanup("non-returning expression");
+              }
+              ex=compExpr
+            )*                  { label = gh.printStatementIf_Start();
+            condition = $ex.val.equals("1"); }
+            ey=thenExpr         {
+                                  gh.printStatementIf_End(label);
+                                  $val = $ey.val;
+                                  if($ey.val == null)
+                                    gh.closeScope(0);
+                                  else
+                                    gh.closeScope(1);
+                                })
   |   ^(WHILE { WhileInfo info = gh.printStatementWhile_Start(); }
             expression  { gh.printStatementWhile_Do(info); }
             expression) { gh.printStatementWhile_End(info); }
@@ -178,7 +195,7 @@ expression returns [String val = null;]
               printexpr { gh.printStatementCleanup("print"); gh.printStatementCleanup("print"); $val = null;}
               (printexpr { gh.printStatementCleanup("print"); })*
             )?) { gh.printStatementPrint("\n"); }
-  |   ^(CCOMPEXPR { gh.symbolTable.openScope(); }
+  |   ^(CCOMPEXPR { gh.openScope(); }
               cex=compExpr { $val = $cex.val; }
               (
                 {
@@ -189,7 +206,10 @@ expression returns [String val = null;]
               )*
             )
 			      { 
-			        gh.symbolTable.closeScope();
+			        if($val == null)
+			          gh.closeScope(0);
+		          else
+		            gh.closeScope(1);
 			      }
   |   ^(ARRAY expression+)
   |   ^(TYPE id=IDENTIFIER n1=NUMBER n2=NUMBER)
@@ -201,7 +221,47 @@ expression returns [String val = null;]
         $val = $op.val;
       }
   ;
+
+thenExpr returns [String val = null;]
+  :   ^(THEN { gh.openScope(); } ex=compExpr
+            (
+              {
+                if($ex.val != null)
+                  gh.printStatementCleanup("non-returning expression");
+              }
+              ex=compExpr
+            )*                                  {
+				                                          if($ex.val == null)
+				                                            gh.closeScope(0);
+				                                          else
+				                                            gh.closeScope(1);
+                                                  gh.printStatementIf_Else(label);
+				                                        }
+				    (ey=elseExpr)?)                     {
+			                                            if(condition)
+				                                            $val = $ex.val;
+				                                          else
+				                                            $val = $ey.val;
+				                                        }
+  ;
   
+elseExpr returns [String val = null;]
+  :   ^(ELSE { gh.openScope(); } ex=compExpr
+            (
+              {
+                if($ex.val != null)
+                  gh.printStatementCleanup("non-returning expression");
+              }
+              ex=compExpr
+            )*                                {
+										                            $val = $ex.val;
+                                                if($ex.val == null)
+                                                  gh.closeScope(0);
+                                                else
+                                                  gh.closeScope(1);
+										                          })
+  ;
+
 readvar returns [String val = null;]
   :   id=IDENTIFIER { gh.printStatementRead($id.text); $val = "1"; /*TODO: dummy value*/ }
   ;

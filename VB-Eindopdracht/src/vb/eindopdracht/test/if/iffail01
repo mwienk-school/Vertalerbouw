@@ -1,0 +1,9 @@
+//Program containing spelling and context-free errors
+
+//No semicolons after expressions
+if { 0 < 1; } then { 1; } else { 5; } fi;
+
+//Non-existing/misspelled keywords
+if 0 < 1; then 5; else 2;
+if 0 < 1; else 2; fi;
+fi 0 < 1; tehn 5; esle 2; if;

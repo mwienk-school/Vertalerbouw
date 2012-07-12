@@ -1,0 +1,18 @@
+spawn eenInt;
+
+eenInt =
+if spawn eenInt; spawn tweeInt; eenInt = 5; tweeInt = 6; eenInt == tweeInt; 
+	then spawn eenInt; spawn tweeInt; eenInt = 5; tweeInt = 6; eenInt + tweeInt;
+	else spawn eenInt; spawn tweeInt; eenInt = 5; tweeInt = 6; eenInt - tweeInt;
+fi + 4;
+
+line(eenInt);											//Should be 3
+
+if spawn tweeInt; eenInt > 1;
+	then tweeInt = 6; eenInt = tweeInt;
+fi;
+
+line(eenInt);											//Should be 6
+
+line(if eenInt > 5; then red; else blue; fi && red);	//Should be 1
+line(if eenInt > 5; then 'a'; else 'b'; fi == 'a');		//Should be 1

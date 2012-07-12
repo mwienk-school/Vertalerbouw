@@ -224,11 +224,23 @@ ccompExpr
   ;
 
 whileExpr
-  :   WHILE^ expression DO! expression DOEND!
+  :   WHILE^ compExpr doExpr DOEND!
+  ;
+
+doExpr
+  :   DO^ compExpr
   ;
 
 ifExpr
-  :   IF^ expression THEN! expression (ELSE! expression)? IFEND!
+  :   IF^ compExpr thenExpr IFEND!
+  ;
+  
+thenExpr
+  :   THEN^ compExpr (elseExpr)?
+  ;
+
+elseExpr
+  :   ELSE^ compExpr
   ;
   
 //Lexer rules

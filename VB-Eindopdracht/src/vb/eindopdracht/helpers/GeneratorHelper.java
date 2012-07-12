@@ -26,10 +26,24 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	}
 
 	/**
-	 * Bekijk of de Generator zich in een constantScop bevindt
+	 * Check of de Generator zich in een constantScope bevindt
 	 */
 	public boolean isConstantScope() {
 		return constantScope;
+	}
+	
+	/**
+	 * Opent een scope in de symbolTable
+	 */
+	public void openScope() {
+		symbolTable.openScope();
+	}
+	
+	public void closeScope(int result) {
+		int scopeSize = symbolTable.getCurrentLocalBaseSize();
+		printTAM("POP(" + result + ")", scopeSize + "", "Pop " + scopeSize + " local variables");
+		this.size -= scopeSize;
+		symbolTable.closeScope();
 	}
 	
 	/**
@@ -181,7 +195,8 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	public void storeValue(String id, String value) {
 		int size = 1;
 		IdEntry entry = symbolTable.retrieve(id);
-		if(entry instanceof ArrayEntry) size = ((ArrayEntry) entry).getArraySize();
+		if(entry instanceof ArrayEntry)
+			size = ((ArrayEntry) entry).getArraySize();
 		if(entry.isVarparam()) {
 			printTAM("LOAD(" + size + ")", entry.getAddress(), "Load the variable parameter address");
 			printTAM("STOREI(" + size + ")", "", "Store at the variable parameter address");
@@ -302,7 +317,6 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		proc.setAddress(nextLabel + "[CB]");
 		symbolTable.enter(id, proc);
 		printTAM("JUMP", "End" + thisLabelNo + "[CB]", "Skip procedure " + id + " body.");
-		symbolTable.openScope(); // Aan het eind, voor de body van de procedure
 		return thisLabelNo;
 	}
 
@@ -310,7 +324,6 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * Einde van defineProcedure
 	 */
 	public void defineProcedure_End(int thisLabelNo, int parameters) {
-		symbolTable.closeScope();
 		printTAM("RETURN(0)", "" + parameters, "Return from the Procedure");
 		nextLabel = "End" + thisLabelNo;
 	}
@@ -332,7 +345,6 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		func.setAddress(nextLabel + "[CB]");
 		symbolTable.enter(id, func);
 		printTAM("JUMP", "End" + thisLabelNo + "[CB]", "Skip function " + id + " body.");
-		symbolTable.openScope(); // Aan het eind, voor de body van de functie
 		return thisLabelNo;
 	}
 
@@ -340,7 +352,6 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * Einde van defineFunction
 	 */
 	public void defineFunction_End(int thisLabelNo, int parameters) {
-		symbolTable.closeScope();
 		//TODO resultaat returnen
 		printTAM("RETURN(1)", "" + parameters, "Return from the function");
 		nextLabel = "End" + thisLabelNo;
@@ -354,7 +365,6 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * Start voor een if statement (test de stack en jumpt naar label)
 	 */
 	public int printStatementIf_Start() {
-		symbolTable.openScope();
 		int thisLabelNo = labelNumber++;
 		printTAM("JUMPIF(0)", "Else" + thisLabelNo + "[CB]", "Jump to ELSE");
 		return thisLabelNo;
@@ -380,7 +390,6 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 			printTAM("JUMP", "End" + thisLabelNo + "[CB]",
 					"Jump to End, no Else clause");
 		nextLabel = "End" + thisLabelNo;
-		symbolTable.closeScope();
 	}
 
 	// //////////////////////////////////////////////////////////
@@ -392,7 +401,6 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * @return WhileInfo object met informatie voor de End mehode
 	 */
 	public WhileInfo printStatementWhile_Start() {
-		symbolTable.openScope();
 		int thisLabelNo = labelNumber++;
 		// Wanneer while label al ingevuld is, geef deze door
 		if (nextLabel.equals(""))
@@ -419,7 +427,6 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	public void printStatementWhile_End(WhileInfo info) {
 		printTAM("JUMP", info.nextLabel + "[CB]", "Jump to WHILE-expression");
 		nextLabel = "End" + info.thisLabelNo;
-		symbolTable.closeScope();
 	}
 	
 	// //////////////////////////////////////////////////////////
