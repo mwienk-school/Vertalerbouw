@@ -13,5 +13,8 @@ line(if 5 > 2; then 5; else red; fi);
 //Scoping
 if 5 > 2; then spawn tweeInt; tweeInt = 5; else tweeInt = 2; fi;
 
+//Closed compound expressions still have their own separate scope
+if { spawn tweeInt; tweeInt = 5; tweeInt > 2; }; then 5; else 2; fi;
+
 if spawn tweeInt; tweeInt = 5; tweeInt > 2; then 5; else 2; fi;
 line(tweeInt);

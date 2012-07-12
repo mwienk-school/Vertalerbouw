@@ -177,9 +177,16 @@ expression returns [String val = null;]
                                   else
                                     gh.closeScope(1);
                                 })
-  |   ^(WHILE { WhileInfo info = gh.printStatementWhile_Start(); }
-            expression  { gh.printStatementWhile_Do(info); }
-            expression) { gh.printStatementWhile_End(info); }
+  |   ^(WHILE { WhileInfo info = gh.printStatementWhile_Start(); gh.openScope(); }
+            ex=compExpr
+            (
+              {
+                if($ex.val != null)
+                  gh.printStatementCleanup("non-returning expression");
+              }
+              ex=compExpr
+            )*                  { gh.printStatementWhile_Do(info); }
+            doExpr) { gh.printStatementWhile_End(info); gh.closeScope(0); }
   |   ^(READ r=readvar { $val = $r.val; }
             (
               readvar { gh.printStatementCleanup("read"); gh.printStatementCleanup("read"); $val = null; }
@@ -262,6 +269,18 @@ elseExpr returns [String val = null;]
 										                          })
   ;
 
+doExpr returns [String val = null;]
+  :   ^(DO                                  { gh.openScope(); }
+            (ex=compExpr                    {
+						                                  if($ex.val != null)
+						                                    gh.printStatementCleanup("non-returning expression");
+						                                })*)
+						                                {
+						                                  gh.closeScope(0);
+						                                  gh.printStatementWhile_Cleanup();
+						                                }
+  ;
+
 readvar returns [String val = null;]
   :   id=IDENTIFIER { gh.printStatementRead($id.text); $val = "1"; /*TODO: dummy value*/ }
   ;
@@ -271,7 +290,7 @@ printexpr returns [String val = null;]
   ;
   
 operand returns [String val = null;]
-  :   ^(id=IDENTIFIER { gh.initOperand($id.text); }ex=expression* paramuse*)  
+  :   ^(id=IDENTIFIER { gh.initOperand($id.text); } ex=expression* paramuse*)  
       {
         $val = gh.getValue($id.text);
       } 

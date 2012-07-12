@@ -39,6 +39,11 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		symbolTable.openScope();
 	}
 	
+	/**
+	 * Sluit een scope en popt de achtergelaten variabelen
+	 * Laat een resultaat van grootte result intact.
+	 * @param result
+	 */
 	public void closeScope(int result) {
 		int scopeSize = symbolTable.getCurrentLocalBaseSize();
 		printTAM("POP(" + result + ")", scopeSize + "", "Pop " + scopeSize + " local variables");
@@ -427,6 +432,10 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	public void printStatementWhile_End(WhileInfo info) {
 		printTAM("JUMP", info.nextLabel + "[CB]", "Jump to WHILE-expression");
 		nextLabel = "End" + info.thisLabelNo;
+	}
+	
+	public void printStatementWhile_Cleanup() {
+		printTAM("POP(0)", symbolTable.getCurrentLocalBaseSize() + "", "Pop variables leftover from while conditional ");
 	}
 	
 	// //////////////////////////////////////////////////////////

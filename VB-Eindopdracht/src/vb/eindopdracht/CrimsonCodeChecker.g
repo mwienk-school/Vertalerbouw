@@ -75,7 +75,12 @@ expression returns [String type = null;]
                                                 $type = $e2.type;
                                                 ch.symbolTable.closeScope();
                                               }
-  |   ^(WHILE { ch.symbolTable.openScope(); } e1=expression e2=expression { ch.checkType("Pill", $e1.type); $type = "void"; ch.symbolTable.closeScope(); })
+  |   ^(WHILE                                 { ch.symbolTable.openScope(); }
+            e1=compExpr* doExpr)              {
+                                                ch.checkType("Pill", $e1.type);
+                                                $type = "void";
+                                                ch.symbolTable.closeScope();
+                                              }
   |   ^(READ id=IDENTIFIER { $type = ch.getType($id.text); } (id=IDENTIFIER { ch.checkDeclared($id.text); $type = "void"; })*)
   |   ^(PRINT ex=expression                   {
                                                 $type = $ex.type;
@@ -129,6 +134,10 @@ thenExpr returns [String type = null;]
 elseExpr returns [String type = null;]
   :   ^(ELSE                                  { ch.symbolTable.openScope(); }
             e1=compExpr*)                     { $type = $e1.type; ch.symbolTable.closeScope(); }
+  ;
+  
+doExpr returns [String type = null;]
+  :   ^(DO { ch.symbolTable.openScope(); } e2=compExpr* { ch.symbolTable.closeScope(); })
   ;
   
 operand returns [String type = null;]

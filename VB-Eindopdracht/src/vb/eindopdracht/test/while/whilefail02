@@ -1,10 +1,25 @@
-//Fail (Checker)
+//Program containing contextual errors
+
 spawn eenInt;
-spawn tweeInt;
 eenInt = 50;
-tweeInt = eenInt /50;
-while(tweeInt) 
-	do {
-		line(eenInt);
-		eenInt = eenInt -1;
-	} od;
+
+//Return types
+while 1; 
+do
+	line(eenInt);
+	eenInt = eenInt - 1;
+od;
+
+while 'c';
+do
+	line(eenInt);
+	eenInt = eenInt - 1;
+od;
+
+line(while eenInt > 1; do eenInt = eenInt - 1; od);
+
+//Scoping
+while spawn tweeInt; tweeInt = 5; eenInt > 1; do eenInt = eenInt - 1; od;
+line(tweeInt);
+
+while tweeInt > 5; do spawn tweeInt; tweeInt = 6; od;
