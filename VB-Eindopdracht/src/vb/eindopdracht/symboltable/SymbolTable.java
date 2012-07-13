@@ -56,8 +56,14 @@ public class SymbolTable<Entry extends IdEntry> {
 		symbolMapList.remove(this.currentLevel());
 		return result;
 	}
-
-	/** Returns the current scope level. */
+	
+	public boolean isFunctionalScope(int level) {
+		return symbolMapList.get(level).isFunctionalScope();
+	}
+	
+	/**
+	 * Returns the current scope level.
+	 */
 	public int currentLevel() {
 		return symbolMapList.size() - 1;
 	}

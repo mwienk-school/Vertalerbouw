@@ -49,14 +49,12 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 */
 	public void closeScope(int result) throws Exception {
 		int scopeSize = symbolTable.getCurrentLocalBaseSize();
-		if(!symbolTable.closeScope()) {
+		int debug = symbolTable.currentLevel();
+		if(!symbolTable.isFunctionalScope(symbolTable.currentLevel()-1)) {
 			printTAM("POP(" + result + ")", scopeSize + "", "Pop " + scopeSize + " local variables");
 			this.size -= scopeSize;
 		}
-		//TODO
-		if(size < 0)
-			throw new Exception("KANKER");
-		
+		symbolTable.closeScope();
 	}
 	
 	/**
@@ -236,7 +234,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		String val = entry.toString();
 		if(entry.isFunctional()) {
 //			printTAM("JUMP", entry.getAddress(), "Jump to the process " + id);
-			printStatementProcCall(id);
+			printStatementCall(id);
 			if(entry instanceof FuncEntry)
 				val = "1";	// Dummy value
 		}
@@ -362,21 +360,40 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	public int defineFunction_Start(String id) throws Exception {
 		FuncEntry func = new FuncEntry(id);
 		int thisLabelNo = labelNumber++;
+		printTAM("JUMP", "End" + thisLabelNo + "[CB]", "Skip function " + id + " body.");
 		nextLabel = "Func" + thisLabelNo;
 		func.setAddress(nextLabel + "[CB]");
 		symbolTable.enter(id, func);
-		printTAM("JUMP", "End" + thisLabelNo + "[CB]", "Skip function " + id + " body.");
+		symbolTable.openScope(true);
+		symbolTable.goDeeper();
+		routineLevel++;
 		return thisLabelNo;
 	}
 
 	/**
 	 * Einde van defineFunction
 	 */
-	public void defineFunction_End(int thisLabelNo, int parameters) {
-		//TODO resultaat returnen
+	public void defineFunction_End(int thisLabelNo, int parameters) throws Exception {
 		printTAM("RETURN(1)", "" + parameters, "Return from the function");
+		symbolTable.closeScope();
+		symbolTable.goShallower();
 		nextLabel = "End" + thisLabelNo;
+		routineLevel--;
 	}
+	
+	/**
+	 * Call naar functie
+	 * @param id
+	 */
+	public String printStatementCall(String id) {
+		IdEntry ie = symbolTable.retrieve(id);
+		printPrimitiveRoutine(ie.getAddress(), "Call function " + id);
+		if(ie.getValue() == null)
+			return null;
+		else
+			return ie.getValue().toString();
+	}
+
 
 	// //////////////////////////////////////////////////////////
 	// / IF Statement
@@ -455,14 +472,6 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	}
 	
 	// //////////////////////////////////////////////////////////
-	// / PROCEDURE Statements
-	// //////////////////////////////////////////////////////////
-	
-	public void printStatementProcCall(String id) {
-		printPrimitiveRoutine(symbolTable.retrieve(id).getAddress(), "Call procedure " + id);
-	}
-	
-	// //////////////////////////////////////////////////////////
 	// / ARRAY Statements
 	// //////////////////////////////////////////////////////////
 	
@@ -480,7 +489,6 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * @param ex
 	 */
 	public void printStatementPrint(String ex) {
-		//TODO: testen
 		try {
 			Integer.parseInt(ex);
 			printTAM("LOADA", -1+"[ST]", "Load address of int on top of stack");

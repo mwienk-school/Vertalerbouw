@@ -1,12 +1,16 @@
 //Success
 
 proc incrementProc(spawn eenInt) {
-	proc subProc() {
-		eenInt = eenInt + 1;
-	};
-	subProc();
+	eenInt = eenInt + 1;
 };
+
+func incrementFunc(eenInt) {
+	eenInt + 1;
+};
+
 spawn tweeInt;
 tweeInt = 1;
 incrementProc(spawn tweeInt);
-print(tweeInt);
+line(tweeInt);
+tweeInt = incrementFunc(tweeInt);
+line(tweeInt);

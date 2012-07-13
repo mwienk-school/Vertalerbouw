@@ -40,7 +40,16 @@ compExpr returns [String type = null;]
                                           pe.setParameters($par.paramList);
                                           ch.symbolTable.closeScope();
                                         })
-  |   ^(FUNC id=IDENTIFIER { FuncEntry fe = (FuncEntry) ch.processEntry($id.text); ch.symbolTable.openScope(); } paramdecl+ ex=expression { $type = "no_type"; fe.setReturnType($ex.type); ch.symbolTable.closeScope(); })
+  |   ^(FUNC id=IDENTIFIER              {
+                                          FuncEntry fe = (FuncEntry) ch.processEntry($id.text);
+                                          ch.symbolTable.openScope();
+                                        }
+            par=paramdecls ex=expression    {
+                                          $type = "no_type";
+                                          fe.setReturnType($ex.type);
+                                          fe.setParameters($par.paramList);
+                                          ch.symbolTable.closeScope();
+                                        })
   |   ^(TYPE id=IDENTIFIER n1=NUMBER n2=NUMBER)     { ch.processDynamicType($id.text, $n1.text, $n2.text); $type = "no_type"; }
   |   ex=expression                     { $type = $ex.type; }
   ;
@@ -168,16 +177,26 @@ operand returns [String type = null;]
             expression* par=paramuses         {
                                                 if($par.paramList.size() > 0) {
 	                                                IdEntry ie = ch.symbolTable.retrieve($id.text);
-	                                                if(ie instanceof ProcEntry) {
-	                                                  ArrayList expectedPars = ((ProcEntry)ie).getParameters();
-	                                                  if(expectedPars.size() != $par.paramList.size())
-	                                                    throw new Exception("Procedure " + $id.text + " has " + expectedPars + " parameters, not " + $par.paramList.size());
-	                                                  for(int i = 0; i < expectedPars.size(); i++)
-	                                                  {
-	                                                    if(!expectedPars.get(i).equals($par.paramList.get(i)))
-	                                                      throw new Exception(expectedPars.get(i) + " parameter expected, " + $par.paramList.get(i) + " parameter found");
-	                                                  }
-	                                                }
+                                                  if(ie instanceof ProcEntry) {
+                                                    ArrayList expectedPars = ((ProcEntry)ie).getParameters();
+                                                    if(expectedPars.size() != $par.paramList.size())
+                                                      throw new Exception("Procedure " + $id.text + " has " + expectedPars + " parameters, not " + $par.paramList.size());
+                                                    for(int i = 0; i < expectedPars.size(); i++)
+                                                    {
+                                                      if(!expectedPars.get(i).equals($par.paramList.get(i)))
+                                                        throw new Exception(expectedPars.get(i) + " parameter expected, " + $par.paramList.get(i) + " parameter found");
+                                                    }
+                                                  }
+                                                  if(ie instanceof FuncEntry) {
+                                                    ArrayList expectedPars = ((FuncEntry)ie).getParameters();
+                                                    if(expectedPars.size() != $par.paramList.size())
+                                                      throw new Exception("Function " + $id.text + " has " + expectedPars + " parameters, not " + $par.paramList.size());
+                                                    for(int i = 0; i < expectedPars.size(); i++)
+                                                    {
+                                                      if(!expectedPars.get(i).equals($par.paramList.get(i)))
+                                                        throw new Exception(expectedPars.get(i) + " parameter expected, " + $par.paramList.get(i) + " parameter found");
+                                                    }
+                                                  }
 	                                              }
                                               })
   |   TRUE              { $type = "Pill"; }

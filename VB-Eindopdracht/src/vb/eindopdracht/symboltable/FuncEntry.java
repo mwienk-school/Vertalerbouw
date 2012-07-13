@@ -1,6 +1,9 @@
 package vb.eindopdracht.symboltable;
 
+import java.util.ArrayList;
+
 public class FuncEntry extends IdEntry {
+	protected ArrayList<String> parameters;
 	private String returnType;
 
 	public String getReturnType() {
@@ -29,6 +32,14 @@ public class FuncEntry extends IdEntry {
 	
 	public String toString() {
 		return null;
+	}
+	
+	public void setParameters(ArrayList<String> parameters) {
+		this.parameters = parameters;
+	}
+	
+	public ArrayList<String> getParameters() {
+		return this.parameters;
 	}
 
 }

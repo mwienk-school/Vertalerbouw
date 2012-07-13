@@ -47,14 +47,13 @@ compExpr returns [String val = null;]
                 }
               })?
              expression) { gh.defineProcedure_End(number, i); }
-  |   ^(FUNC id=IDENTIFIER { int number = gh.defineFunction_Start($id.text); }
-              par=paramdecls
+  |   ^(FUNC id=IDENTIFIER { int number = gh.defineFunction_Start($id.text); int i = 0; }
+              (par=paramdecls
               {
-                int i;
                 for(i = 0; i < $par.paramList.size(); i++) {
                   gh.defineParameters((String)$par.paramList.get(i), i-$par.paramList.size());
                 }
-              }
+              })?
               expression) { gh.defineFunction_End(number, i); }
   |   expr=expression { $val = $expr.val; }
   ;
@@ -291,10 +290,7 @@ printexpr returns [String val = null;]
 operand returns [String val = null;]
   :   ^(id=IDENTIFIER { gh.initOperand($id.text); } (par=paramuses)?)  
       {
-        if($par.paramList != null)
-          gh.printStatementProcCall($id.text);
-        else
-          $val = gh.getValue($id.text);
+        $val = gh.getValue($id.text);
       } 
   |   TRUE
       {
