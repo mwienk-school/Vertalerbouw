@@ -25,9 +25,12 @@ public class CheckerHelper extends CrimsonCodeHelper {
 			//Basic types
 			return type;
 		}
-		
+	    else if ("Read".equals(splitEx[splitEx.length-1]) && type.equals(ex.substring(0, ex.length()-4)))
+	    	//A variable dependent on a read 
+	    	return ex;
 	    else if (splitType[splitType.length - 1].equals(splitEx[splitEx.length - 1])
-	    	   && splitType[splitType.length - 2].equals(splitEx[splitEx.length - 2])) 	    	
+	    	   && splitType[splitType.length - 2].equals(splitEx[splitEx.length - 2]))
+	    	//Arrays and records
 	    	return type;
 	    else
 	    	throw new Exception(type + " expression expected, " + ex + " expression found");
@@ -74,12 +77,29 @@ public class CheckerHelper extends CrimsonCodeHelper {
 				else if("Func".equals(lastPart)) {
 					lastPart = ((FuncEntry) symbolTable.retrieve(id)).getReturnType();
 				}
+				else if(symbolTable.retrieve(id).isRead()) {
+					lastPart += "Read";
+				}
 				return lastPart;
 			}
 		}
 		// Type isn't found.
 		throw new Exception("The declared type of " + id + "("
 				+ lastPart + ") is an unknown type.");
+	}
+	
+	/**
+	 * Returnt het type van een variabele en houdt bij
+	 * dat deze ingelezen is.
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public String getReadType(String id) throws Exception {
+		String type = getType(id) + "Read";
+		IdEntry ie = symbolTable.retrieve(id);
+		ie.setRead();
+		return type;
 	}
 	
 	/**
@@ -106,6 +126,8 @@ public class CheckerHelper extends CrimsonCodeHelper {
 	    		throw new Exception("The declared array " + identifier + " does not have the right size (" + idEntry.getArraySize() + ")");
 	    	}
 		}
+		if(returnType.endsWith("Read"))
+			symbolTable.retrieve(identifier).setRead();
 		return returnType;
 	}
 

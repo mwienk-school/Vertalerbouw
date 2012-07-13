@@ -39,21 +39,20 @@ program
 compExpr returns [String val = null;]
   :   ^(CONST { gh.setConstantScope(true); } id=IDENTIFIER ex=expression) { gh.defineConstant($id.text, $ex.val); gh.setConstantScope(false); }
   |   ^(VAR id=IDENTIFIER) { gh.defineVariable($id.text); }
-  |   ^(PROC id=IDENTIFIER { int number = gh.defineProcedure_Start($id.text); } 
-              par=paramdecls 
+  |   ^(PROC id=IDENTIFIER { int number = gh.defineProcedure_Start($id.text); int i = 0; }
+              (par=paramdecls 
               {
-                int i;
                 for(i = 0; i < $par.paramList.size(); i++) {
-                  gh.defineParameter((String)$par.paramList.get(i), i-$par.paramList.size());
+                  gh.defineParameters((String)$par.paramList.get(i), i-$par.paramList.size());
                 }
-              }
+              })?
              expression) { gh.defineProcedure_End(number, i); }
   |   ^(FUNC id=IDENTIFIER { int number = gh.defineFunction_Start($id.text); }
               par=paramdecls
               {
                 int i;
                 for(i = 0; i < $par.paramList.size(); i++) {
-                  gh.defineParameter((String)$par.paramList.get(i), i-$par.paramList.size());
+                  gh.defineParameters((String)$par.paramList.get(i), i-$par.paramList.size());
                 }
               }
               expression) { gh.defineFunction_End(number, i); }
@@ -61,13 +60,13 @@ compExpr returns [String val = null;]
   ;
   
 paramdecls returns [List paramList = new ArrayList();]
-  :   ^(PARAM id=IDENTIFIER)  { $paramList.add($id.text); } (par=paramdecls { $paramList.addAll($par.paramList); })?
-  |   ^(VAR id=IDENTIFIER)    { $paramList.add($id.text+"Var"); } (par=paramdecls { $paramList.addAll($par.paramList); })?
+  :   ^(PARAM id=IDENTIFIER)  { $paramList.add($id.text); }        (par=paramdecls { $paramList.addAll($par.paramList); })?
+  |   ^(VAR id=IDENTIFIER)    { $paramList.add($id.text+"Var"); }  (par=paramdecls { $paramList.addAll($par.paramList); })?
   ;
 
-paramuse
-  :   ^(PARAM id=IDENTIFIER)  { gh.getValue($id.text); }
-  |   ^(VAR id=IDENTIFIER)    { gh.getAddress($id.text); }
+paramuses returns [List paramList = new ArrayList();]
+  :   ^(PARAM ex=expression)  { $paramList.add($ex.val); } (par=paramuses { $paramList.addAll($par.paramList); })?
+  |   ^(VAR id=IDENTIFIER)    { $paramList.add($id.text+"Var"); gh.getAddress($id.text); } (par=paramuses { $paramList.addAll($par.paramList); })?
   ;
     
 expression returns [String val = null;] 
@@ -290,9 +289,12 @@ printexpr returns [String val = null;]
   ;
   
 operand returns [String val = null;]
-  :   ^(id=IDENTIFIER { gh.initOperand($id.text); } ex=expression* paramuse*)  
+  :   ^(id=IDENTIFIER { gh.initOperand($id.text); } (par=paramuses)?)  
       {
-        $val = gh.getValue($id.text);
+        if($par.paramList != null)
+          gh.printStatementProcCall($id.text);
+        else
+          $val = gh.getValue($id.text);
       } 
   |   TRUE
       {

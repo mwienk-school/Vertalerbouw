@@ -21,7 +21,17 @@ public class SymbolTable<Entry extends IdEntry> {
 	 * @ensures this.currentLevel() == old.currentLevel()+1;
 	 */
 	public void openScope() {
+		openScope(false);
+	}
+
+	/**
+	 * Opens a new scope.
+	 * 
+	 * @ensures this.currentLevel() == old.currentLevel()+1;
+	 */
+	public void openScope(boolean functionalScope) {
 		symbolMapList.add(new SymbolTableMap<Entry>());
+		symbolMapList.get(this.currentLevel()).setFunctionalScope(functionalScope);
 	}
 	
 	/**
@@ -39,8 +49,12 @@ public class SymbolTable<Entry extends IdEntry> {
 	 * @requires old.currentLevel() > -1;
 	 * @ensures this.currentLevel() == old.currentLevel()-1;
 	 */
-	public void closeScope() {
+	public boolean closeScope() {
+		//TODO
+//		System.out.println("closing scope " + currentLevel());
+		boolean result = symbolMapList.get(this.currentLevel()).isFunctionalScope();
 		symbolMapList.remove(this.currentLevel());
+		return result;
 	}
 
 	/** Returns the current scope level. */
@@ -63,6 +77,8 @@ public class SymbolTable<Entry extends IdEntry> {
 				&& !symbolMapList.get(this.currentLevel()).getMap().containsKey(id)) {
 			entry.setLevel(this.currentLevel());
 			symbolMapList.get(this.currentLevel()).add(id, entry);
+			//TODO
+//			System.out.println("declaring " + id + " at level " + currentLevel());
 		} else {
 			throw new Exception("On this level (" + this.currentLevel() + "), " + 
 								 id + " is already declared.");
@@ -103,6 +119,66 @@ public class SymbolTable<Entry extends IdEntry> {
 	}
 	
 	/**
+	 * Fixt de addressen van variabeleparameters
+	 * in het geval van subprocedures
+	 */
+	public void goDeeper() throws Exception {
+		for (int i = this.currentLevel(); i > -1; i--) {
+			Iterator<Map.Entry<String, Entry>> it = symbolMapList.get(i).getMap().entrySet().iterator();
+		    while (it.hasNext()) {
+		    	Map.Entry<String, Entry> pairs = (Map.Entry<String, Entry>)it.next();
+		        IdEntry ie = pairs.getValue();
+		        String address = ie.getAddress();
+		        String addressEnd = ie.getAddress().substring(ie.getAddress().length()-4, ie.getAddress().length());
+		        if(addressEnd.equals("[LB]"))
+		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L1]");
+		        else if(addressEnd.equals("[L1]"))
+		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L2]");
+		        else if(addressEnd.equals("[L2]"))
+		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L3]");
+		        else if(addressEnd.equals("[L3]"))
+		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L4]");
+		        else if(addressEnd.equals("[L4]"))
+		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L5]");
+		        else if(addressEnd.equals("[L5]"))
+		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L6]");
+		        else if(addressEnd.startsWith("[L") && addressEnd.endsWith("]"))
+		        	throw new Exception("We can't go deeper, I blame " + pairs.getKey());
+		    }
+		}
+	}
+	
+	/**
+	 * Fixt de addressen van variabeleparameters
+	 * in het geval van subprocedures
+	 */
+	public void goShallower() throws Exception {
+		for (int i = this.currentLevel(); i > -1; i--) {
+			Iterator<Map.Entry<String, Entry>> it = symbolMapList.get(i).getMap().entrySet().iterator();
+		    while (it.hasNext()) {
+		    	Map.Entry<String, Entry> pairs = (Map.Entry<String, Entry>)it.next();
+		        IdEntry ie = pairs.getValue();
+		        String address = ie.getAddress();
+		        String addressEnd = ie.getAddress().substring(ie.getAddress().length()-4, ie.getAddress().length());
+		        if(addressEnd.equals("[L1]"))
+		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[LB]");
+		        else if(addressEnd.equals("[L2]"))
+		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L1]");
+		        else if(addressEnd.equals("[L3]"))
+		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L2]");
+		        else if(addressEnd.equals("[L4]"))
+		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L3]");
+		        else if(addressEnd.equals("[L5]"))
+		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L4]");
+		        else if(addressEnd.equals("[L6]"))
+		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L5]");
+		        else if(addressEnd.equals("[LB]"))
+		        	throw new Exception("We can't go shallower, I blame " + pairs.getKey());
+		    }
+		}
+	}
+	
+	/**
 	 * Een SymbolTableMap is een item in de SymbolTable. 
 	 * Dit item is een scope (een level binnen een programma).
 	 *
@@ -111,6 +187,7 @@ public class SymbolTable<Entry extends IdEntry> {
 	public class SymbolTableMap<Entry extends IdEntry> {
 		private HashMap<String, Entry> map;
 		private int lbSize;
+		private boolean functionalScope;
 		
 		/**
 		 * Verkrijg de map met de waardes in de symtab
@@ -136,6 +213,22 @@ public class SymbolTable<Entry extends IdEntry> {
 		 */
 		public int getLbSize() {
 			return lbSize;
+		}
+		
+		/**
+		 * Houdt bij of deze scope gepopt of gereturned moet worden
+		 * @param functionalScope
+		 */
+		public void setFunctionalScope(boolean functionalScope) {
+			this.functionalScope = functionalScope;
+		}
+		
+		/**
+		 * Returnt of deze scope bij een procedure hoort
+		 * @return
+		 */
+		public boolean isFunctionalScope() {
+			return this.functionalScope;
 		}
 		
 		/**

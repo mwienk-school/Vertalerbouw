@@ -75,7 +75,9 @@ public abstract class CrimsonCodeHelper {
 	 * @return
 	 * @throws Exception
 	 */
-	public IdEntry processConstantEntry(String identifier) throws Exception {
+	public IdEntry processConstantEntry(String identifier, String type) throws Exception {
+		if(type.endsWith("Read"))
+			throw new Exception("Cannot initiate a constant with a read");
 		IdEntry idEntry = processEntry(identifier);
 		idEntry.setConstant(true);
 		return idEntry;

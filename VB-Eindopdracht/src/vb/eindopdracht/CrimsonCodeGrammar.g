@@ -120,7 +120,7 @@ funcDecl
   ;
 
 paramdecls
-  :   LPAREN! paramdecl (COMMA! paramdecl)* RPAREN!
+  :   LPAREN! (paramdecl (COMMA! paramdecl)*)? RPAREN!
   ;
 
 paramdecl
@@ -130,7 +130,13 @@ paramdecl
   ;
   
 paramuses
-  :   LPAREN! expression (COMMA! expression)* RPAREN!
+  :   LPAREN! (paramuse (COMMA! paramuse)*)? RPAREN!
+  ;
+  
+paramuse
+  :   expression
+        -> ^(PARAM expression)
+  |   VAR^ IDENTIFIER
   ;
 
 typeDecl

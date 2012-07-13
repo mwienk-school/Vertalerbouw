@@ -30,3 +30,10 @@ spawn qInt;
 read(xInt, yInt) + 10;
 'c' != line(xInt, yInt);
 10 + { spawn uInt; spawn vInt; read(uInt, vInt); line(uInt, vInt); };
+
+//Using a runtime-only variable (dependent on a read) in the definition of a constant
+spawn eenInt;
+read(eenInt);
+spawn tweeInt;
+tweeInt = eenInt;
+const drieInt = tweeInt;

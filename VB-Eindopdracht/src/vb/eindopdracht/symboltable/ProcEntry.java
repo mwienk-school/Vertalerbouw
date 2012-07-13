@@ -1,7 +1,9 @@
 package vb.eindopdracht.symboltable;
 
+import java.util.ArrayList;
+
 public class ProcEntry extends IdEntry {
-	protected int parameters;
+	protected ArrayList<String> parameters;
 	
 	@Override
 	public void setValue(Object o) {
@@ -23,11 +25,11 @@ public class ProcEntry extends IdEntry {
 		return null;
 	}
 	
-	public void setParameters(int parameters) {
+	public void setParameters(ArrayList<String> parameters) {
 		this.parameters = parameters;
 	}
 	
-	public int getParameters() {
+	public ArrayList<String> getParameters() {
 		return this.parameters;
 	}
 

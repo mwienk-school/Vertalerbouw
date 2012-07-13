@@ -15,6 +15,7 @@ public abstract class IdEntry {
     protected boolean functional = false;
     protected boolean varparam = false;
     protected boolean constant = false;
+    protected boolean read = false;
     
     public int   getLevel()				{ return level;			}
     public void  setLevel(int level)	{ this.level = level;	}
@@ -28,6 +29,8 @@ public abstract class IdEntry {
     public boolean isVarparam()			{ return this.varparam; }
     public void setConstant(boolean constant)	{ this.constant = constant; }
     public boolean isConstant()			{ return this.constant; }
+    public void setRead()				{ this.read = true; }
+    public boolean isRead()				{ return this.read; }
     
     public abstract void setValue(Object o);
     public abstract Object getValue();

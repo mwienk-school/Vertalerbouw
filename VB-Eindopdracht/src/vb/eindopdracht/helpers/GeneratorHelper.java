@@ -1,6 +1,7 @@
 package vb.eindopdracht.helpers;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 
 import vb.eindopdracht.symboltable.*;
 
@@ -13,6 +14,8 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	private int labelNumber;
 	// If in constant scope, operands should not output
 	private boolean constantScope;
+	// If in a routine, routinecalls should use static link LB
+	private int routineLevel;
 
 	/**
 	 * Stel constantScope in, dit heeft gevolgen voor het printen van TAM
@@ -44,11 +47,16 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * Laat een resultaat van grootte result intact.
 	 * @param result
 	 */
-	public void closeScope(int result) {
+	public void closeScope(int result) throws Exception {
 		int scopeSize = symbolTable.getCurrentLocalBaseSize();
-		printTAM("POP(" + result + ")", scopeSize + "", "Pop " + scopeSize + " local variables");
-		this.size -= scopeSize;
-		symbolTable.closeScope();
+		if(!symbolTable.closeScope()) {
+			printTAM("POP(" + result + ")", scopeSize + "", "Pop " + scopeSize + " local variables");
+			this.size -= scopeSize;
+		}
+		//TODO
+		if(size < 0)
+			throw new Exception("KANKER");
+		
 	}
 	
 	/**
@@ -133,9 +141,6 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		entry.setType(IdEntry.Type.VAR);
 		printTAM("PUSH", "1", "Push variable " + id);
 		size++;
-		//TODO Size waarschijnlijk uit SymbolTable halen (ivm LB en SB), 
-		// SB gebruiken voor currentLevel = 0? check ook de andere voorkomens van size, 
-		// ik denk dat size uit GeneratorHelper.java moet en volledig in SymTab moet werken.
 	}
 	
 	/**
@@ -144,7 +149,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * @param id
 	 * @throws Exception
 	 */
-	public void defineParameter(String id, int offset) throws Exception {
+	public void defineParameters(String id, int offset) throws Exception {
 		boolean varparam = false;
 		String[] splitted = CrimsonCodeHelper.splitString(id);
 		if("Var".equals(splitted[splitted.length-1])) {
@@ -157,27 +162,32 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	}
 
 	/**
+	 * Print een routineaanroep (een aanroep naar de VM met CALL)
+	 * 
+	 * @param cmd
+	 * @param comment
+	 * @param statlink
+	 */
+	public void printRoutine(String cmd, String comment, String statlink) {
+		printTAM("CALL(" + statlink + ")", cmd, comment);
+	}
+	
+	public void printRoutine(String cmd, String comment) {
+		String statlink = "SB";
+		if(routineLevel > 0)
+			statlink = "LB";
+		printRoutine(cmd, comment, statlink);
+	}
+
+	/**
 	 * Print een primitive routine (een aanroep naar de VM met CALL)
+	 * met SB als static link
 	 * 
 	 * @param cmd
 	 * @param comment
 	 */
 	public void printPrimitiveRoutine(String cmd, String comment) {
-		// Bekijk hoeveel argumenten een routine gebruikt, om de stack op te schonen
-		// "id,not,succ,pred,neg,new" niet nodig, verschil is 0.
-		//TODO: weghalen als echt niet nodig is
-//		int resultMinusArgs = 0;
-//		if("and,or,add,sub,mult,div,mod,lt,le,ge,gt,get,put,getint,putint".contains(cmd)) {
-//			// Verschil is 1
-//			resultMinusArgs = 1;
-//		} else if ("eq,neq,dispose".contains(cmd)) {
-//			// Verschil is 2
-//			resultMinusArgs = 2;
-//		} else if ("eol,eof".contains(cmd)) {
-//			// Verschil is -1 (pusht de stack)
-//			resultMinusArgs = -1;
-//		}
-		printTAM("CALL", cmd, comment);
+		printRoutine(cmd, comment, "SB");
 	}
 
 	/**
@@ -203,9 +213,8 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		if(entry instanceof ArrayEntry)
 			size = ((ArrayEntry) entry).getArraySize();
 		if(entry.isVarparam()) {
-			printTAM("LOAD(" + size + ")", entry.getAddress(), "Load the variable parameter address");
-			printTAM("STOREI(" + size + ")", "", "Store at the variable parameter address");
-			//TODO juiste variabele uit symbolTable updaten.
+			printTAM("LOAD(" + size + ")", entry.getAddress(), "Load the variable parameter address " + id);
+			printTAM("STOREI(" + size + ")", "", "Store in the variable parameter " + id);
 		}
 		else {
 			printTAM("STORE(" + size + ")", symbolTable.retrieve(id).getAddress(),
@@ -226,7 +235,8 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		IdEntry entry = symbolTable.retrieve(id);
 		String val = entry.toString();
 		if(entry.isFunctional()) {
-			printTAM("JUMP", entry.getAddress(), "Jump to the process " + id);
+//			printTAM("JUMP", entry.getAddress(), "Jump to the process " + id);
+			printStatementProcCall(id);
 			if(entry instanceof FuncEntry)
 				val = "1";	// Dummy value
 		}
@@ -270,7 +280,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 */
 	public String getAddress(String id) {
 		IdEntry entry = symbolTable.retrieve(id);
-		printTAM("LOADA", entry.getAddress(),	"Load the variable address");
+		printTAM("LOADA", entry.getAddress(),	"Load variable address for " + id);
 		return entry.getAddress();
 	}
 
@@ -318,19 +328,25 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	public int defineProcedure_Start(String id) throws Exception {
 		ProcEntry proc = new ProcEntry(id);
 		int thisLabelNo = labelNumber++;
+		printTAM("JUMP", "End" + thisLabelNo + "[CB]", "Skip procedure " + id + " body.");
 		nextLabel = "Proc" + thisLabelNo;
 		proc.setAddress(nextLabel + "[CB]");
 		symbolTable.enter(id, proc);
-		printTAM("JUMP", "End" + thisLabelNo + "[CB]", "Skip procedure " + id + " body.");
+		symbolTable.openScope(true);
+		symbolTable.goDeeper();
+		routineLevel++;
 		return thisLabelNo;
 	}
 
 	/**
 	 * Einde van defineProcedure
 	 */
-	public void defineProcedure_End(int thisLabelNo, int parameters) {
-		printTAM("RETURN(0)", "" + parameters, "Return from the Procedure");
+	public void defineProcedure_End(int thisLabelNo, int parameters) throws Exception {
+		printTAM("RETURN(0)", "" + parameters, "Return from the procedure");
+		symbolTable.closeScope();
+		symbolTable.goShallower();
 		nextLabel = "End" + thisLabelNo;
+		routineLevel--;
 	}
 
 	// //////////////////////////////////////////////////////////
@@ -439,6 +455,14 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	}
 	
 	// //////////////////////////////////////////////////////////
+	// / PROCEDURE Statements
+	// //////////////////////////////////////////////////////////
+	
+	public void printStatementProcCall(String id) {
+		printPrimitiveRoutine(symbolTable.retrieve(id).getAddress(), "Call procedure " + id);
+	}
+	
+	// //////////////////////////////////////////////////////////
 	// / ARRAY Statements
 	// //////////////////////////////////////////////////////////
 	
@@ -509,5 +533,6 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		this.nextLabel = "";
 		this.labelNumber = 0;
 		this.constantScope = false;
+		this.routineLevel = 0;
 	}
 }

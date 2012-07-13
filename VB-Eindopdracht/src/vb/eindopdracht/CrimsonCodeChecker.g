@@ -8,6 +8,8 @@ options {
 @header {
   package vb.eindopdracht;
   import vb.eindopdracht.helpers.CheckerHelper;
+  import vb.eindopdracht.symboltable.ProcEntry;
+  import vb.eindopdracht.symboltable.IdEntry;
   import vb.eindopdracht.symboltable.FuncEntry;
 }
 
@@ -27,27 +29,48 @@ program
   ;
 
 compExpr returns [String type = null;]
-  :   ^(CONST id=IDENTIFIER expression) { ch.processConstantEntry($id.text); $type = "no_type"; }
+  :   ^(CONST id=IDENTIFIER ex=expression) { ch.processConstantEntry($id.text, $ex.type); $type = "no_type"; }
   |   ^(VAR id=IDENTIFIER)              { ch.processEntry($id.text); $type = "no_type"; }
-  |   ^(PROC id=IDENTIFIER { ch.processEntry($id.text); ch.symbolTable.openScope(); } paramdecl+ expression { $type = "no_type"; ch.symbolTable.closeScope(); })
+  |   ^(PROC id=IDENTIFIER              {
+                                          ProcEntry pe = (ProcEntry)ch.processEntry($id.text);
+                                          ch.symbolTable.openScope();
+                                        }
+            par=paramdecls expression   {
+                                          $type = "no_type";
+                                          pe.setParameters($par.paramList);
+                                          ch.symbolTable.closeScope();
+                                        })
   |   ^(FUNC id=IDENTIFIER { FuncEntry fe = (FuncEntry) ch.processEntry($id.text); ch.symbolTable.openScope(); } paramdecl+ ex=expression { $type = "no_type"; fe.setReturnType($ex.type); ch.symbolTable.closeScope(); })
   |   ^(TYPE id=IDENTIFIER n1=NUMBER n2=NUMBER)     { ch.processDynamicType($id.text, $n1.text, $n2.text); $type = "no_type"; }
   |   ex=expression                     { $type = $ex.type; }
   ;
-
-paramdecl
-  :   ^(PARAM id=IDENTIFIER)            { ch.processEntry($id.text); }
-  |   ^(VAR id=IDENTIFIER)              { ch.processEntry($id.text); }
+  
+paramdecls returns [ArrayList<String> paramList = new ArrayList<String>();]
+  :   (p=paramdecl { paramList.add($p.type); } par=paramdecls { paramList.addAll($par.paramList); })?
   ;
 
-paramuse
+paramdecl returns [String type = null;]
+  :   ^(PARAM id=IDENTIFIER)            { ch.processEntry($id.text); $type = ch.getType($id.text); }
+  |   ^(VAR id=IDENTIFIER)              { ch.processEntry($id.text); $type = ch.getType($id.text) + " variable"; }
+  ;
+
+paramuses returns [ArrayList<String> paramList = new ArrayList<String>();]
+  :   (p=paramuse { paramList.add($p.type); } par=paramuses { paramList.addAll($par.paramList); })?
+  ;
+paramuse returns [String type = null;]
   :   ^(PARAM id=IDENTIFIER)
         {
-	        if(ch.symbolTable.retrieve($id.text) == null) throw new Exception($id.text + " is not declared.");
+	        if(ch.symbolTable.retrieve($id.text) == null)
+	          throw new Exception($id.text + " is not declared.");
+	        else
+	          $type = ch.getType($id.text);
 	      }
   |   ^(VAR id=IDENTIFIER)
         {
-	        if(ch.symbolTable.retrieve($id.text) == null) throw new Exception($id.text + " is not declared.");
+	        if(ch.symbolTable.retrieve($id.text) == null)
+	          throw new Exception($id.text + " is not declared.");
+          else
+            $type = ch.getType($id.text) + " variable";
 	      }
   ;
   
@@ -81,7 +104,7 @@ expression returns [String type = null;]
                                                 $type = "void";
                                                 ch.symbolTable.closeScope();
                                               }
-  |   ^(READ id=IDENTIFIER { $type = ch.getType($id.text); } (id=IDENTIFIER { ch.checkDeclared($id.text); $type = "void"; })*)
+  |   ^(READ id=IDENTIFIER { $type = ch.getReadType($id.text); } (id=IDENTIFIER { ch.checkDeclared($id.text); $type = "void"; })*)
   |   ^(PRINT ex=expression                   {
                                                 $type = $ex.type;
                                                 if("void".equals($ex.type))
@@ -141,7 +164,22 @@ doExpr returns [String type = null;]
   ;
   
 operand returns [String type = null;]
-  :   ^(id=IDENTIFIER   { $type = ch.getType($id.text); } expression* paramuse*)
+  :   ^(id=IDENTIFIER                         { $type = ch.getType($id.text); }
+            expression* par=paramuses         {
+                                                if($par.paramList.size() > 0) {
+	                                                IdEntry ie = ch.symbolTable.retrieve($id.text);
+	                                                if(ie instanceof ProcEntry) {
+	                                                  ArrayList expectedPars = ((ProcEntry)ie).getParameters();
+	                                                  if(expectedPars.size() != $par.paramList.size())
+	                                                    throw new Exception("Procedure " + $id.text + " has " + expectedPars + " parameters, not " + $par.paramList.size());
+	                                                  for(int i = 0; i < expectedPars.size(); i++)
+	                                                  {
+	                                                    if(!expectedPars.get(i).equals($par.paramList.get(i)))
+	                                                      throw new Exception(expectedPars.get(i) + " parameter expected, " + $par.paramList.get(i) + " parameter found");
+	                                                  }
+	                                                }
+	                                              }
+                                              })
   |   TRUE              { $type = "Pill"; }
   |   FALSE             { $type = "Pill"; }
   |   NUMBER            { $type = "Int"; }

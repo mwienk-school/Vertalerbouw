@@ -1,0 +1,21 @@
+//Program containing spelling and context-free errors
+
+spawn eenInt;
+spawn tweeInt;
+eenInt = 50;
+tweeInt = eenInt / 50;
+
+//No semicolons after expressions
+while { eenInt > tweeInt; } 
+do {
+	line(eenInt);
+	eenInt = eenInt - 1;
+} od;						//Should print the numbers 2..50 in decreasing order
+
+//Non-existing/misspelled keywords
+while eenInt > tweeInt; do; od;
+while eenInt > tweeInt; do eenInt = tweeInt;
+whlie eenInt > tweeInt; od eenInt = tweeInt; do;
+
+//While used as operand
+eenInt = while eenInt > 1; do eenInt - 1; od;
