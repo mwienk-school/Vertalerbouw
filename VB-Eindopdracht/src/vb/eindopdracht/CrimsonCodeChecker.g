@@ -176,27 +176,7 @@ operand returns [String type = null;]
   :   ^(id=IDENTIFIER                         { $type = ch.getType($id.text); }
             expression* par=paramuses         {
                                                 if($par.paramList.size() > 0) {
-	                                                IdEntry ie = ch.symbolTable.retrieve($id.text);
-                                                  if(ie instanceof ProcEntry) {
-                                                    ArrayList expectedPars = ((ProcEntry)ie).getParameters();
-                                                    if(expectedPars.size() != $par.paramList.size())
-                                                      throw new Exception("Procedure " + $id.text + " has " + expectedPars + " parameters, not " + $par.paramList.size());
-                                                    for(int i = 0; i < expectedPars.size(); i++)
-                                                    {
-                                                      if(!expectedPars.get(i).equals($par.paramList.get(i)))
-                                                        throw new Exception(expectedPars.get(i) + " parameter expected, " + $par.paramList.get(i) + " parameter found");
-                                                    }
-                                                  }
-                                                  if(ie instanceof FuncEntry) {
-                                                    ArrayList expectedPars = ((FuncEntry)ie).getParameters();
-                                                    if(expectedPars.size() != $par.paramList.size())
-                                                      throw new Exception("Function " + $id.text + " has " + expectedPars + " parameters, not " + $par.paramList.size());
-                                                    for(int i = 0; i < expectedPars.size(); i++)
-                                                    {
-                                                      if(!expectedPars.get(i).equals($par.paramList.get(i)))
-                                                        throw new Exception(expectedPars.get(i) + " parameter expected, " + $par.paramList.get(i) + " parameter found");
-                                                    }
-                                                  }
+	                                                ch.checkParameters($id.text, $par.paramList);
 	                                              }
                                               })
   |   TRUE              { $type = "Pill"; }

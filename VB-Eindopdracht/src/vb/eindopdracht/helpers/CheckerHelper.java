@@ -2,7 +2,9 @@ package vb.eindopdracht.helpers;
 
 import vb.eindopdracht.symboltable.ArrayEntry;
 import vb.eindopdracht.symboltable.FuncEntry;
+import vb.eindopdracht.symboltable.ProcEntry;
 import vb.eindopdracht.symboltable.IdEntry;
+import java.util.ArrayList;
 
 /**
  * CheckerHelper is een helper class voor de CrimsonCode Checker 
@@ -20,7 +22,7 @@ public class CheckerHelper extends CrimsonCodeHelper {
 		
 		String[] splitType = CrimsonCodeHelper.splitString(type);
 		String[] splitEx   = CrimsonCodeHelper.splitString(ex);
-		
+
 		if(ex.equals(type)) {
 			//Basic types
 			return type;
@@ -28,6 +30,9 @@ public class CheckerHelper extends CrimsonCodeHelper {
 	    else if ("Read".equals(splitEx[splitEx.length-1]) && type.equals(ex.substring(0, ex.length()-4)))
 	    	//A variable dependent on a read 
 	    	return ex;
+	    else if ("Read".equals(splitType[splitType.length-1]) && type.substring(0, type.length()-4).equals(ex))
+	    	//A variable dependent on a read 
+	    	return type;
 	    else if (splitType[splitType.length - 1].equals(splitEx[splitEx.length - 1])
 	    	   && splitType[splitType.length - 2].equals(splitEx[splitEx.length - 2]))
 	    	//Arrays and records
@@ -58,6 +63,45 @@ public class CheckerHelper extends CrimsonCodeHelper {
 		if(idEntry.isConstant())
 			return true;
 		return false;
+	}
+	
+	/**
+	 * Checkt of de gegeven parameters juist zijn in combinatie met de
+	 * gegeven procedure/functie
+	 * @param id
+	 * @param paramList
+	 * @throws Exception
+	 */
+	public void checkParameters(String id, ArrayList paramList) throws Exception {
+		IdEntry ie = symbolTable.retrieve(id);
+        if(ie instanceof ProcEntry) {
+          ArrayList expectedPars = ((ProcEntry)ie).getParameters();
+          if(expectedPars.size() != paramList.size())
+            throw new Exception("Procedure " + id + " has " + expectedPars + " parameters, not " + paramList.size());
+          for(int i = 0; i < expectedPars.size(); i++)
+          {
+              String expectedPar = (String) expectedPars.get(i);
+              if(expectedPar.contains("Read"))
+            	  expectedPar = expectedPar.substring(0, expectedPar.indexOf("Read")) + expectedPar.substring(expectedPar.indexOf("Read") + 4, expectedPar.length());
+              String foundPar = (String) paramList.get(i);
+              if(foundPar.contains("Read"))
+            	  foundPar = foundPar.substring(0, foundPar.indexOf("Read")) + foundPar.substring(foundPar.indexOf("Read") + 4, foundPar.length());
+	          if(!expectedPar.equals(foundPar))
+	        	  throw new Exception(expectedPar + " parameter expected, " + foundPar + " parameter found");
+          }
+        }
+        else if(ie instanceof FuncEntry) {
+          ArrayList expectedPars = ((FuncEntry)ie).getParameters();
+          if(expectedPars.size() != paramList.size())
+            throw new Exception("Function " + id + " has " + expectedPars + " parameters, not " + paramList.size());
+          for(int i = 0; i < expectedPars.size(); i++)
+          {
+            if(!expectedPars.get(i).equals(paramList.get(i)))
+              throw new Exception(expectedPars.get(i) + " parameter expected, " + paramList.get(i) + " parameter found");
+          }
+        }
+        else
+        	throw new Exception(id + " is not a procedure or function.");
 	}
 	
 	/**

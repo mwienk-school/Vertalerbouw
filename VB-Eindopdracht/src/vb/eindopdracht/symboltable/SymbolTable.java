@@ -50,8 +50,6 @@ public class SymbolTable<Entry extends IdEntry> {
 	 * @ensures this.currentLevel() == old.currentLevel()-1;
 	 */
 	public boolean closeScope() {
-		//TODO
-//		System.out.println("closing scope " + currentLevel());
 		boolean result = symbolMapList.get(this.currentLevel()).isFunctionalScope();
 		symbolMapList.remove(this.currentLevel());
 		return result;
@@ -83,8 +81,6 @@ public class SymbolTable<Entry extends IdEntry> {
 				&& !symbolMapList.get(this.currentLevel()).getMap().containsKey(id)) {
 			entry.setLevel(this.currentLevel());
 			symbolMapList.get(this.currentLevel()).add(id, entry);
-			//TODO
-//			System.out.println("declaring " + id + " at level " + currentLevel());
 		} else {
 			throw new Exception("On this level (" + this.currentLevel() + "), " + 
 								 id + " is already declared.");
@@ -135,21 +131,27 @@ public class SymbolTable<Entry extends IdEntry> {
 		    	Map.Entry<String, Entry> pairs = (Map.Entry<String, Entry>)it.next();
 		        IdEntry ie = pairs.getValue();
 		        String address = ie.getAddress();
-		        String addressEnd = ie.getAddress().substring(ie.getAddress().length()-4, ie.getAddress().length());
-		        if(addressEnd.equals("[LB]"))
-		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L1]");
-		        else if(addressEnd.equals("[L1]"))
-		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L2]");
-		        else if(addressEnd.equals("[L2]"))
-		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L3]");
-		        else if(addressEnd.equals("[L3]"))
-		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L4]");
-		        else if(addressEnd.equals("[L4]"))
-		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L5]");
-		        else if(addressEnd.equals("[L5]"))
-		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L6]");
-		        else if(addressEnd.startsWith("[L") && addressEnd.endsWith("]"))
-		        	throw new Exception("We can't go deeper, I blame " + pairs.getKey());
+		        try {
+		        	String addressEnd = address.substring(ie.getAddress().length()-4, ie.getAddress().length());
+			        
+			        if(addressEnd.equals("[LB]"))
+			        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L1]");
+			        else if(addressEnd.equals("[L1]"))
+			        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L2]");
+			        else if(addressEnd.equals("[L2]"))
+			        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L3]");
+			        else if(addressEnd.equals("[L3]"))
+			        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L4]");
+			        else if(addressEnd.equals("[L4]"))
+			        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L5]");
+			        else if(addressEnd.equals("[L5]"))
+			        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L6]");
+			        else if(addressEnd.startsWith("[L") && addressEnd.endsWith("]"))
+			        	throw new Exception("We can't go deeper, I blame " + pairs.getKey());
+		        }
+		        catch(Exception e) {
+		        	//The encountered entry is a constant and therefore has no address
+		        }
 		    }
 		}
 	}
@@ -165,21 +167,26 @@ public class SymbolTable<Entry extends IdEntry> {
 		    	Map.Entry<String, Entry> pairs = (Map.Entry<String, Entry>)it.next();
 		        IdEntry ie = pairs.getValue();
 		        String address = ie.getAddress();
-		        String addressEnd = ie.getAddress().substring(ie.getAddress().length()-4, ie.getAddress().length());
-		        if(addressEnd.equals("[L1]"))
-		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[LB]");
-		        else if(addressEnd.equals("[L2]"))
-		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L1]");
-		        else if(addressEnd.equals("[L3]"))
-		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L2]");
-		        else if(addressEnd.equals("[L4]"))
-		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L3]");
-		        else if(addressEnd.equals("[L5]"))
-		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L4]");
-		        else if(addressEnd.equals("[L6]"))
-		        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L5]");
-		        else if(addressEnd.equals("[LB]"))
-		        	throw new Exception("We can't go shallower, I blame " + pairs.getKey());
+		        try {
+		        	String addressEnd = address.substring(ie.getAddress().length()-4, ie.getAddress().length());
+			        if(addressEnd.equals("[L1]"))
+			        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[LB]");
+			        else if(addressEnd.equals("[L2]"))
+			        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L1]");
+			        else if(addressEnd.equals("[L3]"))
+			        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L2]");
+			        else if(addressEnd.equals("[L4]"))
+			        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L3]");
+			        else if(addressEnd.equals("[L5]"))
+			        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L4]");
+			        else if(addressEnd.equals("[L6]"))
+			        	ie.setAddress(address.substring(0, ie.getAddress().length()-4) + "[L5]");
+			        else if(addressEnd.equals("[LB]"))
+			        	throw new Exception("We can't go shallower, I blame " + pairs.getKey());
+		        }
+		        catch(Exception e) {
+		        	//The encountered entry is a constant and therefore has no address
+		        }
 		    }
 		}
 	}
@@ -214,7 +221,7 @@ public class SymbolTable<Entry extends IdEntry> {
 		}
 		
 		/**
-		 * Verkrijg de grootte van de local base (StackBase in geval currentlevel =0) TODO: klopt dat?
+		 * Verkrijg de grootte van de local base (StackBase in geval currentlevel = 0)
 		 * @return
 		 */
 		public int getLbSize() {

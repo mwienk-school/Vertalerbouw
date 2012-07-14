@@ -25,8 +25,6 @@ options {
   boolean condition;  //helpvariable to pass condition to different rules 
 }
 
-//Parser regels
-
 program
   :   ^(PROGRAM (cex=compExpr
               {
@@ -280,7 +278,7 @@ doExpr returns [String val = null;]
   ;
 
 readvar returns [String val = null;]
-  :   id=IDENTIFIER { gh.printStatementRead($id.text); $val = "1"; /*TODO: dummy value*/ }
+  :   id=IDENTIFIER { gh.printStatementRead($id.text); $val = "1"; /*dummy value*/ }
   ;
   
 printexpr returns [String val = null;]

@@ -1,4 +1,3 @@
-//Success
 spawn eenInt;
 spawn tweeInt;
 eenInt = 50;
