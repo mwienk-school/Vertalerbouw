@@ -214,7 +214,7 @@ expression returns [String val = null;]
 		          else
 		            gh.closeScope(1);
 			      }
-  |   ^(ARRAY expression+)
+  |   ^(ARRAY {$val = ""; } (ex=expression {if(gh.isConstantScope()) $val = $val + "+|+" + $ex.val; } )+)
   |   ^(TYPE id=IDENTIFIER n1=NUMBER n2=NUMBER)
       {
         gh.defineArray_Type($id.text, $n1.text, $n2.text);

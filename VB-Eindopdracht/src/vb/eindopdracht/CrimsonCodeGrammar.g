@@ -204,8 +204,7 @@ operand
   ;
 
 arrIndex
-  :   LSQUARE expression (COMMA expression)? RSQUARE
-      -> ^(ARRINDEX expression expression?)
+  :   LSQUARE! expression (COMMA! expression)? RSQUARE!
   ;
 
 //Functional expressions  

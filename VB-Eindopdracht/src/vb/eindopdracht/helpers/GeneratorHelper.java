@@ -125,13 +125,13 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	public void defineConstant(String id, String value) throws Exception {
 		IdEntry entry = processEntry(id);
 		entry.setType(IdEntry.Type.CONST);
+		entry.setConstant(true);
 		entry.setValue(value);
 	}
 
 	/**
 	 * Definieer een variabele met de naam id
-	 * TODO Size erin meenemen (nu is 1 hardcoded)
-	 * 
+	 *  
 	 * @param id
 	 * @throws Exception
 	 */
@@ -272,7 +272,12 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		}
 		else if(entry instanceof ArrayEntry) {
 			ArrayEntry arr = (ArrayEntry) entry;
-			printTAM("LOAD(1)", arr.getOffsetAddress(offset), "Load the array value");
+			if(arr.isConstant()) {
+				loadLiteral(arr.get(offset));
+			}
+			else {
+				printTAM("LOAD(1)", arr.getOffsetAddress(offset), "Load the array value");
+			}
 			val = "1"; // Dummy;
 		}
 		else if(entry.getAddress() == null) {

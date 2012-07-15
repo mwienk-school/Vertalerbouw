@@ -1,9 +1,12 @@
 package vb.eindopdracht.symboltable;
 
+import java.util.ArrayList;
+
 public class ArrayEntry extends IdEntry implements Cloneable {
 	private String type;
 	private int startdim;
 	private int enddim;
+	private ArrayList<String> entries;
 
 	public String getArrayType() {
 		return type;
@@ -32,6 +35,7 @@ public class ArrayEntry extends IdEntry implements Cloneable {
 
 	public ArrayEntry(String str) {
 		this.setType(str);
+		this.entries = new ArrayList<String>();
 		this.numeric = false;
 	}
 	
@@ -61,12 +65,38 @@ public class ArrayEntry extends IdEntry implements Cloneable {
 
 	@Override
 	public void setValue(Object o) {
-		// TODO Auto-generated method stub
+		String str = (String) o;
+		str = str.substring(3); // Cut off first part (+|+)
+		while (str.contains("+|+")) {
+			int index = str.indexOf("+|+");
+			enter(str.substring(0,index));
+			str = str.substring(index + 3);
+		}
+		enter(str); // No separator (+|+) after the last entry
 	}
 	
 	@Override
 	public Object getValue() {
 		return null;
+	}
+	
+	/**
+	 * Enter a value into the 'array'
+	 * @param str
+	 * @return the index of the value
+	 */
+	public int enter(String str) {
+		entries.add(str);
+		return entries.indexOf(str);
+	}
+	
+	/**
+	 * Return the value in the array
+	 * @param index
+	 * @return
+	 */
+	public String get(String index) {
+		return entries.get(Integer.parseInt(index));
 	}
 	
 	public String toString() {
