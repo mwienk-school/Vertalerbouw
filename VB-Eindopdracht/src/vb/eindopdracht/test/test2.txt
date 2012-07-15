@@ -1,4 +1,11 @@
 Type blaatIntArray [1..5];
 spawn aBlaatIntArray;
-aBlaatIntArray = [7, 5, 2, 0, 5];
-print(aBlaatIntArray[1]);
+aBlaatIntArray = [1, 2, 3, 4, 5];
+aBlaatIntArray[0] = 23;
+line(aBlaatIntArray[0]);
+line(aBlaatIntArray[3]);
+line(aBlaatIntArray[1]);
+line(aBlaatIntArray[2]);
+line(aBlaatIntArray[3]);
+line(aBlaatIntArray[4]);
+

@@ -223,6 +223,7 @@ expression returns [String val = null;]
       {
         $val = $op.val;
       }
+  |   ^(ARRINDEX expression+)
   ;
 
 thenExpr returns [String val = null;]
@@ -286,10 +287,17 @@ printexpr returns [String val = null;]
   ;
   
 operand returns [String val = null;]
-  :   ^(id=IDENTIFIER { gh.initOperand($id.text); } (par=paramuses)?)  
-      {
-        $val = gh.getValue($id.text);
-      } 
+  :   ^(id=IDENTIFIER { boolean arr = false; } 
+           (
+           // Operand is een array index
+           { gh.setConstantScope(true); } 
+               ex=expression 
+           {
+             $val = gh.getValue($id.text, $ex.val);
+             arr = true;
+             gh.setConstantScope(false);
+           })*
+           par=paramuses?){ if(!arr) { $val = gh.getValue($id.text);}} 
   |   TRUE
       {
         $val = "1";

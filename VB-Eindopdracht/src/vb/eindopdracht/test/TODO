@@ -1,7 +1,0 @@
-- checken van grootte array;
-
-Type blaatIntArray [1..5];
-spawn aBlaatIntArray;
-aBlaatIntArray = [1, 2];
-
-levert geen fouten op, terwijl het wel fout is.

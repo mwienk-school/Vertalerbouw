@@ -150,6 +150,7 @@ expression returns [String type = null;]
   |   op=operand                              { $type = $op.type; }
   ;
   
+  
 thenExpr returns [String type = null;]
   :   ^(THEN                                  { ch.symbolTable.openScope(); }
             e1=compExpr*                      { ch.symbolTable.closeScope(); }

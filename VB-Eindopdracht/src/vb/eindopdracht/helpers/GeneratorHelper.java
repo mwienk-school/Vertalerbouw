@@ -14,6 +14,8 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	private int labelNumber;
 	// If in constant scope, operands should not output
 	private boolean constantScope;
+	// If in an array scope, arrayScope = true;
+	private boolean arrayScope;
 	// If in a routine, routinecalls should use static link LB
 	private int routineLevel;
 
@@ -129,6 +131,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 
 	/**
 	 * Definieer een variabele met de naam id
+	 * TODO Size erin meenemen (nu is 1 hardcoded)
 	 * 
 	 * @param id
 	 * @throws Exception
@@ -137,7 +140,12 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		IdEntry entry = processEntry(id);
 		entry.setAddress(size + "[SB]");
 		entry.setType(IdEntry.Type.VAR);
-		printTAM("PUSH", "1", "Push variable " + id);
+		if(id.endsWith("Array")) {
+			size = ((ArrayEntry) entry).getArraySize();
+		} else {
+			size = 1;
+		}
+		printTAM("PUSH", String.valueOf(size), "Push variable " + id);
 		size++;
 	}
 	
@@ -208,8 +216,11 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	public void storeValue(String id, String value) {
 		int size = 1;
 		IdEntry entry = symbolTable.retrieve(id);
-		if(entry instanceof ArrayEntry)
+		boolean isArray = false;
+		if(entry instanceof ArrayEntry) {
 			size = ((ArrayEntry) entry).getArraySize();
+			isArray = true;
+		}
 		if(entry.isVarparam()) {
 			printTAM("LOAD(" + size + ")", entry.getAddress(), "Load the variable parameter address " + id);
 			printTAM("STOREI(" + size + ")", "", "Store in the variable parameter " + id);
@@ -217,7 +228,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		else {
 			printTAM("STORE(" + size + ")", symbolTable.retrieve(id).getAddress(),
 					"Store in variable " + id);
-			printTAM("LOAD(" + size + ")", symbolTable.retrieve(id).getAddress(),
+			if(!isArray) printTAM("LOAD(" + size + ")", symbolTable.retrieve(id).getAddress(),
 					"Load stored variable " + id + " on the stack.");
 			symbolTable.retrieve(id).setValue(value);
 		}
@@ -230,6 +241,16 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * @return
 	 */
 	public String getValue(String id) {
+		return getValue(id, "0");
+	}
+	
+	/**
+	 * Geeft de waarde van een variabele (met offset) terug
+	 * @param id
+	 * @param offset
+	 * @return
+	 */
+	public String getValue(String id, String offset) {
 		IdEntry entry = symbolTable.retrieve(id);
 		String val = entry.toString();
 		if(entry.isFunctional()) {
@@ -244,8 +265,8 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		}
 		else if(entry instanceof ArrayEntry) {
 			ArrayEntry arr = (ArrayEntry) entry;
-			
-			//printTAM("LOADI(" +  + ")", "", "Load the array indexed value");
+			printTAM("LOAD(1)", arr.getOffsetAddress(offset), "Load the array value");
+			val = "1"; // Dummy;
 		}
 		else if(entry.getAddress() == null) {
 			printTAM("LOADL", encode(val), "Load the constant " + id);
@@ -255,21 +276,6 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		return val;
 	}
 	
-	public void initOperand(String id) {
-		String[] str = CrimsonCodeHelper.splitString(id);
-		if(str[str.length-1].equals("Array")) {
-			printArrayValue_Start(id);
-		}
-	}
-	
-	/**
-	 * Laadt het address van de array.
-	 */
-	public void printArrayValue_Start(String id) {
-		ArrayEntry arr = (ArrayEntry) symbolTable.retrieve(id);
-		printTAM("LOADA(" + arr.getArraySize() + ")", arr.getAddress(), "Load the array address.");
-	}
-
 	/**
 	 * Geef het adres van een variabele terug
 	 * 
@@ -489,6 +495,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * @param ex
 	 */
 	public void printStatementPrint(String ex) {
+		if(ex != null)
 		try {
 			Integer.parseInt(ex);
 			printTAM("LOADA", -1+"[ST]", "Load address of int on top of stack");

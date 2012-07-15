@@ -39,6 +39,7 @@ tokens {
   TYPE      = 'Type';
   
   ARRAY     = 'tokenArray';
+  ARRINDEX  = 'tokenArrayIndex';
   
   //Commands
   READ      = 'read';
@@ -203,7 +204,8 @@ operand
   ;
 
 arrIndex
-  :   LSQUARE! expression (COMMA! expression)? RSQUARE!
+  :   LSQUARE expression (COMMA expression)? RSQUARE
+      -> ^(ARRINDEX expression expression?)
   ;
 
 //Functional expressions  
