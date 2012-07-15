@@ -147,7 +147,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		} else {
 			varSize = 1;
 		}
-		printTAM("PUSH", String.valueOf(size), "Push variable " + id);
+		printTAM("PUSH", String.valueOf(varSize), "Push variable " + id);
 		size += varSize;
 	}
 	
