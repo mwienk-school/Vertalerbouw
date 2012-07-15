@@ -35,19 +35,33 @@ program
   ;
    
 compExpr returns [String val = null;]
-  :   ^(CONST { gh.setConstantScope(true); } id=IDENTIFIER ex=expression) { gh.defineConstant($id.text, $ex.val); gh.setConstantScope(false); }
+  :   ^(CONST 
+              { 
+                gh.setConstantScope(true); //Constant scope is nodig om geen literals e.d. te printen
+              } 
+              id=IDENTIFIER ex=expression) 
+              { 
+                gh.defineConstant($id.text, $ex.val); 
+                gh.setConstantScope(false); 
+              }
   |   ^(VAR id=IDENTIFIER) { gh.defineVariable($id.text); }
-  |   ^(PROC id=IDENTIFIER { int number = gh.defineProcedure_Start($id.text); int i = 0; }
-              (par=paramdecls 
-              {
+  |   ^(PROC id=IDENTIFIER 
+              { 
+                int number = gh.defineProcedure_Start($id.text); 
+                int i = 0; 
+              }
+              (par=paramdecls {
                 for(i = 0; i < $par.paramList.size(); i++) {
                   gh.defineParameters((String)$par.paramList.get(i), i-$par.paramList.size());
                 }
               })?
              expression) { gh.defineProcedure_End(number, i); }
-  |   ^(FUNC id=IDENTIFIER { int number = gh.defineFunction_Start($id.text); int i = 0; }
-              (par=paramdecls
-              {
+  |   ^(FUNC id=IDENTIFIER 
+              { 
+                int number = gh.defineFunction_Start($id.text); 
+                int i = 0; 
+              }
+              (par=paramdecls {
                 for(i = 0; i < $par.paramList.size(); i++) {
                   gh.defineParameters((String)$par.paramList.get(i), i-$par.paramList.size());
                 }
@@ -155,66 +169,107 @@ expression returns [String val = null;]
         gh.printPrimitiveRoutine("mod", "Modulus");
         $val = String.valueOf(Integer.parseInt($ex.val) \% Integer.parseInt($ey.val));
       }
-  |   ^(IF                      { gh.openScope(); }
+  |   ^(IF { gh.openScope(); }
+            ex=compExpr 
+            ({
+              // Evaluate the if statement
+              if($ex.val != null) gh.printStatementCleanup("non-returning expression");
+             }
             ex=compExpr
-            (
-              {
-                if($ex.val != null)
-                  gh.printStatementCleanup("non-returning expression");
-              }
-              ex=compExpr
-            )*                  { label = gh.printStatementIf_Start();
-            condition = $ex.val.equals("1"); }
-            ey=thenExpr         {
-                                  gh.printStatementIf_End(label);
-                                  $val = $ey.val;
-                                  if($ey.val == null)
-                                    gh.closeScope(0);
-                                  else
-                                    gh.closeScope(1);
-                                })
-  |   ^(WHILE { WhileInfo info = gh.printStatementWhile_Start(); gh.openScope(); }
+            )*                  
+            { 
+              // True expression
+              label = gh.printStatementIf_Start();
+              condition = $ex.val.equals("1"); 
+            }
+            ey=thenExpr         
+            {
+              // False expression
+              gh.printStatementIf_End(label);
+              $val = $ey.val;
+              if($ey.val == null)
+                gh.closeScope(0);
+              else
+                gh.closeScope(1);
+            })
+  |   ^(WHILE 
+            { 
+              // A WhileInfo object stores essential information that is injected into the code later
+              WhileInfo info = gh.printStatementWhile_Start(); //Prints start of WHILE 
+              gh.openScope(); 
+            }
             ex=compExpr
-            (
-              {
-                if($ex.val != null)
-                  gh.printStatementCleanup("non-returning expression");
-              }
-              ex=compExpr
-            )*                  { gh.printStatementWhile_Do(info); }
-            doExpr) { gh.printStatementWhile_End(info); gh.closeScope(0); }
+            ({
+              // Evaluate the expression
+              if($ex.val != null)
+              gh.printStatementCleanup("non-returning expression");
+            }
+            ex=compExpr
+            )*
+            { 
+              //Prints start of DO (needed for jumping)
+              gh.printStatementWhile_Do(info);  
+            }
+            doExpr) 
+            { 
+              //Prints end of WHILE (needed for jumping)
+              gh.printStatementWhile_End(info); 
+              gh.closeScope(0); 
+            }
   |   ^(READ r=readvar { $val = $r.val; }
-            (
-              readvar { gh.printStatementCleanup("read"); gh.printStatementCleanup("read"); $val = null; }
-              (readvar { gh.printStatementCleanup("read"); })*
-            )?)
+            (readvar 
+            { 
+              gh.printStatementCleanup("read"); 
+              gh.printStatementCleanup("read"); 
+              $val = null; 
+            }
+            (readvar 
+            { 
+              gh.printStatementCleanup("read"); 
+            }
+            )*)?)
   |   ^(PRINT p=printexpr { $val = $p.val; }
-            (
-              printexpr { gh.printStatementCleanup("print"); gh.printStatementCleanup("print"); $val = null;}
-              (printexpr { gh.printStatementCleanup("print"); })*
-            )?)
+            (printexpr 
+            { 
+              gh.printStatementCleanup("print"); 
+              gh.printStatementCleanup("print"); 
+              $val = null;
+            }
+            (printexpr 
+            { 
+              gh.printStatementCleanup("print"); 
+            }
+            )*)?)
   |   ^(PRINTLN p=printexpr { $val = $p.val; }
-            (
-              printexpr { gh.printStatementCleanup("print"); gh.printStatementCleanup("print"); $val = null;}
-              (printexpr { gh.printStatementCleanup("print"); })*
-            )?) { gh.printStatementPrint("\n"); }
+            (printexpr 
+            { 
+              gh.printStatementCleanup("print"); 
+              gh.printStatementCleanup("print"); 
+              $val = null;
+            }
+            (printexpr 
+            { 
+              gh.printStatementCleanup("print"); 
+            }
+            )*)?) 
+            { 
+              gh.printStatementPrint("\n"); 
+            }
   |   ^(CCOMPEXPR { gh.openScope(); }
-              cex=compExpr { $val = $cex.val; }
-              (
-                {
-                  if($val != null)
-                    gh.printStatementCleanup("non-returning expression");
-                }
-                cex=compExpr { $val = $cex.val; }
-              )*
-            )
+            cex=compExpr { $val = $cex.val; }
+            ({
+              if($val != null) gh.printStatementCleanup("non-returning expression");
+            }
+            cex=compExpr { $val = $cex.val; })*)
 			      { 
-			        if($val == null)
-			          gh.closeScope(0);
-		          else
-		            gh.closeScope(1);
+			        if($val == null) gh.closeScope(0);
+		          else gh.closeScope(1);
 			      }
-  |   ^(ARRAY {$val = ""; } (ex=expression {if(gh.isConstantScope()) $val = $val + "+|+" + $ex.val; } )+)
+  |   ^(ARRAY {$val = ""; } 
+            (ex=expression 
+            {
+              if(gh.isConstantScope()) $val = $val + "+|+" + $ex.val; 
+            })+)
   |   ^(TYPE id=IDENTIFIER n1=NUMBER n2=NUMBER)
       {
         gh.defineArray_Type($id.text, $n1.text, $n2.text);
@@ -227,55 +282,51 @@ expression returns [String val = null;]
   ;
 
 thenExpr returns [String val = null;]
-  :   ^(THEN { gh.openScope(); } ex=compExpr
-            (
-              {
-                if($ex.val != null)
-                  gh.printStatementCleanup("non-returning expression");
-              }
-              ex=compExpr
-            )*                                  {
-				                                          if($ex.val == null)
-				                                            gh.closeScope(0);
-				                                          else
-				                                            gh.closeScope(1);
-                                                  gh.printStatementIf_Else(label);
-				                                        }
-				    (ey=elseExpr)?)                     {
-			                                            if(condition)
-				                                            $val = $ex.val;
-				                                          else
-				                                            $val = $ey.val;
-				                                        }
+  :   ^(THEN { gh.openScope(); } 
+            ex=compExpr
+            ({
+              if($ex.val != null)
+                gh.printStatementCleanup("non-returning expression");
+            }
+            ex=compExpr
+            )*
+            {
+				      if($ex.val == null) gh.closeScope(0);
+				      else gh.closeScope(1);
+				      gh.printStatementIf_Else(label);
+				    }
+				    (ey=elseExpr)?)                     
+				    {
+				      if(condition) $val = $ex.val;
+				      else $val = $ey.val;
+				    }
   ;
   
 elseExpr returns [String val = null;]
-  :   ^(ELSE { gh.openScope(); } ex=compExpr
-            (
-              {
-                if($ex.val != null)
-                  gh.printStatementCleanup("non-returning expression");
-              }
-              ex=compExpr
-            )*                                {
-										                            $val = $ex.val;
-                                                if($ex.val == null)
-                                                  gh.closeScope(0);
-                                                else
-                                                  gh.closeScope(1);
-										                          })
+  :   ^(ELSE { gh.openScope(); } 
+            ex=compExpr
+            ({
+              if($ex.val != null) gh.printStatementCleanup("non-returning expression");
+            }
+            ex=compExpr
+            )*
+            {
+              $val = $ex.val;
+              if($ex.val == null) gh.closeScope(0);
+              else gh.closeScope(1);
+            })
   ;
 
 doExpr returns [String val = null;]
-  :   ^(DO                                  { gh.openScope(); }
-            (ex=compExpr                    {
-						                                  if($ex.val != null)
-						                                    gh.printStatementCleanup("non-returning expression");
-						                                })*)
-						                                {
-						                                  gh.closeScope(0);
-						                                  gh.printStatementWhile_Cleanup();
-						                                }
+  :   ^(DO { gh.openScope(); }
+            (ex=compExpr
+            {
+              if($ex.val != null) gh.printStatementCleanup("non-returning expression");
+            })*)
+						{
+						  gh.closeScope(0);
+						  gh.printStatementWhile_Cleanup();
+						}
   ;
 
 readvar returns [String val = null;]
@@ -288,34 +339,21 @@ printexpr returns [String val = null;]
   
 operand returns [String val = null;]
   :   ^(id=IDENTIFIER { boolean arr = false; } 
-           (
-           // Operand is een array index
-           { gh.setConstantScope(true); } 
-               ex=expression 
-           {
-             $val = gh.getValue($id.text, $ex.val);
-             arr = true;
-             gh.setConstantScope(false);
-           })*
-           par=paramuses?){ if(!arr) { $val = gh.getValue($id.text);}} 
-  |   TRUE
-      {
-        $val = "1";
-        if(!gh.isConstantScope()) gh.loadLiteral($val);
-      }
-  |   FALSE
-      {
-        $val = "0";
-        if(!gh.isConstantScope()) gh.loadLiteral($val);
-      }
-  |   n=NUMBER
-      {
-        $val = String.valueOf(n);
-        if(!gh.isConstantScope()) gh.loadLiteral($val);
-      }
-  |   ch=CHARACTER
-      {
-        $val = $ch.text;
-        if(!gh.isConstantScope()) gh.loadLiteral($val);
-      }
+            (
+            // Operand is een array index
+            { gh.setConstantScope(true); } 
+              ex=expression 
+            {
+              $val = gh.getValue($id.text, $ex.val);
+              arr = true;
+              gh.setConstantScope(false);
+            })*
+            par=paramuses?)
+            { 
+              if(!arr) $val = gh.getValue($id.text);
+            } 
+  |   TRUE          { $val = "1"; if(!gh.isConstantScope()) gh.loadLiteral($val); }
+  |   FALSE         { $val = "0"; if(!gh.isConstantScope()) gh.loadLiteral($val); }
+  |   n=NUMBER      { $val = String.valueOf(n); if(!gh.isConstantScope()) gh.loadLiteral($val); }
+  |   ch=CHARACTER  { $val = $ch.text; if(!gh.isConstantScope()) gh.loadLiteral($val); }
   ;

@@ -1,7 +1,6 @@
 package vb.eindopdracht.helpers;
 
 import java.util.Arrays;
-import java.util.ArrayList;
 
 import vb.eindopdracht.symboltable.*;
 
@@ -14,8 +13,6 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	private int labelNumber;
 	// If in constant scope, operands should not output
 	private boolean constantScope;
-	// If in an array scope, arrayScope = true;
-	private boolean arrayScope;
 	// If in a routine, routinecalls should use static link LB
 	private int routineLevel;
 

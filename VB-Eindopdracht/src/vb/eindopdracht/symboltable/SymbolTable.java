@@ -3,6 +3,7 @@ package vb.eindopdracht.symboltable;
 import java.util.*;
 import java.util.Map.Entry;
 
+@SuppressWarnings("hiding")
 public class SymbolTable<Entry extends IdEntry> {
 
 	protected ArrayList<SymbolTableMap<Entry>> symbolMapList;
@@ -50,8 +51,8 @@ public class SymbolTable<Entry extends IdEntry> {
 	 * @requires old.currentLevel() > -1;
 	 * @ensures this.currentLevel() == old.currentLevel()-1;
 	 */
-	public SymbolTableMap closeScope() {
-		SymbolTableMap stm = symbolMapList.get(getCurrentLocalBaseSize());
+	public SymbolTableMap<Entry> closeScope() {
+		SymbolTableMap<Entry> stm = symbolMapList.get(getCurrentLocalBaseSize());
 		symbolMapList.remove(this.currentLevel());
 		return stm;
 	}
