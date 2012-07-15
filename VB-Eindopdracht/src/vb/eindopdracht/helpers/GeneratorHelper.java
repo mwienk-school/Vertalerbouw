@@ -120,7 +120,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * @throws Exception
 	 */
 	public void defineConstant(String id, String value) throws Exception {
-		IdEntry entry = processEntry(id);
+		IdEntry entry = processConstEntry(id);
 		entry.setType(IdEntry.Type.CONST);
 		entry.setConstant(true);
 		entry.setValue(value);

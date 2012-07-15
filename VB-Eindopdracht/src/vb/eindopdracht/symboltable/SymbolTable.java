@@ -223,7 +223,7 @@ public class SymbolTable<Entry extends IdEntry> {
 		 * @param entry
 		 */
 		public void add(String id, Entry entry) {
-			if(!(entry instanceof ProcEntry) && !(entry instanceof FuncEntry) && !entry.isVarparam()) {
+			if(!(entry instanceof ProcEntry) && !(entry instanceof FuncEntry) && !entry.isVarparam() && !entry.isConstant()) {
 				lbSize++;
 				//TODO
 //				System.out.println("Increasing lbSize for variable " + id + ", current lbSize is " + lbSize);

@@ -31,10 +31,11 @@ public abstract class CrimsonCodeHelper {
 	 * in de symbolTable opgeslagen als een getypeerde IdEntry.
 	 * 
 	 * @param identifier
+	 * @param constant
 	 * @return
 	 * @throws Exception
 	 */
-	public IdEntry processEntry(String identifier) throws Exception {
+	public IdEntry processEntry(String identifier, boolean constant) throws Exception {
 		String[] splitted = CrimsonCodeHelper.splitString(identifier);
 		String lastPart = "";
 		for (int i = 1; i < splitted.length; i++) {
@@ -57,7 +58,7 @@ public abstract class CrimsonCodeHelper {
 					constructor = Class.forName(type).getConstructor(String.class);
 					entry = (IdEntry) constructor.newInstance(splitted[splitted.length - (i + 1)]);
 				}
-				
+				entry.setConstant(constant);
 				symbolTable.enter(identifier, entry);
 				return entry;
 			}
@@ -65,6 +66,26 @@ public abstract class CrimsonCodeHelper {
 		// Type isn't found.
 		throw new Exception("The declared type of " + identifier + "("
 				+ lastPart + ") is an unknown type.");
+	}
+	
+	/**
+	 * Simple passthrough method for readability
+	 * @param identifier
+	 * @return
+	 * @throws Exception
+	 */
+	public IdEntry processEntry(String identifier) throws Exception {
+		return processEntry(identifier, false);
+	}
+	
+	/**
+	 * Simple passthrough method for readability
+	 * @param identifier
+	 * @return
+	 * @throws Exception
+	 */
+	public IdEntry processConstEntry(String identifier) throws Exception {
+		return processEntry(identifier, true);
 	}
 	
 	/**
