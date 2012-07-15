@@ -80,14 +80,14 @@ public class CheckerHelper extends CrimsonCodeHelper {
             throw new Exception("Procedure " + id + " has " + expectedPars + " parameters, not " + paramList.size());
           for(int i = 0; i < expectedPars.size(); i++)
           {
-              String expectedPar = (String) expectedPars.get(i);
-              if(expectedPar.contains("Read"))
-            	  expectedPar = expectedPar.substring(0, expectedPar.indexOf("Read")) + expectedPar.substring(expectedPar.indexOf("Read") + 4, expectedPar.length());
-              String foundPar = (String) paramList.get(i);
-              if(foundPar.contains("Read"))
-            	  foundPar = foundPar.substring(0, foundPar.indexOf("Read")) + foundPar.substring(foundPar.indexOf("Read") + 4, foundPar.length());
-	          if(!expectedPar.equals(foundPar))
-	        	  throw new Exception(expectedPar + " parameter expected, " + foundPar + " parameter found");
+        	  String expectedPar = (String) expectedPars.get(i);
+        	  String foundPar = (String) paramList.get(i);
+        	  try {
+        		  checkType(expectedPar, foundPar);
+    		  }
+        	  catch(Exception e) {
+        		  throw new Exception(expectedPar + " parameter expected, " + foundPar + " parameter found");
+        	  }
           }
         }
         else if(ie instanceof FuncEntry) {
@@ -96,8 +96,14 @@ public class CheckerHelper extends CrimsonCodeHelper {
             throw new Exception("Function " + id + " has " + expectedPars + " parameters, not " + paramList.size());
           for(int i = 0; i < expectedPars.size(); i++)
           {
-            if(!expectedPars.get(i).equals(paramList.get(i)))
-              throw new Exception(expectedPars.get(i) + " parameter expected, " + paramList.get(i) + " parameter found");
+        	  String expectedPar = (String) expectedPars.get(i);
+        	  String foundPar = (String) paramList.get(i);
+        	  try {
+        		  checkType(expectedPar, foundPar);
+    		  }
+        	  catch(Exception e) {
+        		  throw new Exception(expectedPar + " parameter expected, " + foundPar + " parameter found");
+        	  }
           }
         }
         else

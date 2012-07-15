@@ -177,24 +177,17 @@ fi;
 line(eenInt);											//Should be 6
 
 line(if eenInt > 5; then red; else blue; fi && red);	//Should be 1
-line(if eenInt > 5; then 'a'; else 'b'; fi == 'a');	//Should be 1
+line(if eenInt > 5; then 'a'; else 'b'; fi == 'a');		//Should be 1
 
 //While
 eenInt = 50;
 tweeInt = eenInt / 50;
 while eenInt > tweeInt; do line(eenInt); eenInt = eenInt - 1; od;		//Should print the numbers 2..50 in decreasing order
 
-eenInt = 50;
-while { eenInt > tweeInt; }; 
-do {
-	line(eenInt);
-	eenInt = eenInt - 1;
-}; od;					//Should print the numbers 2..50 in decreasing order
-
 eenInt = 1;
 while spawn drieInt; drieInt = 50; drieInt > eenInt;
 do
-	print(eenInt);
+	line(eenInt);
 	eenInt = eenInt + 1;
 od;						//Should print the numbers 1..49 in increasing order
 
@@ -211,4 +204,4 @@ eenInt = 1;
 incrementProc(spawn eenInt);
 line(eenInt);
 tweeInt = incrementFunc(eenInt);
-line(eenInt);
+line(tweeInt);

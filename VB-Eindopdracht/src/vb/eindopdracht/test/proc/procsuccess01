@@ -1,16 +1,15 @@
 //Success
 
 proc incrementProc(spawn eenInt) {
-	eenInt = eenInt + 1;
-};
-
-func incrementFunc(eenInt) {
-	eenInt + 1;
+	spawn tweeInt;
+	func incrementFunc(eenInt) {
+		eenInt + 1;
+	};
+	tweeInt = eenInt+ 1 ;
+	eenInt = tweeInt + 1;
 };
 
 spawn tweeInt;
 tweeInt = 1;
 incrementProc(spawn tweeInt);
-line(tweeInt);
-tweeInt = incrementFunc(tweeInt);
 line(tweeInt);
