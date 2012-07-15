@@ -52,8 +52,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 			printTAM("POP(" + result + ")", scopeSize + "", "Pop " + scopeSize + " local variables");
 			this.size -= scopeSize;
 		}
-		else
-			symbolTable.closeScope();
+		symbolTable.closeScope();
 	}
 	
 	/**
@@ -142,12 +141,14 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 			register = "[SB]";
 		entry.setAddress(size + register);
 		entry.setType(IdEntry.Type.VAR);
+		int varSize;
 		if(id.endsWith("Array")) {
-			size += ((ArrayEntry) entry).getArraySize();
+			varSize = ((ArrayEntry) entry).getArraySize();
 		} else {
-			size += 1;
+			varSize = 1;
 		}
 		printTAM("PUSH", String.valueOf(size), "Push variable " + id);
+		size += varSize;
 	}
 	
 	/**

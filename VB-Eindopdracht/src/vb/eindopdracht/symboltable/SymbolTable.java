@@ -34,6 +34,8 @@ public class SymbolTable<Entry extends IdEntry> {
 	public void openScope(boolean functionalScope) {
 		symbolMapList.add(new SymbolTableMap<Entry>());
 		symbolMapList.get(this.currentLevel()).setFunctionalScope(functionalScope);
+		//TODO
+//		System.out.println("Opening scope " + currentLevel());
 	}
 
 	/**
@@ -44,6 +46,9 @@ public class SymbolTable<Entry extends IdEntry> {
 	 * @ensures this.currentLevel() == old.currentLevel()-1;
 	 */
 	public SymbolTableMap<Entry> closeScope() {
+		//TODO
+//		System.out.println("Closing scope " + currentLevel());
+		
 		SymbolTableMap<Entry> stm = symbolMapList.get(currentLevel());
 		symbolMapList.remove(currentLevel());
 		return stm;
@@ -220,6 +225,8 @@ public class SymbolTable<Entry extends IdEntry> {
 		public void add(String id, Entry entry) {
 			if(!(entry instanceof ProcEntry) && !(entry instanceof FuncEntry) && !entry.isVarparam()) {
 				lbSize++;
+				//TODO
+//				System.out.println("Increasing lbSize for variable " + id + ", current lbSize is " + lbSize);
 			}
 			map.put(id, entry);
 		}
