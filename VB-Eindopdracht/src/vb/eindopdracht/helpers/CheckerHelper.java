@@ -72,10 +72,10 @@ public class CheckerHelper extends CrimsonCodeHelper {
 	 * @param paramList
 	 * @throws Exception
 	 */
-	public void checkParameters(String id, ArrayList paramList) throws Exception {
+	public void checkParameters(String id, ArrayList<String> paramList) throws Exception {
 		IdEntry ie = symbolTable.retrieve(id);
         if(ie instanceof ProcEntry) {
-          ArrayList expectedPars = ((ProcEntry)ie).getParameters();
+          ArrayList<String> expectedPars = ((ProcEntry)ie).getParameters();
           if(expectedPars.size() != paramList.size())
             throw new Exception("Procedure " + id + " has " + expectedPars + " parameters, not " + paramList.size());
           for(int i = 0; i < expectedPars.size(); i++)
@@ -91,7 +91,7 @@ public class CheckerHelper extends CrimsonCodeHelper {
           }
         }
         else if(ie instanceof FuncEntry) {
-          ArrayList expectedPars = ((FuncEntry)ie).getParameters();
+          ArrayList<String> expectedPars = ((FuncEntry)ie).getParameters();
           if(expectedPars.size() != paramList.size())
             throw new Exception("Function " + id + " has " + expectedPars + " parameters, not " + paramList.size());
           for(int i = 0; i < expectedPars.size(); i++)
