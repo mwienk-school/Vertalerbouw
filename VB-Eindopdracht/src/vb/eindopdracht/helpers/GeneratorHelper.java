@@ -47,12 +47,13 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * @param result
 	 */
 	public void closeScope(int result) throws Exception {
-		int scopeSize = symbolTable.getCurrentLocalBaseSize();
 		if(!symbolTable.isFunctionalScope(symbolTable.currentLevel())) {
+			int scopeSize = symbolTable.getCurrentLocalBaseSize();
 			printTAM("POP(" + result + ")", scopeSize + "", "Pop " + scopeSize + " local variables");
 			this.size -= scopeSize;
 		}
-		symbolTable.closeScope();
+		else
+			symbolTable.closeScope();
 	}
 	
 	/**
@@ -142,12 +143,11 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		entry.setAddress(size + register);
 		entry.setType(IdEntry.Type.VAR);
 		if(id.endsWith("Array")) {
-			size = ((ArrayEntry) entry).getArraySize();
+			size += ((ArrayEntry) entry).getArraySize();
 		} else {
-			size = 1;
+			size += 1;
 		}
 		printTAM("PUSH", String.valueOf(size), "Push variable " + id);
-		size++;
 	}
 	
 	/**

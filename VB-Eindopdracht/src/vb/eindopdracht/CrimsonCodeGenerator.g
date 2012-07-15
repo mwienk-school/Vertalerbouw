@@ -175,8 +175,7 @@ expression returns [String val = null;]
               // Evaluate the if statement
               if($ex.val != null) gh.printStatementCleanup("non-returning expression");
              }
-            ex=compExpr
-            )*                  
+            ex=compExpr)*                  
             { 
               // True expression
               label = gh.printStatementIf_Start();
@@ -291,8 +290,10 @@ thenExpr returns [String val = null;]
             ex=compExpr
             )*
             {
-				      if($ex.val == null) gh.closeScope(0);
-				      else gh.closeScope(1);
+				      if($ex.val == null)
+				        gh.closeScope(0);
+				      else
+				        gh.closeScope(1);
 				      gh.printStatementIf_Else(label);
 				    }
 				    (ey=elseExpr)?)                     
@@ -312,8 +313,10 @@ elseExpr returns [String val = null;]
             )*
             {
               $val = $ex.val;
-              if($ex.val == null) gh.closeScope(0);
-              else gh.closeScope(1);
+              if($ex.val == null)
+                gh.closeScope(0);
+              else
+                gh.closeScope(1);
             })
   ;
 

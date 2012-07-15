@@ -35,14 +35,6 @@ public class SymbolTable<Entry extends IdEntry> {
 		symbolMapList.add(new SymbolTableMap<Entry>());
 		symbolMapList.get(this.currentLevel()).setFunctionalScope(functionalScope);
 	}
-	
-	/**
-	 * Return the size of the LB stack
-	 * @return
-	 */
-	public int getCurrentLocalBaseSize() {
-		return symbolMapList.get(this.currentLevel()).getLbSize();
-	}
 
 	/**
 	 * Closes the current scope. All identifiers in the current scope will be
@@ -53,8 +45,16 @@ public class SymbolTable<Entry extends IdEntry> {
 	 */
 	public SymbolTableMap<Entry> closeScope() {
 		SymbolTableMap<Entry> stm = symbolMapList.get(currentLevel());
-		symbolMapList.remove(this.currentLevel());
+		symbolMapList.remove(currentLevel());
 		return stm;
+	}
+	
+	/**
+	 * Return the size of the LB stack
+	 * @return
+	 */
+	public int getCurrentLocalBaseSize() {
+		return symbolMapList.get(this.currentLevel()).getLbSize();
 	}
 	
 	public boolean isFunctionalScope(int level) {
@@ -218,8 +218,9 @@ public class SymbolTable<Entry extends IdEntry> {
 		 * @param entry
 		 */
 		public void add(String id, Entry entry) {
-			if(!(entry instanceof ProcEntry) && !(entry instanceof FuncEntry) && !entry.isVarparam())
+			if(!(entry instanceof ProcEntry) && !(entry instanceof FuncEntry) && !entry.isVarparam()) {
 				lbSize++;
+			}
 			map.put(id, entry);
 		}
 		

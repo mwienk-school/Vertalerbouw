@@ -118,6 +118,9 @@ public class CheckerHelper extends CrimsonCodeHelper {
 	public String getType(String id) throws Exception {
 		checkDeclared(id);
 		String[] splitted = CrimsonCodeHelper.splitString(id);
+		if("Read".equals(splitted[splitted.length-1])) {
+			return getType(id.substring(0, id.length()-4));
+		}
 		String lastPart = "";
 		for (int i = 1; i < splitted.length; i++) {
 			lastPart = splitted[splitted.length - i] + lastPart;
@@ -127,7 +130,7 @@ public class CheckerHelper extends CrimsonCodeHelper {
 				else if("Func".equals(lastPart)) {
 					lastPart = ((FuncEntry) symbolTable.retrieve(id)).getReturnType();
 				}
-				else if(symbolTable.retrieve(id).isRead()) {
+				if(symbolTable.retrieve(id).isRead()) {
 					lastPart += "Read";
 				}
 				return lastPart;
@@ -146,10 +149,9 @@ public class CheckerHelper extends CrimsonCodeHelper {
 	 * @throws Exception
 	 */
 	public String getReadType(String id) throws Exception {
-		String type = getType(id) + "Read";
 		IdEntry ie = symbolTable.retrieve(id);
 		ie.setRead();
-		return type;
+		return getType(id);
 	}
 	
 	/**
