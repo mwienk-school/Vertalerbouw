@@ -234,7 +234,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 					"Store in variable " + id);
 			if(!isArray) printTAM("LOAD(" + size + ")", symbolTable.retrieve(id).getAddress(),
 					"Load stored variable " + id + " on the stack.");
-			symbolTable.retrieve(id).setValue(value);
+			if(!isArray) symbolTable.retrieve(id).setValue(value);
 		}
 	}
 
