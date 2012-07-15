@@ -52,7 +52,7 @@ public class SymbolTable<Entry extends IdEntry> {
 	 * @ensures this.currentLevel() == old.currentLevel()-1;
 	 */
 	public SymbolTableMap<Entry> closeScope() {
-		SymbolTableMap<Entry> stm = symbolMapList.get(getCurrentLocalBaseSize());
+		SymbolTableMap<Entry> stm = symbolMapList.get(currentLevel());
 		symbolMapList.remove(this.currentLevel());
 		return stm;
 	}
