@@ -60,7 +60,7 @@ paramdecls returns [ArrayList<String> paramList = new ArrayList<String>();]
 
 paramdecl returns [String type = null;]
   :   ^(PARAM id=IDENTIFIER)            { ch.processEntry($id.text); $type = ch.getType($id.text); }
-  |   ^(VAR id=IDENTIFIER)              { ch.processEntry($id.text); $type = ch.getType($id.text) + " variable"; }
+  |   ^(VAR id=IDENTIFIER)              { ch.processEntry($id.text); $type = "variable " + ch.getType($id.text); }
   ;
 
 paramuses returns [ArrayList<String> paramList = new ArrayList<String>();]
@@ -79,7 +79,7 @@ paramuse returns [String type = null;]
 	        if(ch.symbolTable.retrieve($id.text) == null)
 	          throw new Exception($id.text + " is not declared.");
           else
-            $type = ch.getType($id.text) + " variable";
+            $type = "variable " + ch.getType($id.text);
 	      }
   ;
   

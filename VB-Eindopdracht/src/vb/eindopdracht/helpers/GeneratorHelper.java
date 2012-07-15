@@ -49,8 +49,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 */
 	public void closeScope(int result) throws Exception {
 		int scopeSize = symbolTable.getCurrentLocalBaseSize();
-		int debug = symbolTable.currentLevel();
-		if(!symbolTable.isFunctionalScope(symbolTable.currentLevel()-1)) {
+		if(!symbolTable.isFunctionalScope(symbolTable.currentLevel())) {
 			printTAM("POP(" + result + ")", scopeSize + "", "Pop " + scopeSize + " local variables");
 			this.size -= scopeSize;
 		}
@@ -135,7 +134,12 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 */
 	public void defineVariable(String id) throws Exception {
 		IdEntry entry = processEntry(id);
-		entry.setAddress(size + "[SB]");
+		String register;
+		if(routineLevel > 0)
+			register = "[LB]";
+		else
+			register = "[SB]";
+		entry.setAddress(size + register);
 		entry.setType(IdEntry.Type.VAR);
 		printTAM("PUSH", "1", "Push variable " + id);
 		size++;
@@ -213,6 +217,9 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 		if(entry.isVarparam()) {
 			printTAM("LOAD(" + size + ")", entry.getAddress(), "Load the variable parameter address " + id);
 			printTAM("STOREI(" + size + ")", "", "Store in the variable parameter " + id);
+			printTAM("LOAD(" + size + ")", entry.getAddress(), "Load the variable parameter address " + id);
+			printTAM("LOADI(1)", "", "Load stored variable " + id + " on the stack.");
+			
 		}
 		else {
 			printTAM("STORE(" + size + ")", symbolTable.retrieve(id).getAddress(),
@@ -340,8 +347,8 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * Einde van defineProcedure
 	 */
 	public void defineProcedure_End(int thisLabelNo, int parameters) throws Exception {
+		closeScope(0);
 		printTAM("RETURN(0)", "" + parameters, "Return from the procedure");
-		symbolTable.closeScope();
 		symbolTable.goShallower();
 		nextLabel = "End" + thisLabelNo;
 		routineLevel--;
@@ -374,8 +381,8 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * Einde van defineFunction
 	 */
 	public void defineFunction_End(int thisLabelNo, int parameters) throws Exception {
+		closeScope(1);
 		printTAM("RETURN(1)", "" + parameters, "Return from the function");
-		symbolTable.closeScope();
 		symbolTable.goShallower();
 		nextLabel = "End" + thisLabelNo;
 		routineLevel--;

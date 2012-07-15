@@ -1,6 +1,7 @@
 package vb.eindopdracht.symboltable;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 public class SymbolTable<Entry extends IdEntry> {
 
@@ -49,10 +50,10 @@ public class SymbolTable<Entry extends IdEntry> {
 	 * @requires old.currentLevel() > -1;
 	 * @ensures this.currentLevel() == old.currentLevel()-1;
 	 */
-	public boolean closeScope() {
-		boolean result = symbolMapList.get(this.currentLevel()).isFunctionalScope();
+	public SymbolTableMap closeScope() {
+		SymbolTableMap stm = symbolMapList.get(getCurrentLocalBaseSize());
 		symbolMapList.remove(this.currentLevel());
-		return result;
+		return stm;
 	}
 	
 	public boolean isFunctionalScope(int level) {
@@ -216,7 +217,8 @@ public class SymbolTable<Entry extends IdEntry> {
 		 * @param entry
 		 */
 		public void add(String id, Entry entry) {
-			lbSize++;
+			if(!(entry instanceof ProcEntry) && !(entry instanceof FuncEntry) && !entry.isVarparam())
+				lbSize++;
 			map.put(id, entry);
 		}
 		
@@ -250,6 +252,19 @@ public class SymbolTable<Entry extends IdEntry> {
 		public SymbolTableMap() {
 			lbSize = 0;
 			map = new HashMap<String, Entry>();
+		}
+		
+		/**
+		 * Returns a string representing the map, listing all entries
+		 */
+		public String toString() {
+			String result = lbSize + " ";
+			Iterator<Map.Entry<String, Entry>> it = map.entrySet().iterator();
+		    while (it.hasNext()) {
+		        Map.Entry<String, Entry> pairs = (Map.Entry<String, Entry>)it.next();
+		        result += pairs.getKey() + ": " + pairs.getValue().getClass().toString() + "\n";
+		    }
+		    return result;
 		}
 	}
 }
