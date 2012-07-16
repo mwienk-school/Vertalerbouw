@@ -126,7 +126,6 @@ public abstract class CrimsonCodeHelper {
 		}
 			
 		
-		//TODO: record nog niet goed (kan maar 1 type aan).
 		if ("Record".equals(str[str.length - 1]))
 			tokenSuffix.put(identifier,
 					"vb.eindopdracht.symboltable.ArrayEntry");

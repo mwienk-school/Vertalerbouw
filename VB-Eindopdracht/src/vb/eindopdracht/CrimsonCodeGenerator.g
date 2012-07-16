@@ -120,8 +120,6 @@ expression returns [String val = null;]
       {
         gh.storeValue($id.text, $ex.val);
         $val = $ex.val;
-        //TODO
-//        System.out.println($id.text + ": " + $val);
       }
   |   ^(OR ex=expression ey=expression)
       {
