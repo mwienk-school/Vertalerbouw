@@ -81,8 +81,6 @@ public class ASTtest {
 				printTree(tree, 0);
 			}
 
-			System.out.println(tokens.toString());
-
 		} catch (RecognitionException e) {
 			System.err
 					.print("ERROR: Recognition exception thrown by compiler: ");

@@ -1,0 +1,35 @@
+CrimsonCode README
+
+Intro
+------
+Dit is het Vertalerbouw eindproject van Kasper Vaessen & Mark Wienk.
+Onze taal (CrimsonCode) wordt vertaald naar TAM machinecode door onze gebouwde compiler.
+De compiler is gebouwd met ANTLR.
+
+Gebruik
+------
+Om gebruik te maken van de de vertaler dient de bijgesloten jar gerund te worden op de volgende manier
+$ java -jar CrimsonCode.jar input
+
+Dit commando output de machinecode voor de TAM machine naar de standaard output.
+Om hiervan gebruik te maken in verdere vertaalstappen (naar bytecode) dient de input opgevangen
+te worden in een bestand.
+$ java -jar CrimsonCode.jar input > file
+
+Dit commando levert dus een bestand met machinecode op. Om deze code uit te kunnen
+voeren dient het bestand vertaald te worden naar bytecode. Daarvoor kan de assembler
+gebruikt worden
+$ java -cp CrimsonCode.jar vb.TAM.Assembler file obj.tam
+
+Deze vertaalstap levert een resultaat op zoals:
+	Assembly results:
+	lines in file: 117
+	lines of code: 117
+	label lines  : 0
+	lines ignored: 0
+	
+Nu bestaat er een bestand obj.tam met bytecode. Dit bestand kan in de Interpreter gelezen worden.
+
+$ java -cp Triangle.jar TAM.Interpreter [input]
+Dit leest standaard obj.tam en geeft het resultaat van de code.
+
