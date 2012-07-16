@@ -77,7 +77,7 @@ public class CheckerHelper extends CrimsonCodeHelper {
         if(ie instanceof ProcEntry) {
           ArrayList<String> expectedPars = ((ProcEntry)ie).getParameters();
           if(expectedPars.size() != paramList.size())
-            throw new Exception("Procedure " + id + " has " + expectedPars + " parameters, not " + paramList.size());
+            throw new Exception("Procedure " + id + " has " + expectedPars.size() + " parameters, not " + paramList.size());
           for(int i = 0; i < expectedPars.size(); i++)
           {
         	  String expectedPar = (String) expectedPars.get(i);

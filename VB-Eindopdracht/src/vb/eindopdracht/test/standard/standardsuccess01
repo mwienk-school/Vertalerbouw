@@ -148,7 +148,7 @@ line(eenInt, tweeInt);	//Should be input + 1 followed by input
 
 read(eenInt);
 tweeInt = line(eenInt) + 1;	//Should be input
-line(tweeInt);		//Should be input + 1
+line(tweeInt);				//Should be input + 1
 
 //Closed compound expressions
 eenInt =
@@ -204,4 +204,4 @@ eenInt = 1;
 incrementProc(spawn eenInt);
 line(eenInt);			//Should be 2
 tweeInt = incrementFunc(eenInt);
-line(tweeInt);			//Shoule be 3
+line(tweeInt);			//Should be 3

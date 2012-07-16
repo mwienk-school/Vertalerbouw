@@ -1,0 +1,9 @@
+//Program containing spelling and context-free errors
+
+//No closed compound expression
+proc incrementProc(spawn eenInt) eenInt = eenInt + 1;
+
+//Non-existing/misspelled keywords
+porc incrementProc(spawn eenInt) {
+	eenInt = 5;
+};

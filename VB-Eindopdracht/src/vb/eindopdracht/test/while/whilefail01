@@ -10,7 +10,7 @@ while { eenInt > tweeInt; }
 do {
 	line(eenInt);
 	eenInt = eenInt - 1;
-} od;						//Should print the numbers 2..50 in decreasing order
+} od;
 
 //Non-existing/misspelled keywords
 while eenInt > tweeInt; do; od;

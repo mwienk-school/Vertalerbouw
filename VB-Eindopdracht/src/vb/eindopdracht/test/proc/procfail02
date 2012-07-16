@@ -1,0 +1,33 @@
+//Program containing contextual errors
+
+//Procedures and functions
+
+proc incrementProc(spawn eenInt) {
+	spawn tweeInt;
+	func incrementFunc(eenInt) {
+		eenInt + 1;
+	};
+	tweeInt = eenInt+ 1 ;
+	eenInt = tweeInt + 1;
+};
+
+func fiveFunc() {
+	spawn eenInt;
+	eenInt = 5;
+	eenInt;
+};
+
+spawn eenInt;
+eenInt = 1;
+
+//Using a procedure as operand
+eenInt = incrementProc(spawn eenInt);
+line(eenInt);
+
+//Incorrect amount of parameters
+line(fiveFunc(eenInt));
+
+//Incorrect type of parameters
+incrementProc(eenInt);
+spawn eenPill;
+incrementProc(spawn eenPill);

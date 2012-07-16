@@ -1,4 +1,4 @@
-//Success
+//Procedures and functions
 
 proc incrementProc(spawn eenInt) {
 	spawn tweeInt;
@@ -9,7 +9,14 @@ proc incrementProc(spawn eenInt) {
 	eenInt = tweeInt + 1;
 };
 
-spawn tweeInt;
-tweeInt = 1;
-incrementProc(spawn tweeInt);
-line(tweeInt);
+func fiveFunc() {
+	spawn eenInt;
+	eenInt = 5;
+	eenInt;
+};
+
+spawn eenInt;
+eenInt = 1;
+incrementProc(spawn eenInt);		//Should be 3
+line(eenInt);
+line(fiveFunc());					//Should be 5
