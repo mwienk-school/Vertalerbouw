@@ -1,0 +1,10 @@
+// Fail
+Type blaatIntArray [1..4];
+spawn aBlaatIntArray;
+aBlaatIntArray = [1, 2, 3, 4, 5];
+print(aBlaatIntArray[0]);
+print(aBlaatIntArray[3]);
+print(aBlaatIntArray[1]);
+print(aBlaatIntArray[2]);
+print(aBlaatIntArray[3]);
+print(aBlaatIntArray[4]);
