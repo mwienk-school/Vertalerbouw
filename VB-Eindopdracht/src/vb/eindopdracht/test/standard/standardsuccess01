@@ -202,6 +202,6 @@ func incrementFunc(eenInt) {
 
 eenInt = 1;		
 incrementProc(spawn eenInt);
-line(eenInt);
+line(eenInt);			//Should be 2
 tweeInt = incrementFunc(eenInt);
-line(tweeInt);
+line(tweeInt);			//Shoule be 3

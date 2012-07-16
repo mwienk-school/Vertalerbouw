@@ -36,7 +36,7 @@ tokens {
   PROC      = 'proc';
   FUNC      = 'func';
   
-  TYPE      = 'Type';
+  TYPE      = 'type';
   
   ARRAY     = 'tokenArray';
   ARRINDEX  = 'tokenArrayIndex';

@@ -1,0 +1,11 @@
+type VijfIntArray[0..4];
+spawn eenVijfIntArray;
+eenVijfIntArray = [1, 2, 3, 4, 5];
+
+line(eenVijfIntArray);
+
+line(eenVijfIntArray[0]);
+line(eenVijfIntArray[1]);
+line(eenVijfIntArray[2]);
+line(eenVijfIntArray[3]);
+line(eenVijfIntArray[4]);

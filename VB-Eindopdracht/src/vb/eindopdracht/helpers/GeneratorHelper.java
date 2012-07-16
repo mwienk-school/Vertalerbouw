@@ -21,7 +21,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * statements mbt constante waardes
 	 * 
 	 * @param b
-	 *            - De constantScope waarde
+	 *			- De constantScope waarde		
 	 */
 	public void setConstantScope(boolean b) {
 		constantScope = b;
@@ -59,13 +59,13 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * printTAM print een mooi opgemaakte TAM instructie
 	 * 
 	 * @param lbl
-	 *            - Label voor de instructie
+	 *			- Label voor de instructie
 	 * @param cmd
-	 *            - De instructie zelf
+	 *			- De instructie zelf
 	 * @param arg
-	 *            - Het argument van de instructie
+	 *			- Het argument van de instructie
 	 * @param cmt
-	 *            - Eventueel commentaar op bij de instructie
+	 *			- Eventueel commentaar op bij de instructie
 	 */
 	private void printTAM(String lbl, String cmd, String arg, String cmt) {
 		if (!lbl.equals("") && lbl != null)
@@ -78,11 +78,11 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * veld gebruikt het nextLabel veld voor de aanroep.
 	 * 
 	 * @param cmd
-	 *            - De instructie
+	 *			- De instructie
 	 * @param arg
-	 *            - Het argument van de instructie
+	 *			- Het argument van de instructie
 	 * @param cmt
-	 *            - Eventueel commentaar bij de instructie
+	 *			- Eventueel commentaar bij de instructie
 	 */
 	private void printTAM(String cmd, String arg, String cmt) {
 		printTAM(nextLabel, cmd, arg, cmt);
@@ -216,26 +216,28 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * @param size
 	 */
 	public void storeValue(String id, String value) {
-		int size = 1;
+		int varSize = 1;
 		IdEntry entry = symbolTable.retrieve(id);
 		boolean isArray = false;
 		if(entry instanceof ArrayEntry) {
-			size = ((ArrayEntry) entry).getArraySize();
+			varSize = ((ArrayEntry) entry).getArraySize();
 			isArray = true;
 		}
 		if(entry.isVarparam()) {
-			printTAM("LOAD(" + size + ")", entry.getAddress(), "Load the variable parameter address " + id);
-			printTAM("STOREI(" + size + ")", "", "Store in the variable parameter " + id);
-			printTAM("LOAD(" + size + ")", entry.getAddress(), "Load the variable parameter address " + id);
+			printTAM("LOAD(" + varSize + ")", entry.getAddress(), "Load the variable parameter address " + id);
+			printTAM("STOREI(" + varSize + ")", "", "Store in the variable parameter " + id);
+			printTAM("LOAD(" + varSize + ")", entry.getAddress(), "Load the variable parameter address " + id);
 			printTAM("LOADI(1)", "", "Load stored variable " + id + " on the stack.");
 			
 		}
 		else {
-			printTAM("STORE(" + size + ")", symbolTable.retrieve(id).getAddress(),
+			printTAM("STORE(" + varSize + ")", entry.getAddress(),
 					"Store in variable " + id);
-			if(!isArray) printTAM("LOAD(" + size + ")", symbolTable.retrieve(id).getAddress(),
-					"Load stored variable " + id + " on the stack.");
-			if(!isArray) symbolTable.retrieve(id).setValue(value);
+//			if(!isArray) {
+			printTAM("LOAD(" + varSize + ")", entry.getAddress(),
+				"Load stored variable " + id + " on the stack.");
+			symbolTable.retrieve(id).setValue(value);
+//			}
 		}
 	}
 
@@ -246,7 +248,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * @return
 	 */
 	public String getValue(String id) {
-		return getValue(id, "0");
+		return getValue(id, "-1");
 	}
 	
 	/**
@@ -269,14 +271,23 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 			printTAM("LOADI(1)", "", "Load the variable parameter");
 		}
 		else if(entry instanceof ArrayEntry) {
+			val = "1"; // Dummy;
 			ArrayEntry arr = (ArrayEntry) entry;
-			if(arr.isConstant()) {
-				loadLiteral(arr.get(offset));
+			if("-1".equals(offset)) {	//Get entire array
+				val = (String)arr.getValue();
+				printTAM("LOAD(" + arr.getArraySize() + ")", arr.getAddress(), "Load the array value");
 			}
 			else {
-				printTAM("LOAD(1)", arr.getOffsetAddress(offset), "Load the array value");
+				if(arr.isConstant()) {
+					val = arr.get(offset);
+					loadLiteral(val);
+				}
+				else {
+					printTAM("LOADA", arr.getAddress(), "Load array address");
+					printPrimitiveRoutine("add", "Add index to address");
+					printTAM("LOADI(1)", "", "Load the array value");
+				}
 			}
-			val = "1"; // Dummy;
 		}
 		else if(entry.getAddress() == null) {
 			printTAM("LOADL", encode(val), "Load the constant " + id);
@@ -476,7 +487,7 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * Print het einde van een while statement
 	 * 
 	 * @param info
-	 *            - De teruggegeven info van de start
+	 *			- De teruggegeven info van de start
 	 */
 	public void printStatementWhile_End(WhileInfo info) {
 		printTAM("JUMP", info.nextLabel + "[CB]", "Jump to WHILE-expression");
@@ -505,20 +516,56 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * @param ex
 	 */
 	public void printStatementPrint(String ex) {
-		if(ex != null)
-		try {
-			Integer.parseInt(ex);
-			printTAM("LOADA", -1+"[ST]", "Load address of int on top of stack");
-			printTAM("LOADI(1)", "", "Duplicate int on top of stack");
-			printPrimitiveRoutine("putint", "Print the int value on top of the stack");
-		} catch (NumberFormatException e) {
-			if (ex.equals("\n")) {
-				printPrimitiveRoutine("puteol", "Print a newline to the stdout");
-			} else {
-				printTAM("LOADA", -1+"[ST]", "Load address of char on top of stack");
-				printTAM("LOADI(1)", "", "Duplicate char on top of stack");
-				printPrimitiveRoutine("put", "Print the char value on top of the stack");
+		if(ex != null) {
+			try {
+				Integer.parseInt(ex);
+				printTAM("LOADA", -1+"[ST]", "Load address of int on top of stack");
+				printTAM("LOADI(1)", "", "Duplicate int on top of stack");
+				printPrimitiveRoutine("putint", "Print the int value on top of the stack");
+			} catch (NumberFormatException e) {
+				if (ex.equals("\n")) {
+					printPrimitiveRoutine("puteol", "Print a newline to the stdout");
+				} else if(ex.contains(",")) { //ex is an array
+					int exprSize = 1;
+					int lastIndex = -2;
+					while(lastIndex != -1) {
+						lastIndex = ex.indexOf(",", lastIndex+1);
+						if(lastIndex != -1){
+							exprSize++;
+						}
+					}
+					for(int i = 0; i < exprSize; i++) {
+						printTAM("LOAD(1)", -(2*i+1) + "[ST]", "Duplicate array on stack");
+					}
+					lastIndex = -2;
+					int start = 0;
+					while(lastIndex != -1){
+						lastIndex = ex.indexOf(",",start);
+						if(lastIndex != -1) {
+							//TODO
+//							System.out.println(ex + ": " + start + ", " + lastIndex + "; " + ex.substring(start, lastIndex));
+							printStatementPrint(ex.substring(start, lastIndex));
+							printStatementCleanup("intermediate array print result", 1);
+							start = lastIndex+1;
+						}
+						else {
+							//TODO
+//							System.out.println(ex + ": " + start + ", " + lastIndex + "; " + ex.substring(start, ex.length()));
+							printStatementPrint(ex.substring(start, ex.length()));
+							printStatementCleanup("intermediate array print result", 1);
+						}
+					}
+				}
+				else {
+					printTAM("LOADA", -1+"[ST]", "Load address of char on top of stack");
+					printTAM("LOADI(1)", "", "Duplicate char on top of stack");
+					printPrimitiveRoutine("put", "Print the char value on top of the stack");
+				}
 			}
+		}
+		else {
+			//TODO
+			System.out.println("Can't print null expression");
 		}
 	}
 
@@ -532,21 +579,22 @@ public class GeneratorHelper extends CrimsonCodeHelper {
 	 * @param ex
 	 */
 	public void printStatementRead(String id) {
-		printTAM("LOADA", symbolTable.retrieve(id).getAddress(),
+		IdEntry ie = symbolTable.retrieve(id);
+		printTAM("LOADA", ie.getAddress(),
 				"Load variable address for " + id);
-		if (symbolTable.retrieve(id).isNumeric()) {
+		if(ie.isNumeric()) {
 			printPrimitiveRoutine("getint", "Get a numeric value for " + id);
 		} else {
 			printPrimitiveRoutine("get", "Get a value for " + id);
 		}
-		printTAM("LOAD(1)", symbolTable.retrieve(id).getAddress(), "Load resulting value");
+		printTAM("LOAD(1)", ie.getAddress(), "Load resulting value");
 	}
 	
 	/**
 	 * Cleant de stack als een resultaat niet meer nodig is.
 	 */
-	public void printStatementCleanup(String name) {
-		printTAM("POP(0)", "1", "Pop resulting value of " + name);
+	public void printStatementCleanup(String name, int size) {
+		printTAM("POP(0)", size + "", "Pop resulting value of " + name);
 	}
 
 	/**

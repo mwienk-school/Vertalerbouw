@@ -11,8 +11,9 @@ do {
 	eenInt = eenInt - 1;
 }; od;					//Should print the numbers 2..50 in decreasing order
 
+eenInt = 1;
 while spawn drieInt; drieInt = 50; drieInt > eenInt;
 do
-	print(drieInt);
-	drieInt = drieInt - 1;
-od;						//Should print the number 50 over and over and over and over and over...
+	line(eenInt);
+	eenInt = eenInt + 1;
+od;						//Should print the numbers 1..49 in increasing order

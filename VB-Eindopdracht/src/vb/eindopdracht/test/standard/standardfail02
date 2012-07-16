@@ -36,4 +36,5 @@ spawn eenInt;
 read(eenInt);
 spawn tweeInt;
 tweeInt = eenInt;
-const drieInt = tweeInt;
+const constInt = tweeInt;
+line(constInt);

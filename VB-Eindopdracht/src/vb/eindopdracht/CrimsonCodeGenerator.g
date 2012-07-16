@@ -28,8 +28,17 @@ options {
 program
   :   ^(PROGRAM (cex=compExpr
               {
-                if($cex.val != null)
-                  gh.printStatementCleanup("non-returning expression");
+                if($cex.val != null) {
+                  int exprSize = 1;
+                  int lastIndex = -2;
+									while(lastIndex != -1){
+									       lastIndex = $cex.val.indexOf(",", lastIndex+1);
+									       if(lastIndex != -1){
+									             exprSize++;
+									      }
+									}
+                  gh.printStatementCleanup("non-returning expression", exprSize);
+                }
               })+
               ) { gh.endProgram(); }
   ;
@@ -111,6 +120,8 @@ expression returns [String val = null;]
       {
         gh.storeValue($id.text, $ex.val);
         $val = $ex.val;
+        //TODO
+//        System.out.println($id.text + ": " + $val);
       }
   |   ^(OR ex=expression ey=expression)
       {
@@ -173,7 +184,17 @@ expression returns [String val = null;]
             ex=compExpr 
             ({
               // Evaluate the if statement
-              if($ex.val != null) gh.printStatementCleanup("non-returning expression");
+              if($ex.val != null) {
+                int exprSize = 1;
+                int lastIndex = -2;
+                while(lastIndex != -1){
+                       lastIndex = $ex.val.indexOf(",", lastIndex+1);
+                       if(lastIndex != -1){
+                             exprSize++;
+                      }
+                }
+                gh.printStatementCleanup("non-returning expression", exprSize);
+              }
              }
             ex=compExpr)*                  
             { 
@@ -200,8 +221,17 @@ expression returns [String val = null;]
             ex=compExpr
             ({
               // Evaluate the expression
-              if($ex.val != null)
-              gh.printStatementCleanup("non-returning expression");
+              if($ex.val != null) {
+                int exprSize = 1;
+                int lastIndex = -2;
+                while(lastIndex != -1){
+                       lastIndex = $ex.val.indexOf(",", lastIndex+1);
+                       if(lastIndex != -1){
+                             exprSize++;
+                      }
+                }
+                gh.printStatementCleanup("non-returning expression", exprSize);
+              }
             }
             ex=compExpr
             )*
@@ -218,57 +248,128 @@ expression returns [String val = null;]
   |   ^(READ r=readvar { $val = $r.val; }
             (readvar 
             { 
-              gh.printStatementCleanup("read"); 
-              gh.printStatementCleanup("read"); 
+              gh.printStatementCleanup("read", 1);
+              gh.printStatementCleanup("read", 1); 
               $val = null; 
             }
             (readvar 
             { 
-              gh.printStatementCleanup("read"); 
+              gh.printStatementCleanup("read", 1); 
             }
             )*)?)
   |   ^(PRINT p=printexpr { $val = $p.val; }
-            (printexpr 
-            { 
-              gh.printStatementCleanup("print"); 
-              gh.printStatementCleanup("print"); 
+            (p=printexpr 
+            {
+						  int exprSize = 1;
+						  int lastIndex = -2;
+						  while(lastIndex != -1){
+						    lastIndex = $val.indexOf(",", lastIndex+1);
+						    if(lastIndex != -1){
+						      exprSize++;
+						    }
+						  }
+              gh.printStatementCleanup("print", exprSize);
+						  
+						  exprSize = 1;
+						  lastIndex = -2;
+						  while(lastIndex != -1){
+						    lastIndex = $p.val.indexOf(",", lastIndex+1);
+						    if(lastIndex != -1){
+						      exprSize++;
+						    }
+						  } 
+              gh.printStatementCleanup("print", exprSize); 
               $val = null;
             }
             (printexpr 
-            { 
-              gh.printStatementCleanup("print"); 
+            {
+						  exprSize = 1;
+						  lastIndex = -2;
+						  while(lastIndex != -1){
+						    lastIndex = $p.val.indexOf(",", lastIndex+1);
+						    if(lastIndex != -1){
+						      exprSize++;
+						    }
+						  }
+              gh.printStatementCleanup("print", exprSize); 
             }
             )*)?)
   |   ^(PRINTLN p=printexpr { $val = $p.val; }
-            (printexpr 
-            { 
-              gh.printStatementCleanup("print"); 
-              gh.printStatementCleanup("print"); 
+            (p=printexpr 
+            {
+              int exprSize = 1;
+              int lastIndex = -2;
+              while(lastIndex != -1){
+                lastIndex = $val.indexOf(",", lastIndex+1);
+                if(lastIndex != -1){
+                  exprSize++;
+                }
+              }
+              gh.printStatementCleanup("print", exprSize);
+              
+              exprSize = 1;
+              lastIndex = -2;
+              while(lastIndex != -1){
+                lastIndex = $p.val.indexOf(",", lastIndex+1);
+                if(lastIndex != -1){
+                  exprSize++;
+                }
+              } 
+              gh.printStatementCleanup("print", exprSize); 
               $val = null;
             }
             (printexpr 
-            { 
-              gh.printStatementCleanup("print"); 
+            {
+              exprSize = 1;
+              lastIndex = -2;
+              while(lastIndex != -1){
+                lastIndex = $p.val.indexOf(",", lastIndex+1);
+                if(lastIndex != -1){
+                  exprSize++;
+                }
+              }
+              gh.printStatementCleanup("print", exprSize); 
             }
-            )*)?) 
+            )*)?)
             { 
               gh.printStatementPrint("\n"); 
             }
   |   ^(CCOMPEXPR { gh.openScope(); }
             cex=compExpr { $val = $cex.val; }
             ({
-              if($val != null) gh.printStatementCleanup("non-returning expression");
+              if($val != null) {
+                int exprSize = 1;
+                int lastIndex = -2;
+                while(lastIndex != -1){
+                       lastIndex = $val.indexOf(",", lastIndex+1);
+                       if(lastIndex != -1){
+                             exprSize++;
+                      }
+                }
+                gh.printStatementCleanup("non-returning expression", exprSize);
+              }
             }
             cex=compExpr { $val = $cex.val; })*)
 			      { 
-			        if($val == null) gh.closeScope(0);
-		          else gh.closeScope(1);
+			        if($val == null)
+			          gh.closeScope(0);
+		          else {
+                int exprSize = 1;
+                int lastIndex = -2;
+                while(lastIndex != -1){
+                       lastIndex = $val.indexOf(",", lastIndex+1);
+                       if(lastIndex != -1){
+                             exprSize++;
+                      }
+                }
+		            gh.closeScope(exprSize);
+	            }
 			      }
-  |   ^(ARRAY {$val = ""; } 
+  |   ^(ARRAY ex=expression { $val = $ex.val; } 
             (ex=expression 
             {
-              if(gh.isConstantScope()) $val = $val + "+|+" + $ex.val; 
-            })+)
+              $val = $val + "," + $ex.val; 
+            })*)
   |   ^(TYPE id=IDENTIFIER n1=NUMBER n2=NUMBER)
       {
         gh.defineArray_Type($id.text, $n1.text, $n2.text);
@@ -277,29 +378,49 @@ expression returns [String val = null;]
       {
         $val = $op.val;
       }
-  |   ^(ARRINDEX expression+)
+  |   ^(ARRINDEX ex=expression { $val = $ex.val; } (ex=expression { $val += $ex.val; })*)
   ;
 
 thenExpr returns [String val = null;]
   :   ^(THEN { gh.openScope(); } 
             ex=compExpr
             ({
-              if($ex.val != null)
-                gh.printStatementCleanup("non-returning expression");
+              if($ex.val != null) {
+                int exprSize = 1;
+                int lastIndex = -2;
+                while(lastIndex != -1){
+                       lastIndex = $ex.val.indexOf(",", lastIndex+1);
+                       if(lastIndex != -1){
+                             exprSize++;
+                      }
+                }
+                gh.printStatementCleanup("non-returning expression", exprSize);
+              }
             }
             ex=compExpr
             )*
             {
 				      if($ex.val == null)
 				        gh.closeScope(0);
-				      else
-				        gh.closeScope(1);
+              else {
+                int exprSize = 1;
+                int lastIndex = -2;
+                while(lastIndex != -1){
+                       lastIndex = $ex.val.indexOf(",", lastIndex+1);
+                       if(lastIndex != -1){
+                             exprSize++;
+                      }
+                }
+                gh.closeScope(exprSize);
+              }
 				      gh.printStatementIf_Else(label);
 				    }
 				    (ey=elseExpr)?)                     
 				    {
-				      if(condition) $val = $ex.val;
-				      else $val = $ey.val;
+				      if(condition)
+				        $val = $ex.val;
+				      else
+				        $val = $ey.val;
 				    }
   ;
   
@@ -307,7 +428,17 @@ elseExpr returns [String val = null;]
   :   ^(ELSE { gh.openScope(); } 
             ex=compExpr
             ({
-              if($ex.val != null) gh.printStatementCleanup("non-returning expression");
+              if($ex.val != null) {
+                int exprSize = 1;
+                int lastIndex = -2;
+                while(lastIndex != -1){
+                       lastIndex = $ex.val.indexOf(",", lastIndex+1);
+                       if(lastIndex != -1){
+                             exprSize++;
+                      }
+                }
+                gh.printStatementCleanup("non-returning expression", exprSize);
+              }
             }
             ex=compExpr
             )*
@@ -324,7 +455,17 @@ doExpr returns [String val = null;]
   :   ^(DO { gh.openScope(); }
             (ex=compExpr
             {
-              if($ex.val != null) gh.printStatementCleanup("non-returning expression");
+              if($ex.val != null) {
+                int exprSize = 1;
+                int lastIndex = -2;
+                while(lastIndex != -1){
+                       lastIndex = $ex.val.indexOf(",", lastIndex+1);
+                       if(lastIndex != -1){
+                             exprSize++;
+                      }
+                }
+                gh.printStatementCleanup("non-returning expression", exprSize);
+              }
             })*)
 						{
 						  gh.closeScope(0);
@@ -342,14 +483,10 @@ printexpr returns [String val = null;]
   
 operand returns [String val = null;]
   :   ^(id=IDENTIFIER { boolean arr = false; } 
-            (
-            // Operand is een array index
-            { gh.setConstantScope(true); } 
-              ex=expression 
+            (ex=expression 
             {
               $val = gh.getValue($id.text, $ex.val);
               arr = true;
-              gh.setConstantScope(false);
             })*
             par=paramuses?)
             { 

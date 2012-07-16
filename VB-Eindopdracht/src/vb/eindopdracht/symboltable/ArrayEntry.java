@@ -25,7 +25,7 @@ public class ArrayEntry extends IdEntry implements Cloneable {
 	}
 	
 	public int getArraySize() {
-		return enddim - startdim +1;
+		return enddim - startdim + 1;
 	}
 
 	public void setDimensions(int startdim, int enddim) {
@@ -66,18 +66,22 @@ public class ArrayEntry extends IdEntry implements Cloneable {
 	@Override
 	public void setValue(Object o) {
 		String str = (String) o;
-		str = str.substring(3); // Cut off first part (+|+)
-		while (str.contains("+|+")) {
-			int index = str.indexOf("+|+");
+		while (str.contains(",")) {
+			int index = str.indexOf(",");
 			enter(str.substring(0,index));
-			str = str.substring(index + 3);
+			str = str.substring(index + 1);
 		}
-		enter(str); // No separator (+|+) after the last entry
+		enter(str); // No separator (,) after the last entry
 	}
 	
 	@Override
 	public Object getValue() {
-		return null;
+		String result = "";
+		for(int i = 0; i < entries.size(); i++) {
+			result += entries.get(i) + ",";
+		}
+		result = result.substring(0, result.length()-1);
+		return result;
 	}
 	
 	/**
