@@ -1,9 +1,0 @@
-Type blaatIntArray [1..5];
-const aBlaatIntArray = [1, 2, 3, 4, 5];
-line(aBlaatIntArray[0]);
-line(aBlaatIntArray[3]);
-line(aBlaatIntArray[1]);
-line(aBlaatIntArray[2]);
-line(aBlaatIntArray[3]);
-line(aBlaatIntArray[4]);
-
