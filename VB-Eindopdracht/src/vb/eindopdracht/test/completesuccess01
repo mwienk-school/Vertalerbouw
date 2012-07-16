@@ -1,0 +1,112 @@
+spawn varInt;
+varInt =
+{
+	spawn var1Int;
+	spawn var2Int;
+	read(var1Int, var2Int);
+	line(var1Int, var2Int);								//Should be the concatenation of the first and second input
+	const const1Int = 1;
+	const const2Int = 2;
+	var2Int = var1Int = +16 + 2 * -8;
+	line(var1Int < var2Int && const1Int <= const2Int,
+		const1Int * const2Int > var2Int - var1Int);		//Should be 01
+	var1Int < read(var2Int) && const1Int <= const2Int;
+	var2Int = line(var2Int) + 1;						//Should be the third input
+} + 1;
+spawn varPill;
+varPill =
+{
+	spawn varPill;
+	read(varPill);
+	line(varPill);										//Should be the fourth input
+	varPill = 12 / 5 * 5 + 12 % 5 == 12 && 6 >= 6;
+	const constPill = red;
+	line(!blue && varPill == constPill || red != blue);	//Should be 1
+} && red;
+spawn varChar;
+varChar =
+{
+	spawn var1Char;
+	spawn var2Char;
+	read(var1Char);
+	line(var1Char);
+	const constChar = 'c';
+	var2Char = 'z';
+	line('a', var1Char == constChar && (var2Char != 'b' || !red));	//Should be a(fifth input == c)
+	'b';
+};
+line(varInt, varPill, varChar);							//Should be third input + 2, 1, b
+
+//If
+spawn eenInt;
+
+eenInt =
+if spawn eenInt; spawn tweeInt; eenInt = 5; tweeInt = 6; eenInt == tweeInt; 
+	then spawn eenInt; spawn tweeInt; eenInt = 5; tweeInt = 6; eenInt + tweeInt;
+	else spawn eenInt; spawn tweeInt; eenInt = 5; tweeInt = 6; eenInt - tweeInt;
+fi + 4;
+
+line(eenInt);											//Should be 3
+
+if spawn tweeInt; eenInt > 1;
+	then tweeInt = 6; eenInt = tweeInt;
+fi;
+
+line(eenInt);											//Should be 6
+
+line(if eenInt > 5; then red; else blue; fi && red);	//Should be 1
+line(if eenInt > 5; then 'a'; else 'b'; fi == 'a');		//Should be 1
+
+//While
+spawn tweeInt;
+eenInt = 50;
+tweeInt = eenInt / 50;
+while eenInt > tweeInt; do line(eenInt); eenInt = eenInt - 1; od;		//Should print the numbers 2..50 in decreasing order
+
+eenInt = 50;
+while { eenInt > tweeInt; }; 
+do {
+	line(eenInt);
+	eenInt = eenInt - 1;
+}; od;					//Should print the numbers 2..50 in decreasing order
+
+eenInt = 1;
+while spawn drieInt; drieInt = 50; drieInt > eenInt;
+do
+	line(eenInt);
+	eenInt = eenInt + 1;
+od;						//Should print the numbers 1..49 in increasing order
+
+//Procedures/functions
+proc incrementProc(spawn eenInt) {
+	spawn tweeInt;
+	func incrementFunc(eenInt) {
+		eenInt + 1;
+	};
+	tweeInt = eenInt+ 1 ;
+	eenInt = tweeInt + 1;
+};
+
+func fiveFunc() {
+	spawn eenInt;
+	eenInt = 5;
+	eenInt;
+};
+
+eenInt = 1;
+incrementProc(spawn eenInt);		//Should be 3
+line(eenInt);
+line(fiveFunc());					//Should be 5
+
+//Arrays
+type VijfIntArray[0..4];
+spawn eenVijfIntArray;
+eenVijfIntArray = [1, 2, 3, 4, 5];
+
+line(eenVijfIntArray);
+
+line(eenVijfIntArray[0]);
+line(eenVijfIntArray[1]);
+line(eenVijfIntArray[2]);
+line(eenVijfIntArray[3]);
+line(eenVijfIntArray[4]);
